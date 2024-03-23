@@ -68,7 +68,7 @@ static SampleItem g_samples[] =
 };
 static const int g_nsamples = sizeof(g_samples) / sizeof(SampleItem);
 
-int main(int /*argc*/, char** /*argv*/)
+int main(int argc, char** argv)
 {
 	// Init SDL
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
@@ -371,11 +371,11 @@ int main(int /*argc*/, char** /*argv*/)
 				}
 				else
 				{
-					float pos[3];
-					pos[0] = rayStart[0] + (rayEnd[0] - rayStart[0]) * hitTime;
-					pos[1] = rayStart[1] + (rayEnd[1] - rayStart[1]) * hitTime;
-					pos[2] = rayStart[2] + (rayEnd[2] - rayStart[2]) * hitTime;
-					sample->handleClick(rayStart, pos, processHitTestShift);
+					float position[3];
+					position[0] = rayStart[0] + (rayEnd[0] - rayStart[0]) * hitTime;
+					position[1] = rayStart[1] + (rayEnd[1] - rayStart[1]) * hitTime;
+					position[2] = rayStart[2] + (rayEnd[2] - rayStart[2]) * hitTime;
+					sample->handleClick(rayStart, position, processHitTestShift);
 				}
 			}
 			else
@@ -389,8 +389,8 @@ int main(int /*argc*/, char** /*argv*/)
 		}
 		
 		// Update sample simulation.
-		const float SIM_RATE = 20;
-		const float DELTA_TIME = 1.0f / SIM_RATE;
+		constexpr float SIM_RATE = 20;
+		constexpr float DELTA_TIME = 1.0f / SIM_RATE;
 		timeAcc = rcClamp(timeAcc + dt, -1.0f, 1.0f);
 		int simIter = 0;
 		while (timeAcc > DELTA_TIME)
@@ -404,7 +404,7 @@ int main(int /*argc*/, char** /*argv*/)
 		}
 
 		// Clamp the framerate so that we do not hog all the CPU.
-		const float MIN_FRAME_TIME = 1.0f / 40.0f;
+		constexpr float MIN_FRAME_TIME = 1.0f / 40.0f;
 		if (dt < MIN_FRAME_TIME)
 		{
 			int ms = (int)((MIN_FRAME_TIME - dt) * 1000.0f);
@@ -515,7 +515,7 @@ int main(int /*argc*/, char** /*argv*/)
 		// Help text.
 		if (showMenu)
 		{
-			const char msg[] = "W/S/A/D: Move  RMB: Rotate";
+			constexpr char msg[] = "W/S/A/D: Move  RMB: Rotate";
 			imguiDrawText(280, height-20, IMGUI_ALIGN_LEFT, msg, imguiRGBA(255,255,255,128));
 		}
 		
@@ -895,7 +895,7 @@ int main(int /*argc*/, char** /*argv*/)
 			glLineWidth(5.0f);
 			glColor4ub(240,220,0,196);
 			glBegin(GL_LINE_LOOP);
-			const float r = 25.0f;
+			constexpr float r = 25.0f;
 			for (int i = 0; i < 20; ++i)
 			{
 				const float a = (float)i / 20.0f * RC_PI*2;
