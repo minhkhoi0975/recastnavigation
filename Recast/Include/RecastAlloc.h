@@ -25,7 +25,7 @@
 
 /// Provides hint values to the memory allocator on how long the
 /// memory is expected to be used.
-enum rcAllocHint
+enum rcAllocateHint
 {
 	RC_ALLOC_PERMANENT,	///< Memory will persist after a function call.
 	RC_ALLOC_TEMPORARY	///< Memory used temporarily within a function.
@@ -33,10 +33,10 @@ enum rcAllocHint
 
 /// A memory allocation function.
 //  @param[in]		size			The size, in bytes of memory, to allocate.
-//  @param[in]		rcAllocHint	A hint to the allocator on how long the memory is expected to be in use.
+//  @param[in]		rcAllocateHint	A hint to the allocator on how long the memory is expected to be in use.
 //  @return A pointer to the beginning of the allocated memory block, or null if the allocation failed.
 ///  @see rcAllocSetCustom
-typedef void* (rcAllocateFunction)(size_t size, rcAllocHint hint);
+typedef void* (rcAllocateFunction)(size_t size, rcAllocateHint hint);
 
 /// A memory deallocation function.
 ///  @param[in]		ptr		A pointer to a memory block previously allocated using #rcAllocFunc.
@@ -57,7 +57,7 @@ void rcAllocSetCustom(rcAllocateFunction* allocFunc, rcFreeFunction* freeFunc);
 /// @return A pointer to the beginning of the allocated memory block, or null if the allocation failed.
 /// 
 /// @see rcFree, rcAllocSetCustom
-void* rcAllocate(size_t size, rcAllocHint hint);
+void* rcAllocate(size_t size, rcAllocateHint hint);
 
 /// Deallocates a memory block.  If @p ptr is NULL, this does nothing.
 ///
@@ -99,7 +99,7 @@ typedef intptr_t rcSizeType;
 ///  * assign() and the pre-sizing constructor follow C++11 semantics -- they don't construct a temporary if no value is provided.
 ///  * push_back() and resize() support adding values from the current vector. Range-based constructors and assign(begin, end) do not.
 ///  * No specialization for bool.
-template <typename T, rcAllocHint H>
+template <typename T, rcAllocateHint H>
 class rcVectorBase {
 	rcSizeType m_size;
 	rcSizeType m_cap;
@@ -166,7 +166,7 @@ public:
 	rcVectorBase& operator=(const rcVectorBase<T, H>& other);
 };
 
-template<typename T, rcAllocHint H>
+template<typename T, rcAllocateHint H>
 bool rcVectorBase<T, H>::reserve(rcSizeType count) 
 {
 	if (count <= m_cap) 
@@ -181,7 +181,7 @@ bool rcVectorBase<T, H>::reserve(rcSizeType count)
 	return true;
 }
 
-template <typename T, rcAllocHint H>
+template <typename T, rcAllocateHint H>
 T* rcVectorBase<T, H>::allocate_and_copy(rcSizeType size) 
 {
 	rcAssert(RC_SIZE_MAX / static_cast<rcSizeType>(sizeof(T)) >= size);
@@ -191,7 +191,7 @@ T* rcVectorBase<T, H>::allocate_and_copy(rcSizeType size)
 	return new_data;
 }
 
-template <typename T, rcAllocHint H>
+template <typename T, rcAllocateHint H>
 void rcVectorBase<T, H>::assign(const T* begin, const T* end) 
 {
 	clear();
@@ -200,7 +200,7 @@ void rcVectorBase<T, H>::assign(const T* begin, const T* end)
 	copy_range(m_data, begin, end);
 }
 
-template <typename T, rcAllocHint H>
+template <typename T, rcAllocateHint H>
 void rcVectorBase<T, H>::push_back(const T& value) 
 {
 	// rcLikely increases performance by ~50% on BM_rcVector_PushPreallocated,
@@ -223,7 +223,7 @@ void rcVectorBase<T, H>::push_back(const T& value)
 	m_data = data;
 }
 
-template <typename T, rcAllocHint H>
+template <typename T, rcAllocateHint H>
 rcSizeType rcVectorBase<T, H>::get_new_capacity(rcSizeType min_capacity) 
 {
 	rcAssert(min_capacity <= RC_SIZE_MAX);
@@ -232,7 +232,7 @@ rcSizeType rcVectorBase<T, H>::get_new_capacity(rcSizeType min_capacity)
 	return 2 * m_cap > min_capacity ? 2 * m_cap : min_capacity;
 }
 
-template <typename T, rcAllocHint H>
+template <typename T, rcAllocateHint H>
 void rcVectorBase<T, H>::resize_impl(rcSizeType size, const T* value) 
 {
 	if (size < m_size) 
@@ -269,7 +269,7 @@ void rcVectorBase<T, H>::resize_impl(rcSizeType size, const T* value)
 	}
 }
 
-template <typename T, rcAllocHint H>
+template <typename T, rcAllocateHint H>
 void rcVectorBase<T, H>::swap(rcVectorBase<T, H>& other) 
 {
 	// TODO: Reorganize headers so we can use rcSwap here.
@@ -287,7 +287,7 @@ void rcVectorBase<T, H>::swap(rcVectorBase<T, H>& other)
 }
 
 // static
-template <typename T, rcAllocHint H>
+template <typename T, rcAllocateHint H>
 void rcVectorBase<T, H>::construct_range(T* begin, T* end)
 {
 	for (T* p = begin; p < end; p++)
@@ -295,7 +295,7 @@ void rcVectorBase<T, H>::construct_range(T* begin, T* end)
 }
 
 // static
-template <typename T, rcAllocHint H>
+template <typename T, rcAllocateHint H>
 void rcVectorBase<T, H>::construct_range(T* begin, T* end, const T& value) 
 {
 	for (T* p = begin; p < end; p++)
@@ -303,14 +303,14 @@ void rcVectorBase<T, H>::construct_range(T* begin, T* end, const T& value)
 }
 
 // static
-template <typename T, rcAllocHint H>
+template <typename T, rcAllocateHint H>
 void rcVectorBase<T, H>::copy_range(T* dst, const T* begin, const T* end) 
 {
 	for (rcSizeType i = 0; i < end - begin; i++) 
 		construct(dst + i, begin[i]);
 }
 
-template <typename T, rcAllocHint H>
+template <typename T, rcAllocateHint H>
 void rcVectorBase<T, H>::destroy_range(rcSizeType begin, rcSizeType end) 
 {
 	for (rcSizeType i = begin; i < end; i++) 

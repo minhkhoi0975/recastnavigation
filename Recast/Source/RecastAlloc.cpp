@@ -18,26 +18,26 @@
 
 #include "RecastAlloc.h"
 
-static void* rcAllocDefault(size_t size, rcAllocHint)
+static void* rcAllocateDefault(size_t size, rcAllocateHint)
 {
 	return malloc(size);
 }
 
-static void rcFreeDefault(void *ptr)
+static void rcFreeDefault(void* ptr)
 {
 	free(ptr);
 }
 
-static rcAllocateFunction* sRecastAllocFunc = rcAllocDefault;
+static rcAllocateFunction* sRecastAllocFunc = rcAllocateDefault;
 static rcFreeFunction* sRecastFreeFunc = rcFreeDefault;
 
 void rcAllocSetCustom(rcAllocateFunction* allocFunc, rcFreeFunction* freeFunc)
 {
-	sRecastAllocFunc = allocFunc ? allocFunc : rcAllocDefault;
+	sRecastAllocFunc = allocFunc ? allocFunc : rcAllocateDefault;
 	sRecastFreeFunc = freeFunc ? freeFunc : rcFreeDefault;
 }
 
-void* rcAllocate(size_t size, rcAllocHint hint)
+void* rcAllocate(size_t size, rcAllocateHint hint)
 {
 	return sRecastAllocFunc(size, hint);
 }

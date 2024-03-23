@@ -30,7 +30,7 @@ namespace
 	/// Allocates and constructs an object of the given type, returning a pointer.
 	/// @param[in]		allocLifetime	Allocation lifetime hint
 	template<typename T>
-	T* rcNew(const rcAllocHint allocLifetime)
+	T* rcNew(const rcAllocateHint allocLifetime)
 	{
 		T* ptr = (T*)rcAllocate(sizeof(T), allocLifetime);
 		::new(rcNewTag(), (void*)ptr) T();

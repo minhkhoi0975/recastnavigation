@@ -31,7 +31,7 @@ const int kMaxAllocSize = 1024;
 const unsigned char kClearValue = 0xff;
 
 /// Simple alloc/free that clears the memory on free..
-void* AllocAndInit(size_t size, rcAllocHint) {
+void* AllocAndInit(size_t size, rcAllocateHint) {
 	rcAssert(kMaxAllocSize >= size);
 	return memset(malloc(kMaxAllocSize), 0, kMaxAllocSize);
 }
