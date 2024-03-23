@@ -967,14 +967,14 @@ void duDebugDrawPolyMeshDetail(duDebugDraw* dd, const struct rcPolyMeshDetail& d
 
 	dd->begin(DU_DRAW_TRIS);
 	
-	for (int i = 0; i < dmesh.nmeshes; ++i)
+	for (int i = 0; i < dmesh.meshesCount; ++i)
 	{
 		const unsigned int* m = &dmesh.meshes[i*4];
 		const unsigned int bverts = m[0];
 		const unsigned int btris = m[2];
 		const int ntris = (int)m[3];
-		const float* verts = &dmesh.verts[bverts*3];
-		const unsigned char* tris = &dmesh.tris[btris*4];
+		const float* verts = &dmesh.vertices[bverts*3];
+		const unsigned char* tris = &dmesh.triangles[btris*4];
 
 		unsigned int color = duIntToCol(i, 192);
 
@@ -990,14 +990,14 @@ void duDebugDrawPolyMeshDetail(duDebugDraw* dd, const struct rcPolyMeshDetail& d
 	// Internal edges.
 	dd->begin(DU_DRAW_LINES, 1.0f);
 	const unsigned int coli = duRGBA(0,0,0,64);
-	for (int i = 0; i < dmesh.nmeshes; ++i)
+	for (int i = 0; i < dmesh.meshesCount; ++i)
 	{
 		const unsigned int* m = &dmesh.meshes[i*4];
 		const unsigned int bverts = m[0];
 		const unsigned int btris = m[2];
 		const int ntris = (int)m[3];
-		const float* verts = &dmesh.verts[bverts*3];
-		const unsigned char* tris = &dmesh.tris[btris*4];
+		const float* verts = &dmesh.vertices[bverts*3];
+		const unsigned char* tris = &dmesh.triangles[btris*4];
 		
 		for (int j = 0; j < ntris; ++j)
 		{
@@ -1022,14 +1022,14 @@ void duDebugDrawPolyMeshDetail(duDebugDraw* dd, const struct rcPolyMeshDetail& d
 	// External edges.
 	dd->begin(DU_DRAW_LINES, 2.0f);
 	const unsigned int cole = duRGBA(0,0,0,64);
-	for (int i = 0; i < dmesh.nmeshes; ++i)
+	for (int i = 0; i < dmesh.meshesCount; ++i)
 	{
 		const unsigned int* m = &dmesh.meshes[i*4];
 		const unsigned int bverts = m[0];
 		const unsigned int btris = m[2];
 		const int ntris = (int)m[3];
-		const float* verts = &dmesh.verts[bverts*3];
-		const unsigned char* tris = &dmesh.tris[btris*4];
+		const float* verts = &dmesh.vertices[bverts*3];
+		const unsigned char* tris = &dmesh.triangles[btris*4];
 		
 		for (int j = 0; j < ntris; ++j)
 		{
@@ -1050,12 +1050,12 @@ void duDebugDrawPolyMeshDetail(duDebugDraw* dd, const struct rcPolyMeshDetail& d
 	
 	dd->begin(DU_DRAW_POINTS, 3.0f);
 	const unsigned int colv = duRGBA(0,0,0,64);
-	for (int i = 0; i < dmesh.nmeshes; ++i)
+	for (int i = 0; i < dmesh.meshesCount; ++i)
 	{
 		const unsigned int* m = &dmesh.meshes[i*4];
 		const unsigned int bverts = m[0];
 		const int nverts = (int)m[1];
-		const float* verts = &dmesh.verts[bverts*3];
+		const float* verts = &dmesh.vertices[bverts*3];
 		for (int j = 0; j < nverts; ++j)
 			dd->vertex(&verts[j*3], colv);
 	}

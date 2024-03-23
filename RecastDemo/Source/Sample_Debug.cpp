@@ -290,25 +290,25 @@ void Sample_Debug::handleRender()
 		}
 		dd.end();
 
-		extern int triangulate(int n, const int* vertices, int* indices, int* tris);
+		extern int triangulate(int n, const int* vertices, int* indices, int* triangles);
 
 		static int indices[verticesCount];
-		static int tris[verticesCount*3];
+		static int triangles[verticesCount*3];
 		for (int j = 0; j < verticesCount; ++j)
 			indices[j] = j;
 			
-		static int ntris = 0;
-		if (!ntris)
+		static int trianglesCount = 0;
+		if (!trianglesCount)
 		{
-			ntris = triangulate(verticesCount, vertices, &indices[0], &tris[0]);
-			if (ntris < 0) ntris = -ntris;
+			trianglesCount = triangulate(verticesCount, vertices, &indices[0], &triangles[0]);
+			if (trianglesCount < 0) trianglesCount = -trianglesCount;
 		}
 				
 		const unsigned int coltri = duRGBA(255,255,255,64);
 		dd.begin(DU_DRAW_TRIS);
-		for (int i = 0; i < ntris*3; ++i)
+		for (int i = 0; i < trianglesCount*3; ++i)
 		{
-			const int* va = &vertices[indices[tris[i]]*4];
+			const int* va = &vertices[indices[triangles[i]]*4];
 			dd.vertex(boundMin[0]+va[0]*cellSize, boundMin[1]+va[1]*cellHeight, boundMin[2]+va[2]*cellSize, coltri);
 		}
 		dd.end();

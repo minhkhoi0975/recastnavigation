@@ -186,7 +186,7 @@ bool rcCreateChunkyTriMesh(const float* verts, const int* tris, int ntris,
 	
 	cm->nnodes = curNode;
 	
-	// Calc max tris per node.
+	// Calc max triangles per node.
 	cm->maxTrisPerChunk = 0;
 	for (int i = 0; i < cm->nnodes; ++i)
 	{

@@ -736,7 +736,7 @@ bool dtNavMeshDataSwapEndian(unsigned char* data, const int /*dataSize*/)
 	//dtLink* links = dtGetThenAdvanceBufferPointer<dtLink>(d, linksSize);
 	dtPolyDetail* detailMeshes = dtGetThenAdvanceBufferPointer<dtPolyDetail>(d, detailMeshesSize);
 	float* detailVerts = dtGetThenAdvanceBufferPointer<float>(d, detailVertsSize);
-	d += detailTrisSize; // Ignore detail tris; single bytes can't be endian-swapped.
+	d += detailTrisSize; // Ignore detail triangles; single bytes can't be endian-swapped.
 	//unsigned char* detailTris = dtGetThenAdvanceBufferPointer<unsigned char>(d, detailTrisSize);
 	dtBVNode* bvTree = dtGetThenAdvanceBufferPointer<dtBVNode>(d, bvtreeSize);
 	dtOffMeshConnection* offMeshCons = dtGetThenAdvanceBufferPointer<dtOffMeshConnection>(d, offMeshLinksSize);

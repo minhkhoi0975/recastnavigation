@@ -1128,10 +1128,10 @@ unsigned char* Sample_TileMesh::buildTileMesh(const int tx, const int ty, const 
 		params.polyCount = m_pmesh->polygonsCount;
 		params.nvp = m_pmesh->maxVerticesPerPolygon;
 		params.detailMeshes = m_dmesh->meshes;
-		params.detailVerts = m_dmesh->verts;
-		params.detailVertsCount = m_dmesh->nverts;
-		params.detailTris = m_dmesh->tris;
-		params.detailTriCount = m_dmesh->ntris;
+		params.detailVerts = m_dmesh->vertices;
+		params.detailVertsCount = m_dmesh->verticesCount;
+		params.detailTris = m_dmesh->triangles;
+		params.detailTriCount = m_dmesh->trianglesCount;
 		params.offMeshConVerts = m_geom->getOffMeshConnectionVerts();
 		params.offMeshConRad = m_geom->getOffMeshConnectionRads();
 		params.offMeshConDir = m_geom->getOffMeshConnectionDirs();

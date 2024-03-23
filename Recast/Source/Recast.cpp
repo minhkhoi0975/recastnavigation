@@ -269,18 +269,18 @@ void rcFreePolyMeshDetail(rcPolyMeshDetail* detailMesh)
 		return;
 	}
 	rcFree(detailMesh->meshes);
-	rcFree(detailMesh->verts);
-	rcFree(detailMesh->tris);
+	rcFree(detailMesh->vertices);
+	rcFree(detailMesh->triangles);
 	rcFree(detailMesh);
 }
 
 rcPolyMeshDetail::rcPolyMeshDetail()
 : meshes()
-, verts()
-, tris()
-, nmeshes()
-, nverts()
-, ntris()
+, vertices()
+, triangles()
+, meshesCount()
+, verticesCount()
+, trianglesCount()
 {
 }
 

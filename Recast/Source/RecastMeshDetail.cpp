@@ -477,7 +477,7 @@ static void delaunayHull(rcContext* ctx, const int npts, const float* pts,
 		currentEdge++;
 	}
 	
-	// Create tris
+	// Create triangles
 	tris.resize(nfaces*4);
 	for (int i = 0; i < nfaces*4; ++i)
 		tris[i] = -1;
@@ -675,7 +675,7 @@ static bool buildPolyDetail(rcContext* ctx, const float* in, const int nin,
 							rcIntArray& tris, rcIntArray& edges, rcIntArray& samples)
 {
 	static const int MAX_VERTS = 127;
-	static const int MAX_TRIS = 255;	// Max tris for delaunay is 2n-2-k (n=num vertices, k=num hull vertices).
+	static const int MAX_TRIS = 255;	// Max triangles for delaunay is 2n-2-k (n=num vertices, k=num hull vertices).
 	static const int MAX_VERTS_PER_EDGE = 32;
 	float edge[(MAX_VERTS_PER_EDGE+1)*3];
 	int hull[MAX_VERTS];
@@ -1257,29 +1257,29 @@ bool rcBuildPolyMeshDetail(rcContext* ctx, const rcPolyMesh& mesh, const rcCompa
 		return false;
 	}
 	
-	dmesh.nmeshes = mesh.polygonsCount;
-	dmesh.nverts = 0;
-	dmesh.ntris = 0;
-	dmesh.meshes = (unsigned int*)rcAlloc(sizeof(unsigned int)*dmesh.nmeshes*4, RC_ALLOC_PERM);
+	dmesh.meshesCount = mesh.polygonsCount;
+	dmesh.verticesCount = 0;
+	dmesh.trianglesCount = 0;
+	dmesh.meshes = (unsigned int*)rcAlloc(sizeof(unsigned int)*dmesh.meshesCount*4, RC_ALLOC_PERM);
 	if (!dmesh.meshes)
 	{
-		ctx->log(RC_LOG_ERROR, "rcBuildPolyMeshDetail: Out of memory 'dmesh.meshes' (%d).", dmesh.nmeshes*4);
+		ctx->log(RC_LOG_ERROR, "rcBuildPolyMeshDetail: Out of memory 'dmesh.meshes' (%d).", dmesh.meshesCount*4);
 		return false;
 	}
 	
 	int vcap = nPolyVerts+nPolyVerts/2;
 	int tcap = vcap*2;
 	
-	dmesh.nverts = 0;
-	dmesh.verts = (float*)rcAlloc(sizeof(float)*vcap*3, RC_ALLOC_PERM);
-	if (!dmesh.verts)
+	dmesh.verticesCount = 0;
+	dmesh.vertices = (float*)rcAlloc(sizeof(float)*vcap*3, RC_ALLOC_PERM);
+	if (!dmesh.vertices)
 	{
 		ctx->log(RC_LOG_ERROR, "rcBuildPolyMeshDetail: Out of memory 'dmesh.verts' (%d).", vcap*3);
 		return false;
 	}
-	dmesh.ntris = 0;
-	dmesh.tris = (unsigned char*)rcAlloc(sizeof(unsigned char)*tcap*4, RC_ALLOC_PERM);
-	if (!dmesh.tris)
+	dmesh.trianglesCount = 0;
+	dmesh.triangles = (unsigned char*)rcAlloc(sizeof(unsigned char)*tcap*4, RC_ALLOC_PERM);
+	if (!dmesh.triangles)
 	{
 		ctx->log(RC_LOG_ERROR, "rcBuildPolyMeshDetail: Out of memory 'dmesh.tris' (%d).", tcap*4);
 		return false;
@@ -1337,15 +1337,15 @@ bool rcBuildPolyMeshDetail(rcContext* ctx, const rcPolyMesh& mesh, const rcCompa
 		// Store detail submesh.
 		const int ntris = tris.size()/4;
 		
-		dmesh.meshes[i*4+0] = (unsigned int)dmesh.nverts;
+		dmesh.meshes[i*4+0] = (unsigned int)dmesh.verticesCount;
 		dmesh.meshes[i*4+1] = (unsigned int)nverts;
-		dmesh.meshes[i*4+2] = (unsigned int)dmesh.ntris;
+		dmesh.meshes[i*4+2] = (unsigned int)dmesh.trianglesCount;
 		dmesh.meshes[i*4+3] = (unsigned int)ntris;
 		
 		// Store vertices, allocate more memory if necessary.
-		if (dmesh.nverts+nverts > vcap)
+		if (dmesh.verticesCount+nverts > vcap)
 		{
-			while (dmesh.nverts+nverts > vcap)
+			while (dmesh.verticesCount+nverts > vcap)
 				vcap += 256;
 			
 			float* newv = (float*)rcAlloc(sizeof(float)*vcap*3, RC_ALLOC_PERM);
@@ -1354,23 +1354,23 @@ bool rcBuildPolyMeshDetail(rcContext* ctx, const rcPolyMesh& mesh, const rcCompa
 				ctx->log(RC_LOG_ERROR, "rcBuildPolyMeshDetail: Out of memory 'newv' (%d).", vcap*3);
 				return false;
 			}
-			if (dmesh.nverts)
-				memcpy(newv, dmesh.verts, sizeof(float)*3*dmesh.nverts);
-			rcFree(dmesh.verts);
-			dmesh.verts = newv;
+			if (dmesh.verticesCount)
+				memcpy(newv, dmesh.vertices, sizeof(float)*3*dmesh.verticesCount);
+			rcFree(dmesh.vertices);
+			dmesh.vertices = newv;
 		}
 		for (int j = 0; j < nverts; ++j)
 		{
-			dmesh.verts[dmesh.nverts*3+0] = verts[j*3+0];
-			dmesh.verts[dmesh.nverts*3+1] = verts[j*3+1];
-			dmesh.verts[dmesh.nverts*3+2] = verts[j*3+2];
-			dmesh.nverts++;
+			dmesh.vertices[dmesh.verticesCount*3+0] = verts[j*3+0];
+			dmesh.vertices[dmesh.verticesCount*3+1] = verts[j*3+1];
+			dmesh.vertices[dmesh.verticesCount*3+2] = verts[j*3+2];
+			dmesh.verticesCount++;
 		}
 		
 		// Store triangles, allocate more memory if necessary.
-		if (dmesh.ntris+ntris > tcap)
+		if (dmesh.trianglesCount+ntris > tcap)
 		{
-			while (dmesh.ntris+ntris > tcap)
+			while (dmesh.trianglesCount+ntris > tcap)
 				tcap += 256;
 			unsigned char* newt = (unsigned char*)rcAlloc(sizeof(unsigned char)*tcap*4, RC_ALLOC_PERM);
 			if (!newt)
@@ -1378,19 +1378,19 @@ bool rcBuildPolyMeshDetail(rcContext* ctx, const rcPolyMesh& mesh, const rcCompa
 				ctx->log(RC_LOG_ERROR, "rcBuildPolyMeshDetail: Out of memory 'newt' (%d).", tcap*4);
 				return false;
 			}
-			if (dmesh.ntris)
-				memcpy(newt, dmesh.tris, sizeof(unsigned char)*4*dmesh.ntris);
-			rcFree(dmesh.tris);
-			dmesh.tris = newt;
+			if (dmesh.trianglesCount)
+				memcpy(newt, dmesh.triangles, sizeof(unsigned char)*4*dmesh.trianglesCount);
+			rcFree(dmesh.triangles);
+			dmesh.triangles = newt;
 		}
 		for (int j = 0; j < ntris; ++j)
 		{
 			const int* t = &tris[j*4];
-			dmesh.tris[dmesh.ntris*4+0] = (unsigned char)t[0];
-			dmesh.tris[dmesh.ntris*4+1] = (unsigned char)t[1];
-			dmesh.tris[dmesh.ntris*4+2] = (unsigned char)t[2];
-			dmesh.tris[dmesh.ntris*4+3] = (unsigned char)t[3];
-			dmesh.ntris++;
+			dmesh.triangles[dmesh.trianglesCount*4+0] = (unsigned char)t[0];
+			dmesh.triangles[dmesh.trianglesCount*4+1] = (unsigned char)t[1];
+			dmesh.triangles[dmesh.trianglesCount*4+2] = (unsigned char)t[2];
+			dmesh.triangles[dmesh.trianglesCount*4+3] = (unsigned char)t[3];
+			dmesh.trianglesCount++;
 		}
 	}
 	
@@ -1411,12 +1411,12 @@ bool rcMergePolyMeshDetails(rcContext* ctx, rcPolyMeshDetail** meshes, const int
 	for (int i = 0; i < nmeshes; ++i)
 	{
 		if (!meshes[i]) continue;
-		maxVerts += meshes[i]->nverts;
-		maxTris += meshes[i]->ntris;
-		maxMeshes += meshes[i]->nmeshes;
+		maxVerts += meshes[i]->verticesCount;
+		maxTris += meshes[i]->trianglesCount;
+		maxMeshes += meshes[i]->meshesCount;
 	}
 	
-	mesh.nmeshes = 0;
+	mesh.meshesCount = 0;
 	mesh.meshes = (unsigned int*)rcAlloc(sizeof(unsigned int)*maxMeshes*4, RC_ALLOC_PERM);
 	if (!mesh.meshes)
 	{
@@ -1424,17 +1424,17 @@ bool rcMergePolyMeshDetails(rcContext* ctx, rcPolyMeshDetail** meshes, const int
 		return false;
 	}
 	
-	mesh.ntris = 0;
-	mesh.tris = (unsigned char*)rcAlloc(sizeof(unsigned char)*maxTris*4, RC_ALLOC_PERM);
-	if (!mesh.tris)
+	mesh.trianglesCount = 0;
+	mesh.triangles = (unsigned char*)rcAlloc(sizeof(unsigned char)*maxTris*4, RC_ALLOC_PERM);
+	if (!mesh.triangles)
 	{
 		ctx->log(RC_LOG_ERROR, "rcBuildPolyMeshDetail: Out of memory 'dmesh.tris' (%d).", maxTris*4);
 		return false;
 	}
 	
-	mesh.nverts = 0;
-	mesh.verts = (float*)rcAlloc(sizeof(float)*maxVerts*3, RC_ALLOC_PERM);
-	if (!mesh.verts)
+	mesh.verticesCount = 0;
+	mesh.vertices = (float*)rcAlloc(sizeof(float)*maxVerts*3, RC_ALLOC_PERM);
+	if (!mesh.vertices)
 	{
 		ctx->log(RC_LOG_ERROR, "rcBuildPolyMeshDetail: Out of memory 'dmesh.verts' (%d).", maxVerts*3);
 		return false;
@@ -1445,29 +1445,29 @@ bool rcMergePolyMeshDetails(rcContext* ctx, rcPolyMeshDetail** meshes, const int
 	{
 		rcPolyMeshDetail* dm = meshes[i];
 		if (!dm) continue;
-		for (int j = 0; j < dm->nmeshes; ++j)
+		for (int j = 0; j < dm->meshesCount; ++j)
 		{
-			unsigned int* dst = &mesh.meshes[mesh.nmeshes*4];
+			unsigned int* dst = &mesh.meshes[mesh.meshesCount*4];
 			unsigned int* src = &dm->meshes[j*4];
-			dst[0] = (unsigned int)mesh.nverts+src[0];
+			dst[0] = (unsigned int)mesh.verticesCount+src[0];
 			dst[1] = src[1];
-			dst[2] = (unsigned int)mesh.ntris+src[2];
+			dst[2] = (unsigned int)mesh.trianglesCount+src[2];
 			dst[3] = src[3];
-			mesh.nmeshes++;
+			mesh.meshesCount++;
 		}
 		
-		for (int k = 0; k < dm->nverts; ++k)
+		for (int k = 0; k < dm->verticesCount; ++k)
 		{
-			rcCopyVector(&mesh.verts[mesh.nverts*3], &dm->verts[k*3]);
-			mesh.nverts++;
+			rcCopyVector(&mesh.vertices[mesh.verticesCount*3], &dm->vertices[k*3]);
+			mesh.verticesCount++;
 		}
-		for (int k = 0; k < dm->ntris; ++k)
+		for (int k = 0; k < dm->trianglesCount; ++k)
 		{
-			mesh.tris[mesh.ntris*4+0] = dm->tris[k*4+0];
-			mesh.tris[mesh.ntris*4+1] = dm->tris[k*4+1];
-			mesh.tris[mesh.ntris*4+2] = dm->tris[k*4+2];
-			mesh.tris[mesh.ntris*4+3] = dm->tris[k*4+3];
-			mesh.ntris++;
+			mesh.triangles[mesh.trianglesCount*4+0] = dm->triangles[k*4+0];
+			mesh.triangles[mesh.trianglesCount*4+1] = dm->triangles[k*4+1];
+			mesh.triangles[mesh.trianglesCount*4+2] = dm->triangles[k*4+2];
+			mesh.triangles[mesh.trianglesCount*4+3] = dm->triangles[k*4+3];
+			mesh.trianglesCount++;
 		}
 	}
 	

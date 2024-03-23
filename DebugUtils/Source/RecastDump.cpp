@@ -105,21 +105,21 @@ bool duDumpPolyMeshDetailToObj(rcPolyMeshDetail& dmesh, duFileIO* io)
 	
 	ioprintf(io, "\n");
 
-	for (int i = 0; i < dmesh.nverts; ++i)
+	for (int i = 0; i < dmesh.verticesCount; ++i)
 	{
-		const float* v = &dmesh.verts[i*3];
+		const float* v = &dmesh.vertices[i*3];
 		ioprintf(io, "v %f %f %f\n", v[0],v[1],v[2]);
 	}
 	
 	ioprintf(io, "\n");
 	
-	for (int i = 0; i < dmesh.nmeshes; ++i)
+	for (int i = 0; i < dmesh.meshesCount; ++i)
 	{
 		const unsigned int* m = &dmesh.meshes[i*4];
 		const unsigned int bverts = m[0];
 		const unsigned int btris = m[2];
 		const unsigned int ntris = m[3];
-		const unsigned char* tris = &dmesh.tris[btris*4];
+		const unsigned char* tris = &dmesh.triangles[btris*4];
 		for (unsigned int j = 0; j < ntris; ++j)
 		{
 			ioprintf(io, "f %d %d %d\n",
