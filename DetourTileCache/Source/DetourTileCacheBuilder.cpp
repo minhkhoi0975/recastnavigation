@@ -814,7 +814,7 @@ dtStatus dtBuildTileCacheContours(dtTileCacheAlloc* alloc,
 					unsigned char* dst = &cont.verts[j*4];
 					unsigned char* v = &temp.verts[j*4];
 					unsigned char* vn = &temp.verts[i*4];
-					unsigned char nei = vn[3]; // The neighbour reg is stored at segment vertex of a segment. 
+					unsigned char nei = vn[3]; // The neighbour regionId is stored at segment vertex of a segment. 
 					bool shouldRemove = false;
 					unsigned char lh = getCornerHeight(layer, (int)v[0], (int)v[1], (int)v[2],
 													   walkableClimb, shouldRemove);

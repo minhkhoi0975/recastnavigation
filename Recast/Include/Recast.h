@@ -342,10 +342,10 @@ struct rcCompactCell
 /// Represents a span of unobstructed space within a compact heightfield.
 struct rcCompactSpan
 {
-	unsigned short y;			///< The lower extent of the span. (Measured from the heightfield's base.)
-	unsigned short reg;			///< The id of the region the span belongs to. (Or zero if not in a region.)
-	unsigned int con : 24;		///< Packed neighbor connection data.
-	unsigned int h : 8;			///< The height of the span.  (Measured from #y.)
+	unsigned short y;					///< The lower extent of the span. (Measured from the heightfield's base.)
+	unsigned short regionId;			///< The id of the region the span belongs to. (Or zero if not in a region.)
+	unsigned int connections : 24;		///< Packed neighbor connection data.
+	unsigned int height : 8;			///< The height of the span.  (Measured from #y.)
 };
 
 /// A compact, static heightfield representing unobstructed space.
@@ -1233,8 +1233,8 @@ bool rcBuildRegionsMonotone(rcContext* ctx, rcCompactHeightfield& chf,
 inline void rcSetCon(rcCompactSpan& span, int direction, int neighborIndex)
 {
 	const unsigned int shift = (unsigned int)direction * 6;
-	const unsigned int con = span.con;
-	span.con = (con & ~(0x3f << shift)) | (((unsigned int)neighborIndex & 0x3f) << shift);
+	const unsigned int con = span.connections;
+	span.connections = (con & ~(0x3f << shift)) | (((unsigned int)neighborIndex & 0x3f) << shift);
 }
 
 /// Gets neighbor connection data for the specified direction.
@@ -1244,7 +1244,7 @@ inline void rcSetCon(rcCompactSpan& span, int direction, int neighborIndex)
 inline int rcGetCon(const rcCompactSpan& span, int direction)
 {
 	const unsigned int shift = (unsigned int)direction * 6;
-	return (span.con >> shift) & 0x3f;
+	return (span.connections >> shift) & 0x3f;
 }
 
 /// Gets the standard width (x-axis) offset for the specified direction.

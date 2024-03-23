@@ -143,7 +143,7 @@ static void drawRect(float x, float y, float w, float h, float fth, unsigned int
 }
 
 /*
-static void drawEllipse(float x, float y, float w, float h, float fth, unsigned int col)
+static void drawEllipse(float x, float y, float w, float height, float fth, unsigned int col)
 {
 	float verts[CIRCLE_VERTS*2];
 	const float* cverts = g_circleVerts;
@@ -152,7 +152,7 @@ static void drawEllipse(float x, float y, float w, float h, float fth, unsigned 
 	for (int i = 0; i < CIRCLE_VERTS; ++i)
 	{
 		*v++ = x + cverts[i*2]*w;
-		*v++ = y + cverts[i*2+1]*h;
+		*v++ = y + cverts[i*2+1]*height;
 	}
 	
 	drawPolygon(verts, CIRCLE_VERTS, fth, col);

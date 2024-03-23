@@ -37,7 +37,7 @@ static int getCornerHeight(int x, int y, int i, int dir,
 	
 	// Combine region and area codes in order to prevent
 	// border vertices which are in between two areas to be removed.
-	regs[0] = chf.spans[i].reg | (chf.areas[i] << 16);
+	regs[0] = chf.spans[i].regionId | (chf.areas[i] << 16);
 	
 	if (rcGetCon(s, dir) != RC_NOT_CONNECTED)
 	{
@@ -46,7 +46,7 @@ static int getCornerHeight(int x, int y, int i, int dir,
 		const int ai = (int)chf.cells[ax+ay*chf.width].index + rcGetCon(s, dir);
 		const rcCompactSpan& as = chf.spans[ai];
 		ch = rcMax(ch, (int)as.y);
-		regs[1] = chf.spans[ai].reg | (chf.areas[ai] << 16);
+		regs[1] = chf.spans[ai].regionId | (chf.areas[ai] << 16);
 		if (rcGetCon(as, dirp) != RC_NOT_CONNECTED)
 		{
 			const int ax2 = ax + rcGetDirOffsetX(dirp);
@@ -54,7 +54,7 @@ static int getCornerHeight(int x, int y, int i, int dir,
 			const int ai2 = (int)chf.cells[ax2+ay2*chf.width].index + rcGetCon(as, dirp);
 			const rcCompactSpan& as2 = chf.spans[ai2];
 			ch = rcMax(ch, (int)as2.y);
-			regs[2] = chf.spans[ai2].reg | (chf.areas[ai2] << 16);
+			regs[2] = chf.spans[ai2].regionId | (chf.areas[ai2] << 16);
 		}
 	}
 	if (rcGetCon(s, dirp) != RC_NOT_CONNECTED)
@@ -64,7 +64,7 @@ static int getCornerHeight(int x, int y, int i, int dir,
 		const int ai = (int)chf.cells[ax+ay*chf.width].index + rcGetCon(s, dirp);
 		const rcCompactSpan& as = chf.spans[ai];
 		ch = rcMax(ch, (int)as.y);
-		regs[3] = chf.spans[ai].reg | (chf.areas[ai] << 16);
+		regs[3] = chf.spans[ai].regionId | (chf.areas[ai] << 16);
 		if (rcGetCon(as, dir) != RC_NOT_CONNECTED)
 		{
 			const int ax2 = ax + rcGetDirOffsetX(dir);
@@ -72,7 +72,7 @@ static int getCornerHeight(int x, int y, int i, int dir,
 			const int ai2 = (int)chf.cells[ax2+ay2*chf.width].index + rcGetCon(as, dir);
 			const rcCompactSpan& as2 = chf.spans[ai2];
 			ch = rcMax(ch, (int)as2.y);
-			regs[2] = chf.spans[ai2].reg | (chf.areas[ai2] << 16);
+			regs[2] = chf.spans[ai2].regionId | (chf.areas[ai2] << 16);
 		}
 	}
 
@@ -138,7 +138,7 @@ static void walkContour(int x, int y, int i,
 				const int ax = x + rcGetDirOffsetX(dir);
 				const int ay = y + rcGetDirOffsetY(dir);
 				const int ai = (int)chf.cells[ax+ay*chf.width].index + rcGetCon(s, dir);
-				r = (int)chf.spans[ai].reg;
+				r = (int)chf.spans[ai].regionId;
 				if (area != chf.areas[ai])
 					isAreaBorder = true;
 			}
@@ -875,7 +875,7 @@ bool rcBuildContours(rcContext* ctx, const rcCompactHeightfield& chf,
 			{
 				unsigned char res = 0;
 				const rcCompactSpan& s = chf.spans[i];
-				if (!chf.spans[i].reg || (chf.spans[i].reg & RC_BORDER_REG))
+				if (!chf.spans[i].regionId || (chf.spans[i].regionId & RC_BORDER_REG))
 				{
 					flags[i] = 0;
 					continue;
@@ -888,9 +888,9 @@ bool rcBuildContours(rcContext* ctx, const rcCompactHeightfield& chf,
 						const int ax = x + rcGetDirOffsetX(dir);
 						const int ay = y + rcGetDirOffsetY(dir);
 						const int ai = (int)chf.cells[ax+ay*w].index + rcGetCon(s, dir);
-						r = chf.spans[ai].reg;
+						r = chf.spans[ai].regionId;
 					}
-					if (r == chf.spans[i].reg)
+					if (r == chf.spans[i].regionId)
 						res |= (1 << dir);
 				}
 				flags[i] = res ^ 0xf; // Inverse, mark non connected edges.
@@ -915,7 +915,7 @@ bool rcBuildContours(rcContext* ctx, const rcCompactHeightfield& chf,
 					flags[i] = 0;
 					continue;
 				}
-				const unsigned short reg = chf.spans[i].reg;
+				const unsigned short reg = chf.spans[i].regionId;
 				if (!reg || (reg & RC_BORDER_REG))
 					continue;
 				const unsigned char area = chf.areas[i];

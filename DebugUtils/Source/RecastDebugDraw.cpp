@@ -271,8 +271,8 @@ void duDebugDrawCompactHeightfieldRegions(duDebugDraw* dd, const rcCompactHeight
 				const rcCompactSpan& s = chf.spans[i];
 				const float fy = chf.bmin[1] + (s.y)*ch;
 				unsigned int color;
-				if (s.reg)
-					color = duIntToCol(s.reg, 192);
+				if (s.regionId)
+					color = duIntToCol(s.regionId, 192);
 				else
 					color = duRGBA(0,0,0,64);
 

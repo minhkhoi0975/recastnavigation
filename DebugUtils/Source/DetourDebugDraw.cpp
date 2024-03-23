@@ -635,7 +635,7 @@ void duDebugDrawTileCacheLayerRegions(struct duDebugDraw* dd, const dtTileCacheL
 {
 	int nverts;
 	unsigned char* verts;
-	unsigned char reg;
+	unsigned char regionId;
 	unsigned char area;
 };
 

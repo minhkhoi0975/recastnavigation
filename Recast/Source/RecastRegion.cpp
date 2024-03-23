@@ -1349,7 +1349,7 @@ struct rcSweepSpan
 /// See the #rcConfig documentation for more information on the configuration parameters.
 /// 
 /// The region data will be available via the rcCompactHeightfield::maxRegions
-/// and rcCompactSpan::reg fields.
+/// and rcCompactSpan::regionId fields.
 /// 
 /// @warning The distance field must be created using #rcBuildDistanceField before attempting to build regions.
 /// 
@@ -1503,7 +1503,7 @@ bool rcBuildRegionsMonotone(rcContext* ctx, rcCompactHeightfield& chf,
 	
 	// Store the result out.
 	for (int i = 0; i < chf.spanCount; ++i)
-		chf.spans[i].reg = srcReg[i];
+		chf.spans[i].regionId = srcReg[i];
 
 	return true;
 }
@@ -1522,7 +1522,7 @@ bool rcBuildRegionsMonotone(rcContext* ctx, rcCompactHeightfield& chf,
 /// See the #rcConfig documentation for more information on the configuration parameters.
 /// 
 /// The region data will be available via the rcCompactHeightfield::maxRegions
-/// and rcCompactSpan::reg fields.
+/// and rcCompactSpan::regionId fields.
 /// 
 /// @warning The distance field must be created using #rcBuildDistanceField before attempting to build regions.
 /// 
@@ -1657,7 +1657,7 @@ bool rcBuildRegions(rcContext* ctx, rcCompactHeightfield& chf,
 		
 	// Write the result out.
 	for (int i = 0; i < chf.spanCount; ++i)
-		chf.spans[i].reg = srcReg[i];
+		chf.spans[i].regionId = srcReg[i];
 	
 	return true;
 }
@@ -1810,7 +1810,7 @@ bool rcBuildLayerRegions(rcContext* ctx, rcCompactHeightfield& chf,
 	
 	// Store the result out.
 	for (int i = 0; i < chf.spanCount; ++i)
-		chf.spans[i].reg = srcReg[i];
+		chf.spans[i].regionId = srcReg[i];
 	
 	return true;
 }

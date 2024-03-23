@@ -1089,7 +1089,7 @@ static void getHeightData(rcContext* ctx, const rcCompactHeightfield& chf,
 				for (int i = (int)c.index, ni = (int)(c.index + c.count); i < ni; ++i)
 				{
 					const rcCompactSpan& s = chf.spans[i];
-					if (s.reg == region)
+					if (s.regionId == region)
 					{
 						// Store height
 						hp.data[hx + hy*hp.width] = s.y;
@@ -1106,7 +1106,7 @@ static void getHeightData(rcContext* ctx, const rcCompactHeightfield& chf,
 								const int ay = y + rcGetDirOffsetY(dir);
 								const int ai = (int)chf.cells[ax + ay*chf.width].index + rcGetCon(s, dir);
 								const rcCompactSpan& as = chf.spans[ai];
-								if (as.reg != region)
+								if (as.regionId != region)
 								{
 									border = true;
 									break;
