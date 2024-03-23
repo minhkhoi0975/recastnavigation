@@ -25,9 +25,7 @@
 #include "RecastAssert.h"
 
 
-static int getCornerHeight(int x, int y, int i, int direction,
-	const rcCompactHeightfield& compactHeightfield,
-	bool& isBorderVertex)
+static int getCornerHeight(int x, int y, int i, int direction, const rcCompactHeightfield& compactHeightfield, bool& isBorderVertex)
 {
 	const rcCompactSpan& span = compactHeightfield.spans[i];
 	int cornerHeight = (int)span.y;
@@ -100,9 +98,7 @@ static int getCornerHeight(int x, int y, int i, int direction,
 	return cornerHeight;
 }
 
-static void walkContour(int x, int y, int i,
-	const rcCompactHeightfield& compactHeightfield,
-	unsigned char* flags, rcIntArray& points)
+static void walkContour(int x, int y, int i, const rcCompactHeightfield& compactHeightfield, unsigned char* flags, rcIntArray& points)
 {
 	// Choose the first non-connected edge
 	unsigned char direction = 0;
@@ -183,9 +179,7 @@ static void walkContour(int x, int y, int i,
 	}
 }
 
-static float distancePtSeg(const int x, const int z,
-	const int px, const int pz,
-	const int qx, const int qz)
+static float distancePtSeg(const int x, const int z, const int px, const int pz, const int qx, const int qz)
 {
 	float pqx = (float)(qx - px);
 	float pqz = (float)(qz - pz);
@@ -206,8 +200,7 @@ static float distancePtSeg(const int x, const int z,
 	return dx * dx + dz * dz;
 }
 
-static void simplifyContour(rcIntArray& points, rcIntArray& simplified,
-	const float maxError, const int maxEdgeLength, const int buildFlags)
+static void simplifyContour(rcIntArray& points, rcIntArray& simplified, const float maxError, const int maxEdgeLength, const int buildFlags)
 {
 	// Add initial points.
 	bool hasConnections = false;
@@ -284,7 +277,7 @@ static void simplifyContour(rcIntArray& points, rcIntArray& simplified,
 	}
 
 	// Add points until all raw points are within
-	// error tolerance to the simplified shape.
+	// error tolerance to the simplifiedVertices shape.
 	const int pn = points.size() / 4;
 	for (int i = 0; i < simplified.size() / 4; )
 	{
@@ -467,7 +460,8 @@ static int calculateAreaOfPolygonXZPlane(const int* vertices, const int vertices
 inline int prev(int i, int n) { return i - 1 >= 0 ? i - 1 : n - 1; }
 inline int next(int i, int n) { return i + 1 < n ? i + 1 : 0; }
 
-inline int area2(const int* a, const int* b, const int* c)
+// Returns the area of a triangle on the XZ plane.
+inline int areaXZPlane(const int* a, const int* b, const int* c)
 {
 	return (b[0] - a[0]) * (c[2] - a[2]) - (c[0] - a[0]) * (b[2] - a[2]);
 }
@@ -485,17 +479,17 @@ inline bool xorb(bool x, bool y)
 // line through a to b.
 inline bool left(const int* a, const int* b, const int* c)
 {
-	return area2(a, b, c) < 0;
+	return areaXZPlane(a, b, c) < 0;
 }
 
 inline bool leftOn(const int* a, const int* b, const int* c)
 {
-	return area2(a, b, c) <= 0;
+	return areaXZPlane(a, b, c) <= 0;
 }
 
-inline bool collinear(const int* a, const int* b, const int* c)
+inline bool areCollinearOnXZPlane(const int* a, const int* b, const int* c)
 {
-	return area2(a, b, c) == 0;
+	return areaXZPlane(a, b, c) == 0;
 }
 
 //	Returns true iff ab properly intersects cd: they share
@@ -504,18 +498,18 @@ inline bool collinear(const int* a, const int* b, const int* c)
 static bool intersectProp(const int* a, const int* b, const int* c, const int* d)
 {
 	// Eliminate improper cases.
-	if (collinear(a, b, c) || collinear(a, b, d) ||
-		collinear(c, d, a) || collinear(c, d, b))
+	if (areCollinearOnXZPlane(a, b, c) || areCollinearOnXZPlane(a, b, d) ||
+		areCollinearOnXZPlane(c, d, a) || areCollinearOnXZPlane(c, d, b))
 		return false;
 
 	return xorb(left(a, b, c), left(a, b, d)) && xorb(left(c, d, a), left(c, d, b));
 }
 
-// Returns T iff (a,b,c) are collinear and point c lies
+// Returns true if (a,b,c) are collinear on XZ plane and point c lies
 // on the closed segment ab.
 static bool between(const int* a, const int* b, const int* c)
 {
-	if (!collinear(a, b, c))
+	if (!areCollinearOnXZPlane(a, b, c))
 		return false;
 	// If ab not vertical, check betweenness on x; else on y.
 	if (a[0] != b[0])
@@ -571,7 +565,7 @@ static bool	inCone(int i, int n, const int* verts, const int* pj)
 	// If P[i] is a convex vertex [ i+1 left or on (i-1,i) ].
 	if (leftOn(pin1, pi, pi1))
 		return left(pi, pj, pin1) && left(pj, pi, pi1);
-	// Assume (i-1,i,i+1) not collinear.
+	// Assume (i-1,i,i+1) not areCollinearOnXZPlane.
 	// else P[i] is reflex.
 	return !(leftOn(pi, pj, pi1) && leftOn(pj, pi, pin1));
 }
@@ -704,7 +698,7 @@ static int compareHoles(const void* va, const void* vb)
 	return 0;
 }
 
-static int compareDiagDist(const void* va, const void* vb)
+static int compareDiagonalDistances(const void* va, const void* vb)
 {
 	const rcPotentialDiagonal* a = (const rcPotentialDiagonal*)va;
 	const rcPotentialDiagonal* b = (const rcPotentialDiagonal*)vb;
@@ -767,7 +761,7 @@ static void mergeRegionHoles(rcContext* context, rcContourRegion& region)
 				}
 			}
 			// Sort potential diagonals by distance, we want to make the connection as short as possible.
-			qsort(diags, ndiags, sizeof(rcPotentialDiagonal), compareDiagDist);
+			qsort(diags, ndiags, sizeof(rcPotentialDiagonal), compareDiagonalDistances);
 
 			// Find a diagonal that is not intersecting the outline not the remaining holes.
 			index = -1;
@@ -807,7 +801,7 @@ static void mergeRegionHoles(rcContext* context, rcContourRegion& region)
 /// @par
 ///
 /// The raw contours will match the region outlines exactly. The @p maxError and @p maxEdgeLength
-/// parameters control how closely the simplified contours will match the raw contours.
+/// parameters control how closely the simplifiedVertices contours will match the raw contours.
 ///
 /// Simplified contours are generated such that the vertices for portals between areaIds match up.
 /// (They are considered mandatory vertices.)
@@ -817,9 +811,7 @@ static void mergeRegionHoles(rcContext* context, rcContourRegion& region)
 /// See the #rcConfig documentation for more information on the configuration parameters.
 ///
 /// @see rcAllocateContourSet, rcCompactHeightfield, rcContourSet, rcConfig
-bool rcBuildContours(rcContext* context, const rcCompactHeightfield& compactHeightfield,
-	const float maxError, const int maxEdgeLength,
-	rcContourSet& contourSet, const int buildFlags)
+bool rcBuildContours(rcContext* context, const rcCompactHeightfield& compactHeightfield, const float maxError, const int maxEdgeLength, rcContourSet& contourSet, const int buildFlags)
 {
 	rcAssert(context);
 
@@ -897,8 +889,8 @@ bool rcBuildContours(rcContext* context, const rcCompactHeightfield& compactHeig
 
 	context->stopTimer(RC_TIMER_BUILD_CONTOURS_TRACE);
 
-	rcIntArray verts(256);
-	rcIntArray simplified(64);
+	rcIntArray rawVertices(256);
+	rcIntArray simplifiedVertices(64);
 
 	for (int y = 0; y < h; ++y)
 	{
@@ -917,22 +909,22 @@ bool rcBuildContours(rcContext* context, const rcCompactHeightfield& compactHeig
 					continue;
 				const unsigned char area = compactHeightfield.areaIds[i];
 
-				verts.clear();
-				simplified.clear();
+				rawVertices.clear();
+				simplifiedVertices.clear();
 
 				context->startTimer(RC_TIMER_BUILD_CONTOURS_TRACE);
-				walkContour(x, y, i, compactHeightfield, flags, verts);
+				walkContour(x, y, i, compactHeightfield, flags, rawVertices);
 				context->stopTimer(RC_TIMER_BUILD_CONTOURS_TRACE);
 
 				context->startTimer(RC_TIMER_BUILD_CONTOURS_SIMPLIFY);
-				simplifyContour(verts, simplified, maxError, maxEdgeLength, buildFlags);
-				removeDegenerateSegments(simplified);
+				simplifyContour(rawVertices, simplifiedVertices, maxError, maxEdgeLength, buildFlags);
+				removeDegenerateSegments(simplifiedVertices);
 				context->stopTimer(RC_TIMER_BUILD_CONTOURS_SIMPLIFY);
 
 
 				// Store region->contour remap info.
 				// Create contour.
-				if (simplified.size() / 4 >= 3)
+				if (simplifiedVertices.size() / 4 >= 3)
 				{
 					if (contourSet.contoursCount >= maxContours)
 					{
@@ -956,14 +948,14 @@ bool rcBuildContours(rcContext* context, const rcCompactHeightfield& compactHeig
 
 					rcContour* cont = &contourSet.contours[contourSet.contoursCount++];
 
-					cont->verticesCount = simplified.size() / 4;
+					cont->verticesCount = simplifiedVertices.size() / 4;
 					cont->vertices = (int*)rcAllocate(sizeof(int) * cont->verticesCount * 4, RC_ALLOC_PERMANENT);
 					if (!cont->vertices)
 					{
 						context->log(RC_LOG_ERROR, "rcBuildContours: Out of memory 'verts' (%d).", cont->verticesCount);
 						return false;
 					}
-					memcpy(cont->vertices, &simplified[0], sizeof(int) * cont->verticesCount * 4);
+					memcpy(cont->vertices, &simplifiedVertices[0], sizeof(int) * cont->verticesCount * 4);
 					if (borderSize > 0)
 					{
 						// If the heightfield was build with bordersize, remove the offset.
@@ -975,14 +967,14 @@ bool rcBuildContours(rcContext* context, const rcCompactHeightfield& compactHeig
 						}
 					}
 
-					cont->rawVerticesCount = verts.size() / 4;
+					cont->rawVerticesCount = rawVertices.size() / 4;
 					cont->rawVertices = (int*)rcAllocate(sizeof(int) * cont->rawVerticesCount * 4, RC_ALLOC_PERMANENT);
 					if (!cont->rawVertices)
 					{
 						context->log(RC_LOG_ERROR, "rcBuildContours: Out of memory 'rverts' (%d).", cont->rawVerticesCount);
 						return false;
 					}
-					memcpy(cont->rawVertices, &verts[0], sizeof(int) * cont->rawVerticesCount * 4);
+					memcpy(cont->rawVertices, &rawVertices[0], sizeof(int) * cont->rawVerticesCount * 4);
 					if (borderSize > 0)
 					{
 						// If the heightfield was build with bordersize, remove the offset.
@@ -1094,7 +1086,6 @@ bool rcBuildContours(rcContext* context, const rcCompactHeightfield& compactHeig
 				}
 			}
 		}
-
 	}
 
 	return true;
