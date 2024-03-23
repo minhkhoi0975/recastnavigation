@@ -436,8 +436,8 @@ int Sample_TempObstacles::rasterizeTileLayers(
 		header.tx = tx;
 		header.ty = ty;
 		header.tlayer = i;
-		dtVcopy(header.bmin, layer->bmin);
-		dtVcopy(header.bmax, layer->bmax);
+		dtVcopy(header.bmin, layer->boundMin);
+		dtVcopy(header.bmax, layer->boundMax);
 		
 		// Tile info.
 		header.width = (unsigned char)layer->width;
@@ -449,7 +449,7 @@ int Sample_TempObstacles::rasterizeTileLayers(
 		header.hmin = (unsigned short)layer->hmin;
 		header.hmax = (unsigned short)layer->hmax;
 
-		dtStatus status = dtBuildTileCacheLayer(&comp, &header, layer->heights, layer->areas, layer->cons,
+		dtStatus status = dtBuildTileCacheLayer(&comp, &header, layer->heights, layer->areas, layer->connections,
 												&tile->data, &tile->dataSize);
 		if (dtStatusFailed(status))
 		{

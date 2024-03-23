@@ -542,13 +542,13 @@ bool rcBuildHeightfieldLayers(rcContext* ctx, const rcCompactHeightfield& chf,
 		}
 		memset(layer->areas, 0, gridSize);
 
-		layer->cons = (unsigned char*)rcAlloc(gridSize, RC_ALLOC_PERM);
-		if (!layer->cons)
+		layer->connections = (unsigned char*)rcAlloc(gridSize, RC_ALLOC_PERM);
+		if (!layer->connections)
 		{
 			ctx->log(RC_LOG_ERROR, "rcBuildHeightfieldLayers: Out of memory 'cons' (%d).", gridSize);
 			return false;
 		}
-		memset(layer->cons, 0, gridSize);
+		memset(layer->connections, 0, gridSize);
 		
 		// Find layer height bounds.
 		int hmin = 0, hmax = 0;
@@ -563,14 +563,14 @@ bool rcBuildHeightfieldLayers(rcContext* ctx, const rcCompactHeightfield& chf,
 
 		layer->width = lw;
 		layer->height = lh;
-		layer->cs = chf.cellSize;
-		layer->ch = chf.cellHeight;
+		layer->cellSize = chf.cellSize;
+		layer->cellHeight = chf.cellHeight;
 		
 		// Adjust the bbox to fit the heightfield.
-		rcCopyVector(layer->bmin, bmin);
-		rcCopyVector(layer->bmax, bmax);
-		layer->bmin[1] = bmin[1] + hmin*chf.cellHeight;
-		layer->bmax[1] = bmin[1] + hmax*chf.cellHeight;
+		rcCopyVector(layer->boundMin, bmin);
+		rcCopyVector(layer->boundMax, bmax);
+		layer->boundMin[1] = bmin[1] + hmin*chf.cellHeight;
+		layer->boundMax[1] = bmin[1] + hmax*chf.cellHeight;
 		layer->hmin = hmin;
 		layer->hmax = hmax;
 
@@ -641,7 +641,7 @@ bool rcBuildHeightfieldLayers(rcContext* ctx, const rcCompactHeightfield& chf,
 						}
 					}
 					
-					layer->cons[idx] = (portal << 4) | con;
+					layer->connections[idx] = (portal << 4) | con;
 				}
 			}
 		}

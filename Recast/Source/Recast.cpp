@@ -179,7 +179,7 @@ rcHeightfieldLayerSet::~rcHeightfieldLayerSet()
 	{
 		rcFree(layers[i].heights);
 		rcFree(layers[i].areas);
-		rcFree(layers[i].cons);
+		rcFree(layers[i].connections);
 	}
 	rcFree(layers);
 }

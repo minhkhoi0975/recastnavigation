@@ -328,8 +328,8 @@ void duDebugDrawCompactHeightfieldDistance(duDebugDraw* dd, const rcCompactHeigh
 
 static void drawLayerPortals(duDebugDraw* dd, const rcHeightfieldLayer* layer)
 {
-	const float cs = layer->cs;
-	const float ch = layer->ch;
+	const float cs = layer->cellSize;
+	const float ch = layer->cellHeight;
 	const int w = layer->width;
 	const int h = layer->height;
 	
@@ -349,15 +349,15 @@ static void drawLayerPortals(duDebugDraw* dd, const rcHeightfieldLayer* layer)
 			
 			for (int dir = 0; dir < 4; ++dir)
 			{
-				if (layer->cons[idx] & (1<<(dir+4)))
+				if (layer->connections[idx] & (1<<(dir+4)))
 				{
 					const int* seg = &segs[dir*4];
-					const float ax = layer->bmin[0] + (x+seg[0])*cs;
-					const float ay = layer->bmin[1] + (lh+2)*ch;
-					const float az = layer->bmin[2] + (y+seg[1])*cs;
-					const float bx = layer->bmin[0] + (x+seg[2])*cs;
-					const float by = layer->bmin[1] + (lh+2)*ch;
-					const float bz = layer->bmin[2] + (y+seg[3])*cs;
+					const float ax = layer->boundMin[0] + (x+seg[0])*cs;
+					const float ay = layer->boundMin[1] + (lh+2)*ch;
+					const float az = layer->boundMin[2] + (y+seg[1])*cs;
+					const float bx = layer->boundMin[0] + (x+seg[2])*cs;
+					const float by = layer->boundMin[1] + (lh+2)*ch;
+					const float bz = layer->boundMin[2] + (y+seg[3])*cs;
 					dd->vertex(ax, ay, az, pcol);
 					dd->vertex(bx, by, bz, pcol);
 				}
@@ -369,8 +369,8 @@ static void drawLayerPortals(duDebugDraw* dd, const rcHeightfieldLayer* layer)
 
 void duDebugDrawHeightfieldLayer(duDebugDraw* dd, const struct rcHeightfieldLayer& layer, const int idx)
 {
-	const float cs = layer.cs;
-	const float ch = layer.ch;
+	const float cs = layer.cellSize;
+	const float ch = layer.cellHeight;
 	const int w = layer.width;
 	const int h = layer.height;
 	
@@ -378,12 +378,12 @@ void duDebugDrawHeightfieldLayer(duDebugDraw* dd, const struct rcHeightfieldLaye
 	
 	// Layer bounds
 	float bmin[3], bmax[3];
-	bmin[0] = layer.bmin[0] + layer.minx*cs;
-	bmin[1] = layer.bmin[1];
-	bmin[2] = layer.bmin[2] + layer.miny*cs;
-	bmax[0] = layer.bmin[0] + (layer.maxx+1)*cs;
-	bmax[1] = layer.bmax[1];
-	bmax[2] = layer.bmin[2] + (layer.maxy+1)*cs;
+	bmin[0] = layer.boundMin[0] + layer.minx*cs;
+	bmin[1] = layer.boundMin[1];
+	bmin[2] = layer.boundMin[2] + layer.miny*cs;
+	bmax[0] = layer.boundMin[0] + (layer.maxx+1)*cs;
+	bmax[1] = layer.boundMax[1];
+	bmax[2] = layer.boundMin[2] + (layer.maxy+1)*cs;
 	duDebugDrawBoxWire(dd, bmin[0],bmin[1],bmin[2], bmax[0],bmax[1],bmax[2], duTransCol(color,128), 2.0f);
 	
 	// Layer height
@@ -405,9 +405,9 @@ void duDebugDrawHeightfieldLayer(duDebugDraw* dd, const struct rcHeightfieldLaye
 			else
 				col = duLerpCol(color, dd->areaToCol(area), 32);
 			
-			const float fx = layer.bmin[0] + x*cs;
-			const float fy = layer.bmin[1] + (lh+1)*ch;
-			const float fz = layer.bmin[2] + y*cs;
+			const float fx = layer.boundMin[0] + x*cs;
+			const float fy = layer.boundMin[1] + (lh+1)*ch;
+			const float fz = layer.boundMin[2] + y*cs;
 			
 			dd->vertex(fx, fy, fz, col);
 			dd->vertex(fx, fy, fz+cs, col);

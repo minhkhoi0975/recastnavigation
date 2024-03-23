@@ -382,10 +382,10 @@ private:
 /// @see rcHeightfieldLayerSet
 struct rcHeightfieldLayer
 {
-	float bmin[3];				///< The minimum bounds in world space. [(x, y, z)]
-	float bmax[3];				///< The maximum bounds in world space. [(x, y, z)]
-	float cs;					///< The size of each cell. (On the xz-plane.)
-	float ch;					///< The height of each cell. (The minimum increment along the y-axis.)
+	float boundMin[3];			///< The minimum bounds in world space. [(x, y, z)]
+	float boundMax[3];			///< The maximum bounds in world space. [(x, y, z)]
+	float cellSize;				///< The size of each cell. (On the xz-plane.)
+	float cellHeight;			///< The height of each cell. (The minimum increment along the y-axis.)
 	int width;					///< The width of the heightfield. (Along the x-axis in cell units.)
 	int height;					///< The height of the heightfield. (Along the z-axis in cell units.)
 	int minx;					///< The minimum x-bounds of usable data.
@@ -396,7 +396,7 @@ struct rcHeightfieldLayer
 	int hmax;					///< The maximum height bounds of usable data. (Along the y-axis.)
 	unsigned char* heights;		///< The heightfield. [Size: width * height]
 	unsigned char* areas;		///< Area ids. [Size: Same as #heights]
-	unsigned char* cons;		///< Packed neighbor connection information. [Size: Same as #heights]
+	unsigned char* connections;	///< Packed neighbor connection information. [Size: Same as #heights]
 };
 
 /// Represents a set of heightfield layers.
