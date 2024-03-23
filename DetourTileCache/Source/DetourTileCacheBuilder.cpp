@@ -200,7 +200,7 @@ dtStatus dtBuildTileCacheRegions(dtTileCacheAlloc* alloc,
 		return DT_FAILURE | DT_OUT_OF_MEMORY;
 	memset(sweeps,0,sizeof(dtLayerSweepSpan)*nsweeps);
 	
-	// Partition walkable area into monotone regions.
+	// Partition walkable areaId into monotone regions.
 	unsigned char prevCount[256];
 	unsigned char regId = 0;
 	
@@ -310,7 +310,7 @@ dtStatus dtBuildTileCacheRegions(dtTileCacheAlloc* alloc,
 			if (ri == 0xff)
 				continue;
 			
-			// Update area.
+			// Update areaId.
 			regs[ri].area++;
 			regs[ri].areaId = layer.areas[idx];
 			
@@ -402,14 +402,14 @@ static bool appendVertex(dtTempContour& cont, const int x, const int y, const in
 		{
 			if (pa[0] == pb[0] && (int)pb[0] == x)
 			{
-				// The verts are aligned aling x-axis, update z.
+				// The vertices are aligned aling x-axis, update z.
 				pb[1] = (unsigned char)y;
 				pb[2] = (unsigned char)z;
 				return true;
 			}
 			else if (pa[2] == pb[2] && (int)pb[2] == z)
 			{
-				// The verts are aligned aling z-axis, update x.
+				// The vertices are aligned aling z-axis, update x.
 				pb[0] = (unsigned char)x;
 				pb[1] = (unsigned char)y;
 				return true;
@@ -643,7 +643,7 @@ static void simplifyContour(dtTempContour& cont, const float maxError)
 			endi = ai;
 		}
 		
-		// Tessellate only outer edges or edges between areas.
+		// Tessellate only outer edges or edges between areaIds.
 		while (ci != endi)
 		{
 			float d = distancePtSeg(cont.verts[ci*4+0], cont.verts[ci*4+2], ax, az, bx, bz);
@@ -1940,7 +1940,7 @@ dtStatus dtBuildTileCachePolyMesh(dtTileCacheAlloc* alloc,
 			if (dtStatusFailed(status))
 				return status;
 			// Remove vertex
-			// Note: mesh.nverts is already decremented inside removeVertex()!
+			// Note: mesh.verticesCount is already decremented inside removeVertex()!
 			for (int j = i; j < mesh.nverts; ++j)
 				vflags[j] = vflags[j+1];
 			--i;

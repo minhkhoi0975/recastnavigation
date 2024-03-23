@@ -1384,7 +1384,7 @@ int dtNavMesh::getTileStateSize(const dtMeshTile* tile) const
 
 /// @par
 ///
-/// Tile state includes non-structural data such as polygon flags, area ids, etc.
+/// Tile state includes non-structural data such as polygon flags, areaId ids, etc.
 /// @note The state data is only valid until the tile reference changes.
 /// @see #getTileStateSize, #restoreTileState
 dtStatus dtNavMesh::storeTileState(const dtMeshTile* tile, unsigned char* data, const int maxDataSize) const
@@ -1416,7 +1416,7 @@ dtStatus dtNavMesh::storeTileState(const dtMeshTile* tile, unsigned char* data, 
 
 /// @par
 ///
-/// Tile state includes non-structural data such as polygon flags, area ids, etc.
+/// Tile state includes non-structural data such as polygon flags, areaId ids, etc.
 /// @note This function does not impact the tile's #dtTileRef and #dtPolyRef's.
 /// @see #storeTileState
 dtStatus dtNavMesh::restoreTileState(dtMeshTile* tile, const unsigned char* data, const int maxDataSize)

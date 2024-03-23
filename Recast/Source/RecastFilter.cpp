@@ -89,7 +89,7 @@ void rcFilterLedgeSpans(rcContext* context, const int walkableHeight, const int 
 				const int floor = (int)(span->smax);
 				const int ceiling = span->next ? (int)(span->next->smin) : MAX_HEIGHTFIELD_HEIGHT;
 
-				// The difference between this walkable area and the lowest neighbor walkable area.
+				// The difference between this walkable areaId and the lowest neighbor walkable areaId.
 				// This is the difference between the current span and all neighbor spans that have
 				// enough space for an agent to move between, but not accounting at all for surface slope.
 				int lowestNeighborFloorDifference = MAX_HEIGHTFIELD_HEIGHT;
@@ -113,7 +113,7 @@ void rcFilterLedgeSpans(rcContext* context, const int walkableHeight, const int 
 					const rcSpan* neighborSpan = heightfield.spans[neighborX + neighborZ * xSize];
 
 					// The most we can step down to the neighbor is the walkableClimb distance.
-					// Start with the area under the neighbor span
+					// Start with the areaId under the neighbor span
 					int neighborCeiling = neighborSpan ? (int)neighborSpan->smin : MAX_HEIGHTFIELD_HEIGHT;
 
 					// Skip neighbour if the gap between the spans is too small.
@@ -129,7 +129,7 @@ void rcFilterLedgeSpans(rcContext* context, const int walkableHeight, const int 
 						const int neighborFloor = (int)neighborSpan->smax;
 						neighborCeiling = neighborSpan->next ? (int)neighborSpan->next->smin : MAX_HEIGHTFIELD_HEIGHT;
 
-						// Only consider neighboring areas that have enough overlap to be potentially traversable.
+						// Only consider neighboring areaIds that have enough overlap to be potentially traversable.
 						if (rcMin(ceiling, neighborCeiling) - rcMax(floor, neighborFloor) < walkableHeight)
 						{
 							// No space to traverse between them.

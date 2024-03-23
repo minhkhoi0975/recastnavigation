@@ -31,7 +31,7 @@
 ///
 /// <b>The Default Implementation</b>
 /// 
-/// At construction: All area costs default to 1.0.  All flags are included
+/// At construction: All areaId costs default to 1.0.  All flags are included
 /// and none are excluded.
 /// 
 /// If a polygon has both an include and an exclude flag, it will be excluded.
@@ -231,7 +231,7 @@ dtStatus dtNavMeshQuery::findRandomPoint(const dtQueryFilter* filter, float (*fr
 	if (!filter || !frand || !randomRef || !randomPt)
 		return DT_FAILURE | DT_INVALID_PARAM;
 
-	// Randomly pick one tile. Assume that all tiles cover roughly the same area.
+	// Randomly pick one tile. Assume that all tiles cover roughly the same areaId.
 	const dtMeshTile* tile = 0;
 	float tsum = 0.0f;
 	for (int i = 0; i < m_nav->getMaxTiles(); i++)
@@ -240,7 +240,7 @@ dtStatus dtNavMeshQuery::findRandomPoint(const dtQueryFilter* filter, float (*fr
 		if (!t || !t->header) continue;
 		
 		// Choose random tile using reservoir sampling.
-		const float area = 1.0f; // Could be tile area too.
+		const float area = 1.0f; // Could be tile areaId too.
 		tsum += area;
 		const float u = frand();
 		if (u*tsum <= area)
@@ -249,7 +249,7 @@ dtStatus dtNavMeshQuery::findRandomPoint(const dtQueryFilter* filter, float (*fr
 	if (!tile)
 		return DT_FAILURE;
 
-	// Randomly pick one polygon weighted by polygon area.
+	// Randomly pick one polygon weighted by polygon areaId.
 	const dtPoly* poly = 0;
 	dtPolyRef polyRef = 0;
 	const dtPolyRef base = m_nav->getPolyRefBase(tile);
@@ -266,7 +266,7 @@ dtStatus dtNavMeshQuery::findRandomPoint(const dtQueryFilter* filter, float (*fr
 		if (!filter->passFilter(ref, tile, p))
 			continue;
 
-		// Calc area of the polygon.
+		// Calc areaId of the polygon.
 		float polyArea = 0.0f;
 		for (int j = 2; j < p->vertCount; ++j)
 		{
@@ -276,7 +276,7 @@ dtStatus dtNavMeshQuery::findRandomPoint(const dtQueryFilter* filter, float (*fr
 			polyArea += dtTriArea2D(va,vb,vc);
 		}
 
-		// Choose random polygon weighted by area, using reservoir sampling.
+		// Choose random polygon weighted by areaId, using reservoir sampling.
 		areaSum += polyArea;
 		const float u = frand();
 		if (u*areaSum <= polyArea)
@@ -374,7 +374,7 @@ dtStatus dtNavMeshQuery::findRandomPointAroundCircle(dtPolyRef startRef, const f
 		// Place random locations on on ground.
 		if (bestPoly->getType() == DT_POLYTYPE_GROUND)
 		{
-			// Calc area of the polygon.
+			// Calc areaId of the polygon.
 			float polyArea = 0.0f;
 			for (int j = 2; j < bestPoly->vertCount; ++j)
 			{
@@ -383,7 +383,7 @@ dtStatus dtNavMeshQuery::findRandomPointAroundCircle(dtPolyRef startRef, const f
 				const float* vc = &bestTile->verts[bestPoly->verts[j]*3];
 				polyArea += dtTriArea2D(va,vb,vc);
 			}
-			// Choose random polygon weighted by area, using reservoir sampling.
+			// Choose random polygon weighted by areaId, using reservoir sampling.
 			areaSum += polyArea;
 			const float u = frand();
 			if (u*areaSum <= polyArea)
@@ -1751,7 +1751,7 @@ dtStatus dtNavMeshQuery::appendPortals(const int startIdx, const int endIdx, con
 	
 		if (options & DT_STRAIGHTPATH_AREA_CROSSINGS)
 		{
-			// Skip intersection if only area crossings are requested.
+			// Skip intersection if only areaId crossings are requested.
 			if (fromPoly->getArea() == toPoly->getArea())
 				continue;
 		}

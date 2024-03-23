@@ -345,7 +345,7 @@ void dtPathCorridor::optimizePathVisibility(const float* next, const float pathO
 
 Inaccurate locomotion or dynamic obstacle avoidance can force the agent position significantly outside the 
 original corridor. Over time this can result in the formation of a non-optimal corridor. This function will use a 
-local area path search to try to re-optimize the corridor.
+local areaId path search to try to re-optimize the corridor.
 
 The more inaccurate the agent movement, the more beneficial this function becomes. Simply adjust the frequency of 
 the call to match the needs to the agent.

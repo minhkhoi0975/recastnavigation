@@ -819,8 +819,8 @@ unsigned char* Sample_TileMesh::buildTileMesh(const int tx, const int ty, const 
 	m_cfg.walkableRadius = (int)ceilf(m_agentRadius / m_cfg.cellSize);
 	m_cfg.maxEdgeLen = (int)(m_edgeMaxLen / m_cellSize);
 	m_cfg.maxSimplificationError = m_edgeMaxError;
-	m_cfg.minRegionArea = (int)rcSqr(m_regionMinSize);		// Note: area = size*size
-	m_cfg.mergeRegionArea = (int)rcSqr(m_regionMergeSize);	// Note: area = size*size
+	m_cfg.minRegionArea = (int)rcSqr(m_regionMinSize);		// Note: areaId = size*size
+	m_cfg.mergeRegionArea = (int)rcSqr(m_regionMergeSize);	// Note: areaId = size*size
 	m_cfg.maxVerticesPerPoly = (int)m_vertsPerPoly;
 	m_cfg.tileSize = (int)m_tileSize;
 	m_cfg.borderSize = m_cfg.walkableRadius + 3; // Reserve enough padding.
@@ -833,7 +833,7 @@ unsigned char* Sample_TileMesh::buildTileMesh(const int tx, const int ty, const 
 	//
 	// This is done in order to make sure that the navmesh tiles connect correctly at the borders,
 	// and the obstacles close to the border work correctly with the dilation process.
-	// No polygons (or contours) will be created on the border area.
+	// No polygons (or contours) will be created on the border areaId.
 	//
 	// IMPORTANT!
 	//
@@ -955,20 +955,20 @@ unsigned char* Sample_TileMesh::buildTileMesh(const int tx, const int ty, const 
 		m_solid = 0;
 	}
 
-	// Erode the walkable area by agent radius.
+	// Erode the walkable areaId by agent radius.
 	if (!rcErodeWalkableArea(m_ctx, m_cfg.walkableRadius, *m_chf))
 	{
 		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Could not erode.");
 		return 0;
 	}
 
-	// (Optional) Mark areas.
+	// (Optional) Mark areaIds.
 	const ConvexVolume* vols = m_geom->getConvexVolumes();
 	for (int i  = 0; i < m_geom->getConvexVolumeCount(); ++i)
 		rcMarkConvexPolyArea(m_ctx, vols[i].verts, vols[i].nverts, vols[i].hmin, vols[i].hmax, (unsigned char)vols[i].area, *m_chf);
 	
 	
-	// Partition the heightfield so that we can use simple algorithm later to triangulate the walkable areas.
+	// Partition the heightfield so that we can use simple algorithm later to triangulate the walkable areaIds.
 	// There are 3 martitioning methods, each with some pros and cons:
 	// 1) Watershed partitioning
 	//   - the classic Recast partitioning
@@ -976,9 +976,9 @@ unsigned char* Sample_TileMesh::buildTileMesh(const int tx, const int ty, const 
 	//   - usually slowest
 	//   - partitions the heightfield into nice regions without holes or overlaps
 	//   - the are some corner cases where this method creates produces holes and overlaps
-	//      - holes may appear when a small obstacles is close to large open area (triangulation can handle this)
+	//      - holes may appear when a small obstacles is close to large open areaId (triangulation can handle this)
 	//      - overlaps may occur if you have narrow spiral corridors (i.e stairs), this make triangulation to fail
-	//   * generally the best choice if you precompute the nacmesh, use this if you have large open areas
+	//   * generally the best choice if you precompute the nacmesh, use this if you have large open areaIds
 	// 2) Monotone partioning
 	//   - fastest
 	//   - partitions the heightfield into regions without holes and overlaps (guaranteed)
@@ -991,7 +991,7 @@ unsigned char* Sample_TileMesh::buildTileMesh(const int tx, const int ty, const 
 	//   - produces better triangles than monotone partitioning
 	//   - does not have the corner cases of watershed partitioning
 	//   - can be slow and create a bit ugly tessellation (still better than monotone)
-	//     if you have large open areas with small obstacles (not a problem if you use tiles)
+	//     if you have large open areaIds with small obstacles (not a problem if you use tiles)
 	//   * good choice to use for tiled navmesh with medium and small sized tiles
 	
 	if (m_partitionType == SAMPLE_PARTITION_WATERSHED)
@@ -1096,7 +1096,7 @@ unsigned char* Sample_TileMesh::buildTileMesh(const int tx, const int ty, const 
 			return 0;
 		}
 		
-		// Update poly flags from areas.
+		// Update poly flags from areaIds.
 		for (int i = 0; i < m_pmesh->npolys; ++i)
 		{
 			if (m_pmesh->areas[i] == RC_WALKABLE_AREA)

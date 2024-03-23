@@ -398,15 +398,15 @@ bool Sample_SoloMesh::handleBuild()
 	m_cfg.walkableRadius = (int)ceilf(m_agentRadius / m_cfg.cellSize);
 	m_cfg.maxEdgeLen = (int)(m_edgeMaxLen / m_cellSize);
 	m_cfg.maxSimplificationError = m_edgeMaxError;
-	m_cfg.minRegionArea = (int)rcSqr(m_regionMinSize);		// Note: area = size*size
-	m_cfg.mergeRegionArea = (int)rcSqr(m_regionMergeSize);	// Note: area = size*size
+	m_cfg.minRegionArea = (int)rcSqr(m_regionMinSize);		// Note: areaId = size*size
+	m_cfg.mergeRegionArea = (int)rcSqr(m_regionMergeSize);	// Note: areaId = size*size
 	m_cfg.maxVerticesPerPoly = (int)m_vertsPerPoly;
 	m_cfg.detailSampleDistance = m_detailSampleDist < 0.9f ? 0 : m_cellSize * m_detailSampleDist;
 	m_cfg.detailSampleMaxError = m_cellHeight * m_detailSampleMaxError;
 	
-	// Set the area where the navigation will be build.
+	// Set the areaId where the navigation will be build.
 	// Here the bounds of the input mesh are used, but the
-	// area could be specified by an user defined box, etc.
+	// areaId could be specified by an user defined box, etc.
 	rcCopyVector(m_cfg.boundMin, bmin);
 	rcCopyVector(m_cfg.boundMax, bmax);
 	rcCalcGridSize(m_cfg.boundMin, m_cfg.boundMax, m_cfg.cellSize, &m_cfg.width, &m_cfg.height);
@@ -438,7 +438,7 @@ bool Sample_SoloMesh::handleBuild()
 		return false;
 	}
 	
-	// Allocate array that can hold triangle area types.
+	// Allocate array that can hold triangle areaId types.
 	// If you have multiple meshes you need to process, allocate
 	// and array which can hold the max number of triangles you need to process.
 	m_triareas = new unsigned char[ntris];
@@ -505,20 +505,20 @@ bool Sample_SoloMesh::handleBuild()
 		m_solid = 0;
 	}
 		
-	// Erode the walkable area by agent radius.
+	// Erode the walkable areaId by agent radius.
 	if (!rcErodeWalkableArea(m_ctx, m_cfg.walkableRadius, *m_chf))
 	{
 		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Could not erode.");
 		return false;
 	}
 
-	// (Optional) Mark areas.
+	// (Optional) Mark areaIds.
 	const ConvexVolume* vols = m_geom->getConvexVolumes();
 	for (int i  = 0; i < m_geom->getConvexVolumeCount(); ++i)
 		rcMarkConvexPolyArea(m_ctx, vols[i].verts, vols[i].nverts, vols[i].hmin, vols[i].hmax, (unsigned char)vols[i].area, *m_chf);
 
 	
-	// Partition the heightfield so that we can use simple algorithm later to triangulate the walkable areas.
+	// Partition the heightfield so that we can use simple algorithm later to triangulate the walkable areaIds.
 	// There are 3 partitioning methods, each with some pros and cons:
 	// 1) Watershed partitioning
 	//   - the classic Recast partitioning
@@ -526,9 +526,9 @@ bool Sample_SoloMesh::handleBuild()
 	//   - usually slowest
 	//   - partitions the heightfield into nice regions without holes or overlaps
 	//   - the are some corner cases where this method creates produces holes and overlaps
-	//      - holes may appear when a small obstacles is close to large open area (triangulation can handle this)
+	//      - holes may appear when a small obstacles is close to large open areaId (triangulation can handle this)
 	//      - overlaps may occur if you have narrow spiral corridors (i.e stairs), this make triangulation to fail
-	//   * generally the best choice if you precompute the navmesh, use this if you have large open areas
+	//   * generally the best choice if you precompute the navmesh, use this if you have large open areaIds
 	// 2) Monotone partitioning
 	//   - fastest
 	//   - partitions the heightfield into regions without holes and overlaps (guaranteed)
@@ -541,7 +541,7 @@ bool Sample_SoloMesh::handleBuild()
 	//   - produces better triangles than monotone partitioning
 	//   - does not have the corner cases of watershed partitioning
 	//   - can be slow and create a bit ugly tessellation (still better than monotone)
-	//     if you have large open areas with small obstacles (not a problem if you use tiles)
+	//     if you have large open areaIds with small obstacles (not a problem if you use tiles)
 	//   * good choice to use for tiled navmesh with medium and small sized tiles
 	
 	if (m_partitionType == SAMPLE_PARTITION_WATERSHED)
@@ -653,7 +653,7 @@ bool Sample_SoloMesh::handleBuild()
 		unsigned char* navData = 0;
 		int navDataSize = 0;
 
-		// Update poly flags from areas.
+		// Update poly flags from areaIds.
 		for (int i = 0; i < m_pmesh->npolys; ++i)
 		{
 			if (m_pmesh->areas[i] == RC_WALKABLE_AREA)

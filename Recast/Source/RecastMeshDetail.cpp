@@ -165,7 +165,7 @@ static float distancePtSeg2d(const float* pt, const float* p, const float* q)
 	return dx*dx + dz*dz;
 }
 
-static float distToTriMesh(const float* p, const float* verts, const int /*nverts*/, const int* tris, const int ntris)
+static float distToTriMesh(const float* p, const float* verts, const int /*verticesCount*/, const int* tris, const int ntris)
 {
 	float dmin = FLT_MAX;
 	for (int i = 0; i < ntris; ++i)
@@ -556,7 +556,7 @@ static float polyMinExtent(const float* verts, const int nverts)
 inline int prev(int i, int n) { return i-1 >= 0 ? i-1 : n-1; }
 inline int next(int i, int n) { return i+1 < n ? i+1 : 0; }
 
-static void triangulateHull(const int /*nverts*/, const float* verts, const int nhull, const int* hull, const int nin, rcIntArray& tris)
+static void triangulateHull(const int /*verticesCount*/, const float* verts, const int nhull, const int* hull, const int nin, rcIntArray& tris)
 {
 	int start = 0, left = 1, right = nhull-1;
 	
@@ -675,7 +675,7 @@ static bool buildPolyDetail(rcContext* ctx, const float* in, const int nin,
 							rcIntArray& tris, rcIntArray& edges, rcIntArray& samples)
 {
 	static const int MAX_VERTS = 127;
-	static const int MAX_TRIS = 255;	// Max tris for delaunay is 2n-2-k (n=num verts, k=num hull verts).
+	static const int MAX_TRIS = 255;	// Max tris for delaunay is 2n-2-k (n=num vertices, k=num hull vertices).
 	static const int MAX_VERTS_PER_EDGE = 32;
 	float edge[(MAX_VERTS_PER_EDGE+1)*3];
 	int hull[MAX_VERTS];
@@ -1219,7 +1219,7 @@ bool rcBuildPolyMeshDetail(rcContext* ctx, const rcPolyMesh& mesh, const rcCompa
 		return false;
 	}
 	
-	// Find max size for a polygon area.
+	// Find max size for a polygon areaId.
 	for (int i = 0; i < mesh.npolys; ++i)
 	{
 		const unsigned short* p = &mesh.polys[i*nvp*2];
@@ -1301,7 +1301,7 @@ bool rcBuildPolyMeshDetail(rcContext* ctx, const rcPolyMesh& mesh, const rcCompa
 			npoly++;
 		}
 		
-		// Get the height data from the area of the polygon.
+		// Get the height data from the areaId of the polygon.
 		hp.xmin = bounds[i*4+0];
 		hp.ymin = bounds[i*4+2];
 		hp.width = bounds[i*4+1]-bounds[i*4+0];
@@ -1319,7 +1319,7 @@ bool rcBuildPolyMeshDetail(rcContext* ctx, const rcPolyMesh& mesh, const rcCompa
 			return false;
 		}
 		
-		// Move detail verts to world space.
+		// Move detail vertices to world space.
 		for (int j = 0; j < nverts; ++j)
 		{
 			verts[j*3+0] += orig[0];

@@ -100,8 +100,8 @@ static void freeSpan(rcHeightfield& heightfield, rcSpan* span)
 /// @param[in]	z					The new span's column cell z index
 /// @param[in]	min					The new span's minimum cell index
 /// @param[in]	max					The new span's maximum cell index
-/// @param[in]	areaID				The new span's area type ID
-/// @param[in]	flagMergeThreshold	How close two spans maximum extents need to be to merge area type IDs
+/// @param[in]	areaID				The new span's areaId type ID
+/// @param[in]	flagMergeThreshold	How close two spans maximum extents need to be to merge areaId type IDs
 static bool addSpan(rcHeightfield& heightfield,
                     const int x, const int z,
                     const unsigned short min, const unsigned short max,
@@ -152,7 +152,7 @@ static bool addSpan(rcHeightfield& heightfield,
 			// Merge flags.
 			if (rcAbs((int)newSpan->smax - (int)currentSpan->smax) <= flagMergeThreshold)
 			{
-				// Higher area ID numbers indicate higher resolution priority.
+				// Higher areaId ID numbers indicate higher resolution priority.
 				newSpan->area = rcMax(newSpan->area, currentSpan->area);
 			}
 			
@@ -294,14 +294,14 @@ static void dividePoly(const float* inVerts, int inVertsCount,
 /// @param[in] 	v0					Triangle vertex 0
 /// @param[in] 	v1					Triangle vertex 1
 /// @param[in] 	v2					Triangle vertex 2
-/// @param[in] 	areaID				The area ID to assign to the rasterized spans
+/// @param[in] 	areaID				The areaId ID to assign to the rasterized spans
 /// @param[in] 	heightfield			Heightfield to rasterize into
 /// @param[in] 	heightfieldBBMin	The min extents of the heightfield bounding box
 /// @param[in] 	heightfieldBBMax	The max extents of the heightfield bounding box
 /// @param[in] 	cellSize			The x and z axis size of a voxel in the heightfield
 /// @param[in] 	inverseCellSize		1 / cellSize
 /// @param[in] 	inverseCellHeight	1 / cellHeight
-/// @param[in] 	flagMergeThreshold	The threshold in which area flags will be merged 
+/// @param[in] 	flagMergeThreshold	The threshold in which areaId flags will be merged 
 /// @returns true if the operation completes successfully.  false if there was an error adding spans to the heightfield.
 static bool rasterizeTri(const float* v0, const float* v1, const float* v2,
                          const unsigned char areaID, rcHeightfield& heightfield,

@@ -47,7 +47,7 @@ static void insertSort(unsigned char* data, const int dataLength)
 /// Checks if a point is contained within a polygon
 ///
 /// @param[in]	numVerts	Number of vertices in the polygon
-/// @param[in]	verts		The polygon vertices
+/// @param[in]	vertices		The polygon vertices
 /// @param[in]	point		The point to check
 /// @returns true if the point lies within the polygon, false otherwise.
 static bool pointInPoly(int numVerts, const float* verts, const float* point)
@@ -99,7 +99,7 @@ bool rcErodeWalkableArea(rcContext* context, const int erosionRadius, rcCompactH
 			const rcCompactCell& cell = compactHeightfield.cells[x + z * zStride];
 			for (int spanIndex = (int)cell.index, maxSpanIndex = (int)(cell.index + cell.count); spanIndex < maxSpanIndex; ++spanIndex)
 			{
-				if (compactHeightfield.areas[spanIndex] == RC_NULL_AREA)
+				if (compactHeightfield.areaIds[spanIndex] == RC_NULL_AREA)
 				{
 					distanceToBoundary[spanIndex] = 0;
 					continue;
@@ -120,7 +120,7 @@ bool rcErodeWalkableArea(rcContext* context, const int erosionRadius, rcCompactH
 					const int neighborZ = z + rcGetDirOffsetY(direction);
 					const int neighborSpanIndex = (int)compactHeightfield.cells[neighborX + neighborZ * zStride].index + neighborConnection;
 					
-					if (compactHeightfield.areas[neighborSpanIndex] == RC_NULL_AREA)
+					if (compactHeightfield.areaIds[neighborSpanIndex] == RC_NULL_AREA)
 					{
 						break;
 					}
@@ -277,7 +277,7 @@ bool rcErodeWalkableArea(rcContext* context, const int erosionRadius, rcCompactH
 	{
 		if (distanceToBoundary[spanIndex] < minBoundaryDistance)
 		{
-			compactHeightfield.areas[spanIndex] = RC_NULL_AREA;
+			compactHeightfield.areaIds[spanIndex] = RC_NULL_AREA;
 		}
 	}
 
@@ -314,16 +314,16 @@ bool rcMedianFilterWalkableArea(rcContext* context, rcCompactHeightfield& compac
 			for (int spanIndex = (int)cell.index; spanIndex < maxSpanIndex; ++spanIndex)
 			{
 				const rcCompactSpan& span = compactHeightfield.spans[spanIndex];
-				if (compactHeightfield.areas[spanIndex] == RC_NULL_AREA)
+				if (compactHeightfield.areaIds[spanIndex] == RC_NULL_AREA)
 				{
-					areas[spanIndex] = compactHeightfield.areas[spanIndex];
+					areas[spanIndex] = compactHeightfield.areaIds[spanIndex];
 					continue;
 				}
 
 				unsigned char neighborAreas[9];
 				for (int neighborIndex = 0; neighborIndex < 9; ++neighborIndex)
 				{
-					neighborAreas[neighborIndex] = compactHeightfield.areas[spanIndex];
+					neighborAreas[neighborIndex] = compactHeightfield.areaIds[spanIndex];
 				}
 
 				for (int dir = 0; dir < 4; ++dir)
@@ -336,9 +336,9 @@ bool rcMedianFilterWalkableArea(rcContext* context, rcCompactHeightfield& compac
 					const int aX = x + rcGetDirOffsetX(dir);
 					const int aZ = z + rcGetDirOffsetY(dir);
 					const int aIndex = (int)compactHeightfield.cells[aX + aZ * zStride].index + rcGetCon(span, dir);
-					if (compactHeightfield.areas[aIndex] != RC_NULL_AREA)
+					if (compactHeightfield.areaIds[aIndex] != RC_NULL_AREA)
 					{
-						neighborAreas[dir * 2 + 0] = compactHeightfield.areas[aIndex];
+						neighborAreas[dir * 2 + 0] = compactHeightfield.areaIds[aIndex];
 					}
 
 					const rcCompactSpan& aSpan = compactHeightfield.spans[aIndex];
@@ -349,9 +349,9 @@ bool rcMedianFilterWalkableArea(rcContext* context, rcCompactHeightfield& compac
 						const int bX = aX + rcGetDirOffsetX(dir2);
 						const int bZ = aZ + rcGetDirOffsetY(dir2);
 						const int bIndex = (int)compactHeightfield.cells[bX + bZ * zStride].index + neighborConnection2;
-						if (compactHeightfield.areas[bIndex] != RC_NULL_AREA)
+						if (compactHeightfield.areaIds[bIndex] != RC_NULL_AREA)
 						{
-							neighborAreas[dir * 2 + 1] = compactHeightfield.areas[bIndex];
+							neighborAreas[dir * 2 + 1] = compactHeightfield.areaIds[bIndex];
 						}
 					}
 				}
@@ -361,7 +361,7 @@ bool rcMedianFilterWalkableArea(rcContext* context, rcCompactHeightfield& compac
 		}
 	}
 
-	memcpy(compactHeightfield.areas, areas, sizeof(unsigned char) * compactHeightfield.spanCount);
+	memcpy(compactHeightfield.areaIds, areas, sizeof(unsigned char) * compactHeightfield.spanCount);
 
 	rcFree(areas);
 
@@ -379,7 +379,7 @@ void rcMarkBoxArea(rcContext* context, const float* boxMinBounds, const float* b
 	const int zSize = compactHeightfield.height;
 	const int zStride = xSize; // For readability
 
-	// Find the footprint of the box area in grid cell coordinates. 
+	// Find the footprint of the box areaId in grid cell coordinates. 
 	int minX = (int)((boxMinBounds[0] - compactHeightfield.boundMin[0]) / compactHeightfield.cellSize);
 	int minY = (int)((boxMinBounds[1] - compactHeightfield.boundMin[1]) / compactHeightfield.cellHeight);
 	int minZ = (int)((boxMinBounds[2] - compactHeightfield.boundMin[2]) / compactHeightfield.cellSize);
@@ -417,13 +417,13 @@ void rcMarkBoxArea(rcContext* context, const float* boxMinBounds, const float* b
 				}
 
 				// Skip if the span has been removed.
-				if (compactHeightfield.areas[spanIndex] == RC_NULL_AREA)
+				if (compactHeightfield.areaIds[spanIndex] == RC_NULL_AREA)
 				{
 					continue;
 				}
 
 				// Mark the span.
-				compactHeightfield.areas[spanIndex] = areaId;
+				compactHeightfield.areaIds[spanIndex] = areaId;
 			}
 		}
 	}
@@ -486,7 +486,7 @@ void rcMarkConvexPolyArea(rcContext* context, const float* verts, const int numV
 				rcCompactSpan& span = compactHeightfield.spans[spanIndex];
 
 				// Skip if span is removed.
-				if (compactHeightfield.areas[spanIndex] == RC_NULL_AREA)
+				if (compactHeightfield.areaIds[spanIndex] == RC_NULL_AREA)
 				{
 					continue;
 				}
@@ -505,7 +505,7 @@ void rcMarkConvexPolyArea(rcContext* context, const float* verts, const int numV
 				
 				if (pointInPoly(numVerts, verts, point))
 				{
-					compactHeightfield.areas[spanIndex] = areaId;
+					compactHeightfield.areaIds[spanIndex] = areaId;
 				}
 			}
 		}
@@ -701,7 +701,7 @@ void rcMarkCylinderArea(rcContext* context, const float* position, const float r
 				rcCompactSpan& span = compactHeightfield.spans[spanIndex];
 
 				// Skip if span is removed.
-				if (compactHeightfield.areas[spanIndex] == RC_NULL_AREA)
+				if (compactHeightfield.areaIds[spanIndex] == RC_NULL_AREA)
 				{
 					continue;
 				}
@@ -709,7 +709,7 @@ void rcMarkCylinderArea(rcContext* context, const float* position, const float r
 				// Mark if y extents overlap.
 				if ((int)span.y >= miny && (int)span.y <= maxy)
 				{
-					compactHeightfield.areas[spanIndex] = areaId;
+					compactHeightfield.areaIds[spanIndex] = areaId;
 				}
 			}
 		}

@@ -338,7 +338,7 @@ void dtRandomPointInConvexPoly(const float* pts, const int npts, float* areas,
 		areas[i] = dtTriArea2D(&pts[0], &pts[(i-1)*3], &pts[i*3]);
 		areasum += dtMax(0.001f, areas[i]);
 	}
-	// Find sub triangle weighted by area.
+	// Find sub triangle weighted by areaId.
 	const float thr = s*areasum;
 	float acc = 0.0f;
 	float u = 1.0f;

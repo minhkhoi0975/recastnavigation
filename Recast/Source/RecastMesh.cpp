@@ -1006,10 +1006,10 @@ bool rcBuildPolyMesh(rcContext* ctx, const rcContourSet& cset, const int nvp, rc
 	for (int i = 0; i < cset.nconts; ++i)
 	{
 		// Skip null contours.
-		if (cset.conts[i].nverts < 3) continue;
-		maxVertices += cset.conts[i].nverts;
-		maxTris += cset.conts[i].nverts - 2;
-		maxVertsPerCont = rcMax(maxVertsPerCont, cset.conts[i].nverts);
+		if (cset.conts[i].verticesCount < 3) continue;
+		maxVertices += cset.conts[i].verticesCount;
+		maxTris += cset.conts[i].verticesCount - 2;
+		maxVertsPerCont = rcMax(maxVertsPerCont, cset.conts[i].verticesCount);
 	}
 	
 	if (maxVertices >= 0xfffe)
@@ -1103,35 +1103,35 @@ bool rcBuildPolyMesh(rcContext* ctx, const rcContourSet& cset, const int nvp, rc
 		rcContour& cont = cset.conts[i];
 		
 		// Skip null contours.
-		if (cont.nverts < 3)
+		if (cont.verticesCount < 3)
 			continue;
 		
 		// Triangulate contour
-		for (int j = 0; j < cont.nverts; ++j)
+		for (int j = 0; j < cont.verticesCount; ++j)
 			indices[j] = j;
 			
-		int ntris = triangulate(cont.nverts, cont.verts, &indices[0], &tris[0]);
+		int ntris = triangulate(cont.verticesCount, cont.vertices, &indices[0], &tris[0]);
 		if (ntris <= 0)
 		{
 			// Bad triangulation, should not happen.
 /*			printf("\tconst float boundMin[3] = {%ff,%ff,%ff};\n", cset.boundMin[0], cset.boundMin[1], cset.boundMin[2]);
 			printf("\tconst float cellSize = %ff;\n", cset.cellSize);
 			printf("\tconst float cellHeight = %ff;\n", cset.cellHeight);
-			printf("\tconst int verts[] = {\n");
-			for (int k = 0; k < cont.nverts; ++k)
+			printf("\tconst int vertices[] = {\n");
+			for (int k = 0; k < cont.verticesCount; ++k)
 			{
-				const int* v = &cont.verts[k*4];
+				const int* v = &cont.vertices[k*4];
 				printf("\t\t%d,%d,%d,%d,\n", v[0], v[1], v[2], v[3]);
 			}
-			printf("\t};\n\tconst int nverts = sizeof(verts)/(sizeof(int)*4);\n");*/
+			printf("\t};\n\tconst int verticesCount = sizeof(vertices)/(sizeof(int)*4);\n");*/
 			ctx->log(RC_LOG_WARNING, "rcBuildPolyMesh: Bad triangulation Contour %d.", i);
 			ntris = -ntris;
 		}
 				
 		// Add and merge vertices.
-		for (int j = 0; j < cont.nverts; ++j)
+		for (int j = 0; j < cont.verticesCount; ++j)
 		{
-			const int* v = &cont.verts[j*4];
+			const int* v = &cont.vertices[j*4];
 			indices[j] = addVertex((unsigned short)v[0], (unsigned short)v[1], (unsigned short)v[2],
 								   mesh.verts, firstVert, nextVert, mesh.nverts);
 			if (v[3] & RC_BORDER_VERTEX)
@@ -1212,8 +1212,8 @@ bool rcBuildPolyMesh(rcContext* ctx, const rcContourSet& cset, const int nvp, rc
 			unsigned short* q = &polys[j*nvp];
 			for (int k = 0; k < nvp; ++k)
 				p[k] = q[k];
-			mesh.regs[mesh.npolys] = cont.reg;
-			mesh.areas[mesh.npolys] = cont.area;
+			mesh.regs[mesh.npolys] = cont.regionId;
+			mesh.areas[mesh.npolys] = cont.areaId;
 			mesh.npolys++;
 			if (mesh.npolys > maxTris)
 			{
@@ -1238,7 +1238,7 @@ bool rcBuildPolyMesh(rcContext* ctx, const rcContourSet& cset, const int nvp, rc
 				return false;
 			}
 			// Remove vertex
-			// Note: mesh.nverts is already decremented inside removeVertex()!
+			// Note: mesh.verticesCount is already decremented inside removeVertex()!
 			// Fixup vertex flags
 			for (int j = i; j < mesh.nverts; ++j)
 				vflags[j] = vflags[j+1];

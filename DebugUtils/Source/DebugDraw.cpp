@@ -31,7 +31,7 @@ unsigned int duDebugDraw::areaToCol(unsigned int area)
 {
 	if (area == 0)
 	{
-		// Treat zero area type as default.
+		// Treat zero areaId type as default.
 		return duRGBA(0, 192, 255, 255);
 	}
 	else

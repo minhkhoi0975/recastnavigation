@@ -364,7 +364,7 @@ void imguiEndScrollArea()
 
 	int stop = g_scrollAreaTop;
 	int sbot = g_state.widgetY;
-	int sh = stop - sbot; // The scrollable area height.
+	int sh = stop - sbot; // The scrollable areaId height.
 
 	float barHeight = (float)h/(float)sh;
 	

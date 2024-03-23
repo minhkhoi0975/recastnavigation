@@ -408,7 +408,7 @@ bool dtCreateNavMeshData(dtNavMeshCreateParams* params, unsigned char** outData,
 	else
 	{
 		// No input detail mesh, build detail mesh from nav polys.
-		uniqueDetailVertCount = 0; // No extra detail verts.
+		uniqueDetailVertCount = 0; // No extra detail vertices.
 		detailTriCount = 0;
 		for (int i = 0; i < params->polyCount; ++i)
 		{
@@ -583,7 +583,7 @@ bool dtCreateNavMeshData(dtNavMeshCreateParams* params, unsigned char** outData,
 			dtl.vertCount = (unsigned char)(ndv-nv);
 			dtl.triBase = (unsigned int)params->detailMeshes[i*4+2];
 			dtl.triCount = (unsigned char)params->detailMeshes[i*4+3];
-			// Copy vertices except the first 'nv' verts which are equal to nav poly verts.
+			// Copy vertices except the first 'nv' vertices which are equal to nav poly vertices.
 			if (ndv-nv)
 			{
 				memcpy(&navDVerts[vbase*3], &params->detailVerts[(vb+nv)*3], sizeof(float)*3*(ndv-nv));
@@ -770,7 +770,7 @@ bool dtNavMeshDataSwapEndian(unsigned char* data, const int /*dataSize*/)
 		dtSwapEndian(&pd->triBase);
 	}
 	
-	// Detail verts
+	// Detail vertices
 	for (int i = 0; i < header->detailVertCount*3; ++i)
 	{
 		dtSwapEndian(&detailVerts[i]);

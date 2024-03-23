@@ -145,7 +145,7 @@ rcCompactHeightfield::rcCompactHeightfield()
 , cells()
 , spans()
 , distancesToBorder()
-, areas()
+, areaIds()
 {
 }
 
@@ -154,7 +154,7 @@ rcCompactHeightfield::~rcCompactHeightfield()
 	rcFree(cells);
 	rcFree(spans);
 	rcFree(distancesToBorder);
-	rcFree(areas);
+	rcFree(areaIds);
 }
 
 rcHeightfieldLayerSet* rcAllocHeightfieldLayerSet()
@@ -178,7 +178,7 @@ rcHeightfieldLayerSet::~rcHeightfieldLayerSet()
 	for (int i = 0; i < nlayers; ++i)
 	{
 		rcFree(layers[i].heights);
-		rcFree(layers[i].areas);
+		rcFree(layers[i].areaIds);
 		rcFree(layers[i].connections);
 	}
 	rcFree(layers);
@@ -213,8 +213,8 @@ rcContourSet::~rcContourSet()
 {
 	for (int i = 0; i < nconts; ++i)
 	{
-		rcFree(conts[i].verts);
-		rcFree(conts[i].rverts);
+		rcFree(conts[i].vertices);
+		rcFree(conts[i].rawVertices);
 	}
 	rcFree(conts);
 }
@@ -437,13 +437,13 @@ bool rcBuildCompactHeightfield(rcContext* context, const int walkableHeight, con
 		return false;
 	}
 	memset(compactHeightfield.spans, 0, sizeof(rcCompactSpan) * spanCount);
-	compactHeightfield.areas = (unsigned char*)rcAlloc(sizeof(unsigned char) * spanCount, RC_ALLOC_PERM);
-	if (!compactHeightfield.areas)
+	compactHeightfield.areaIds = (unsigned char*)rcAlloc(sizeof(unsigned char) * spanCount, RC_ALLOC_PERM);
+	if (!compactHeightfield.areaIds)
 	{
 		context->log(RC_LOG_ERROR, "rcBuildCompactHeightfield: Out of memory 'chf.areas' (%d)", spanCount);
 		return false;
 	}
-	memset(compactHeightfield.areas, RC_NULL_AREA, sizeof(unsigned char) * spanCount);
+	memset(compactHeightfield.areaIds, RC_NULL_AREA, sizeof(unsigned char) * spanCount);
 
 	const int MAX_HEIGHT = 0xffff;
 
@@ -472,7 +472,7 @@ bool rcBuildCompactHeightfield(rcContext* context, const int walkableHeight, con
 				const int top = span->next ? (int)span->next->smin : MAX_HEIGHT;
 				compactHeightfield.spans[currentCellIndex].y = (unsigned short)rcClamp(bot, 0, 0xffff);
 				compactHeightfield.spans[currentCellIndex].height = (unsigned char)rcClamp(top - bot, 0, 0xff);
-				compactHeightfield.areas[currentCellIndex] = span->area;
+				compactHeightfield.areaIds[currentCellIndex] = span->area;
 				currentCellIndex++;
 				cell.count++;
 			}

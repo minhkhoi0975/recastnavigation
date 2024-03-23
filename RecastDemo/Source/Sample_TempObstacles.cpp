@@ -203,7 +203,7 @@ struct MeshProcess : public dtTileCacheMeshProcess
 	virtual void process(struct dtNavMeshCreateParams* params,
 						 unsigned char* polyAreas, unsigned short* polyFlags)
 	{
-		// Update poly flags from areas.
+		// Update poly flags from areaIds.
 		for (int i = 0; i < params->polyCount; ++i)
 		{
 			if (polyAreas[i] == DT_TILECACHE_WALKABLE_AREA)
@@ -393,14 +393,14 @@ int Sample_TempObstacles::rasterizeTileLayers(
 		return 0;
 	}
 	
-	// Erode the walkable area by agent radius.
+	// Erode the walkable areaId by agent radius.
 	if (!rcErodeWalkableArea(m_ctx, tcfg.walkableRadius, *rc.chf))
 	{
 		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Could not erode.");
 		return 0;
 	}
 	
-	// (Optional) Mark areas.
+	// (Optional) Mark areaIds.
 	const ConvexVolume* vols = m_geom->getConvexVolumes();
 	for (int i  = 0; i < m_geom->getConvexVolumeCount(); ++i)
 	{
@@ -449,7 +449,7 @@ int Sample_TempObstacles::rasterizeTileLayers(
 		header.hmin = (unsigned short)layer->hmin;
 		header.hmax = (unsigned short)layer->hmax;
 
-		dtStatus status = dtBuildTileCacheLayer(&comp, &header, layer->heights, layer->areas, layer->connections,
+		dtStatus status = dtBuildTileCacheLayer(&comp, &header, layer->heights, layer->areaIds, layer->connections,
 												&tile->data, &tile->dataSize);
 		if (dtStatusFailed(status))
 		{
@@ -1234,8 +1234,8 @@ bool Sample_TempObstacles::handleBuild()
 	cfg.walkableRadius = (int)ceilf(m_agentRadius / cfg.cellSize);
 	cfg.maxEdgeLen = (int)(m_edgeMaxLen / m_cellSize);
 	cfg.maxSimplificationError = m_edgeMaxError;
-	cfg.minRegionArea = (int)rcSqr(m_regionMinSize);		// Note: area = size*size
-	cfg.mergeRegionArea = (int)rcSqr(m_regionMergeSize);	// Note: area = size*size
+	cfg.minRegionArea = (int)rcSqr(m_regionMinSize);		// Note: areaId = size*size
+	cfg.mergeRegionArea = (int)rcSqr(m_regionMergeSize);	// Note: areaId = size*size
 	cfg.maxVerticesPerPoly = (int)m_vertsPerPoly;
 	cfg.tileSize = (int)m_tileSize;
 	cfg.borderSize = cfg.walkableRadius + 3; // Reserve enough padding.

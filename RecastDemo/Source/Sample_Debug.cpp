@@ -225,7 +225,7 @@ void Sample_Debug::handleRender()
 		const float boundMin[3] = {-32.000004f,-11.488281f,-115.343544f};
 		const float cellSize = 0.300000f;
 		const float cellHeight = 0.200000f;
-		const int verts[] = {
+		const int vertices[] = {
 			158,46,336,0,
 			157,47,331,0,
 			161,53,330,0,
@@ -268,14 +268,14 @@ void Sample_Debug::handleRender()
 			165,46,359,0,
 			160,46,340,0,
 		};
-		const int nverts = sizeof(verts)/(sizeof(int)*4);
+		const int verticesCount = sizeof(vertices)/(sizeof(int)*4);
 
 		const unsigned int colln = duRGBA(255,255,255,128);
 		dd.begin(DU_DRAW_LINES, 1.0f);
-		for (int i = 0, j = nverts-1; i < nverts; j=i++)
+		for (int i = 0, j = verticesCount-1; i < verticesCount; j=i++)
 		{
-			const int* va = &verts[j*4];
-			const int* vb = &verts[i*4];
+			const int* va = &vertices[j*4];
+			const int* vb = &vertices[i*4];
 			dd.vertex(boundMin[0]+va[0]*cellSize, boundMin[1]+va[1]*cellHeight+j*0.01f, boundMin[2]+va[2]*cellSize, colln);
 			dd.vertex(boundMin[0]+vb[0]*cellSize, boundMin[1]+vb[1]*cellHeight+i*0.01f, boundMin[2]+vb[2]*cellSize, colln);
 		}
@@ -283,24 +283,24 @@ void Sample_Debug::handleRender()
 
 		const unsigned int colpt = duRGBA(255,255,255,255);
 		dd.begin(DU_DRAW_POINTS, 3.0f);
-		for (int i = 0, j = nverts-1; i < nverts; j=i++)
+		for (int i = 0, j = verticesCount-1; i < verticesCount; j=i++)
 		{
-			const int* va = &verts[j*4];
+			const int* va = &vertices[j*4];
 			dd.vertex(boundMin[0]+va[0]*cellSize, boundMin[1]+va[1]*cellHeight+j*0.01f, boundMin[2]+va[2]*cellSize, colpt);
 		}
 		dd.end();
 
-		extern int triangulate(int n, const int* verts, int* indices, int* tris);
+		extern int triangulate(int n, const int* vertices, int* indices, int* tris);
 
-		static int indices[nverts];
-		static int tris[nverts*3];
-		for (int j = 0; j < nverts; ++j)
+		static int indices[verticesCount];
+		static int tris[verticesCount*3];
+		for (int j = 0; j < verticesCount; ++j)
 			indices[j] = j;
 			
 		static int ntris = 0;
 		if (!ntris)
 		{
-			ntris = triangulate(nverts, verts, &indices[0], &tris[0]);
+			ntris = triangulate(verticesCount, vertices, &indices[0], &tris[0]);
 			if (ntris < 0) ntris = -ntris;
 		}
 				
@@ -308,7 +308,7 @@ void Sample_Debug::handleRender()
 		dd.begin(DU_DRAW_TRIS);
 		for (int i = 0; i < ntris*3; ++i)
 		{
-			const int* va = &verts[indices[tris[i]]*4];
+			const int* va = &vertices[indices[tris[i]]*4];
 			dd.vertex(boundMin[0]+va[0]*cellSize, boundMin[1]+va[1]*cellHeight, boundMin[2]+va[2]*cellSize, coltri);
 		}
 		dd.end();

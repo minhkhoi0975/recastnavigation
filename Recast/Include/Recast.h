@@ -370,7 +370,7 @@ struct rcCompactHeightfield
 	rcCompactCell* cells;				///< Array of cells. [Size: #width*#height]
 	rcCompactSpan* spans;				///< Array of spans. [Size: #spanCount]
 	unsigned short* distancesToBorder;	///< Array containing border distance data. [Size: #spanCount]
-	unsigned char* areas;				///< Array containing area id data. [Size: #spanCount]
+	unsigned char* areaIds;				///< Array containing area id data. [Size: #spanCount]
 	
 private:
 	// Explicitly-disabled copy constructor and copy assignment operator.
@@ -395,7 +395,7 @@ struct rcHeightfieldLayer
 	int hmin;					///< The minimum height bounds of usable data. (Along the y-axis.)
 	int hmax;					///< The maximum height bounds of usable data. (Along the y-axis.)
 	unsigned char* heights;		///< The heightfield. [Size: width * height]
-	unsigned char* areas;		///< Area ids. [Size: Same as #heights]
+	unsigned char* areaIds;		///< Area ids. [Size: Same as #heights]
 	unsigned char* connections;	///< Packed neighbor connection information. [Size: Same as #heights]
 };
 
@@ -419,12 +419,12 @@ private:
 /// Represents a simple, non-overlapping contour in field space.
 struct rcContour
 {
-	int* verts;			///< Simplified contour vertex and connection data. [Size: 4 * #nverts]
-	int nverts;			///< The number of vertices in the simplified contour. 
-	int* rverts;		///< Raw contour vertex and connection data. [Size: 4 * #nrverts]
-	int nrverts;		///< The number of vertices in the raw contour. 
-	unsigned short reg;	///< The region id of the contour.
-	unsigned char area;	///< The area id of the contour.
+	int* vertices;					///< Simplified contour vertex and connection data. [Size: 4 * #nverts]
+	int verticesCount;				///< The number of vertices in the simplified contour. 
+	int* rawVertices;				///< Raw contour vertex and connection data. [Size: 4 * #nrverts]
+	int rawVerticesCount;			///< The number of vertices in the raw contour. 
+	unsigned short regionId;		///< The region id of the contour.
+	unsigned char areaId;			///< The area id of the contour.
 };
 
 /// Represents a group of related contours.

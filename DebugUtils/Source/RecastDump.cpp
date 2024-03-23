@@ -166,12 +166,12 @@ bool duDumpContourSet(struct rcContourSet& cset, duFileIO* io)
 	for (int i = 0; i < cset.nconts; ++i)
 	{
 		const rcContour& cont = cset.conts[i];
-		io->write(&cont.nverts, sizeof(cont.nverts));
-		io->write(&cont.nrverts, sizeof(cont.nrverts));
-		io->write(&cont.reg, sizeof(cont.reg));
-		io->write(&cont.area, sizeof(cont.area));
-		io->write(cont.verts, sizeof(int)*4*cont.nverts);
-		io->write(cont.rverts, sizeof(int)*4*cont.nrverts);
+		io->write(&cont.verticesCount, sizeof(cont.verticesCount));
+		io->write(&cont.rawVerticesCount, sizeof(cont.rawVerticesCount));
+		io->write(&cont.regionId, sizeof(cont.regionId));
+		io->write(&cont.areaId, sizeof(cont.areaId));
+		io->write(cont.vertices, sizeof(int)*4*cont.verticesCount);
+		io->write(cont.rawVertices, sizeof(int)*4*cont.rawVerticesCount);
 	}
 
 	return true;
@@ -230,26 +230,26 @@ bool duReadContourSet(struct rcContourSet& cset, duFileIO* io)
 	for (int i = 0; i < cset.nconts; ++i)
 	{
 		rcContour& cont = cset.conts[i];
-		io->read(&cont.nverts, sizeof(cont.nverts));
-		io->read(&cont.nrverts, sizeof(cont.nrverts));
-		io->read(&cont.reg, sizeof(cont.reg));
-		io->read(&cont.area, sizeof(cont.area));
+		io->read(&cont.verticesCount, sizeof(cont.verticesCount));
+		io->read(&cont.rawVerticesCount, sizeof(cont.rawVerticesCount));
+		io->read(&cont.regionId, sizeof(cont.regionId));
+		io->read(&cont.areaId, sizeof(cont.areaId));
 
-		cont.verts = (int*)rcAlloc(sizeof(int)*4*cont.nverts, RC_ALLOC_PERM);
-		if (!cont.verts)
+		cont.vertices = (int*)rcAlloc(sizeof(int)*4*cont.verticesCount, RC_ALLOC_PERM);
+		if (!cont.vertices)
 		{
-			printf("duReadContourSet: Could not alloc contour verts (%d)\n", cont.nverts);
+			printf("duReadContourSet: Could not alloc contour verts (%d)\n", cont.verticesCount);
 			return false;
 		}
-		cont.rverts = (int*)rcAlloc(sizeof(int)*4*cont.nrverts, RC_ALLOC_PERM);
-		if (!cont.rverts)
+		cont.rawVertices = (int*)rcAlloc(sizeof(int)*4*cont.rawVerticesCount, RC_ALLOC_PERM);
+		if (!cont.rawVertices)
 		{
-			printf("duReadContourSet: Could not alloc contour rverts (%d)\n", cont.nrverts);
+			printf("duReadContourSet: Could not alloc contour rverts (%d)\n", cont.rawVerticesCount);
 			return false;
 		}
 		
-		io->read(cont.verts, sizeof(int)*4*cont.nverts);
-		io->read(cont.rverts, sizeof(int)*4*cont.nrverts);
+		io->read(cont.vertices, sizeof(int)*4*cont.verticesCount);
+		io->read(cont.rawVertices, sizeof(int)*4*cont.rawVerticesCount);
 	}
 	
 	return true;
@@ -296,7 +296,7 @@ bool duDumpCompactHeightfield(struct rcCompactHeightfield& chf, duFileIO* io)
 	if (chf.cells) tmp |= 1;
 	if (chf.spans) tmp |= 2;
 	if (chf.distancesToBorder) tmp |= 4;
-	if (chf.areas) tmp |= 8;
+	if (chf.areaIds) tmp |= 8;
 
 	io->write(&tmp, sizeof(tmp));
 
@@ -306,8 +306,8 @@ bool duDumpCompactHeightfield(struct rcCompactHeightfield& chf, duFileIO* io)
 		io->write(chf.spans, sizeof(rcCompactSpan)*chf.spanCount);
 	if (chf.distancesToBorder)
 		io->write(chf.distancesToBorder, sizeof(unsigned short)*chf.spanCount);
-	if (chf.areas)
-		io->write(chf.areas, sizeof(unsigned char)*chf.spanCount);
+	if (chf.areaIds)
+		io->write(chf.areaIds, sizeof(unsigned char)*chf.spanCount);
 
 	return true;
 }
@@ -394,13 +394,13 @@ bool duReadCompactHeightfield(struct rcCompactHeightfield& chf, duFileIO* io)
 	}
 	if (tmp & 8)
 	{
-		chf.areas = (unsigned char*)rcAlloc(sizeof(unsigned char)*chf.spanCount, RC_ALLOC_PERM);
-		if (!chf.areas)
+		chf.areaIds = (unsigned char*)rcAlloc(sizeof(unsigned char)*chf.spanCount, RC_ALLOC_PERM);
+		if (!chf.areaIds)
 		{
 			printf("duReadCompactHeightfield: Could not alloc areas (%d)\n", chf.spanCount);
 			return false;
 		}
-		io->read(chf.areas, sizeof(unsigned char)*chf.spanCount);
+		io->read(chf.areaIds, sizeof(unsigned char)*chf.spanCount);
 	}
 	
 	return true;

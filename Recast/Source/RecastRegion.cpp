@@ -54,7 +54,7 @@ static void calculateDistanceField(rcCompactHeightfield& chf, unsigned short* sr
 			for (int i = (int)c.index, ni = (int)(c.index+c.count); i < ni; ++i)
 			{
 				const rcCompactSpan& s = chf.spans[i];
-				const unsigned char area = chf.areas[i];
+				const unsigned char area = chf.areaIds[i];
 				
 				int nc = 0;
 				for (int dir = 0; dir < 4; ++dir)
@@ -64,7 +64,7 @@ static void calculateDistanceField(rcCompactHeightfield& chf, unsigned short* sr
 						const int ax = x + rcGetDirOffsetX(dir);
 						const int ay = y + rcGetDirOffsetY(dir);
 						const int ai = (int)chf.cells[ax+ay*w].index + rcGetCon(s, dir);
-						if (area == chf.areas[ai])
+						if (area == chf.areaIds[ai])
 							nc++;
 					}
 				}
@@ -257,7 +257,7 @@ static bool floodRegion(int x, int y, int i,
 {
 	const int w = chf.width;
 	
-	const unsigned char area = chf.areas[i];
+	const unsigned char area = chf.areaIds[i];
 	
 	// Flood fill mark region.
 	stack.clear();
@@ -288,7 +288,7 @@ static bool floodRegion(int x, int y, int i,
 				const int ax = cx + rcGetDirOffsetX(dir);
 				const int ay = cy + rcGetDirOffsetY(dir);
 				const int ai = (int)chf.cells[ax+ay*w].index + rcGetCon(cs, dir);
-				if (chf.areas[ai] != area)
+				if (chf.areaIds[ai] != area)
 					continue;
 				unsigned short nr = srcReg[ai];
 				if (nr & RC_BORDER_REG) // Do not take borders into account.
@@ -307,7 +307,7 @@ static bool floodRegion(int x, int y, int i,
 					const int ax2 = ax + rcGetDirOffsetX(dir2);
 					const int ay2 = ay + rcGetDirOffsetY(dir2);
 					const int ai2 = (int)chf.cells[ax2+ay2*w].index + rcGetCon(as, dir2);
-					if (chf.areas[ai2] != area)
+					if (chf.areaIds[ai2] != area)
 						continue;
 					unsigned short nr2 = srcReg[ai2];
 					if (nr2 != 0 && nr2 != r)
@@ -334,7 +334,7 @@ static bool floodRegion(int x, int y, int i,
 				const int ax = cx + rcGetDirOffsetX(dir);
 				const int ay = cy + rcGetDirOffsetY(dir);
 				const int ai = (int)chf.cells[ax+ay*w].index + rcGetCon(cs, dir);
-				if (chf.areas[ai] != area)
+				if (chf.areaIds[ai] != area)
 					continue;
 				if (chf.distancesToBorder[ai] >= lev && srcReg[ai] == 0)
 				{
@@ -378,7 +378,7 @@ static void expandRegions(int maxIter, unsigned short level,
 				const rcCompactCell& c = chf.cells[x+y*w];
 				for (int i = (int)c.index, ni = (int)(c.index+c.count); i < ni; ++i)
 				{
-					if (chf.distancesToBorder[i] >= level && srcReg[i] == 0 && chf.areas[i] != RC_NULL_AREA)
+					if (chf.distancesToBorder[i] >= level && srcReg[i] == 0 && chf.areaIds[i] != RC_NULL_AREA)
 					{
 						stack.push_back(LevelStackEntry(x, y, i));
 					}
@@ -417,7 +417,7 @@ static void expandRegions(int maxIter, unsigned short level,
 			
 			unsigned short r = srcReg[i];
 			unsigned short d2 = 0xffff;
-			const unsigned char area = chf.areas[i];
+			const unsigned char area = chf.areaIds[i];
 			const rcCompactSpan& s = chf.spans[i];
 			for (int dir = 0; dir < 4; ++dir)
 			{
@@ -425,7 +425,7 @@ static void expandRegions(int maxIter, unsigned short level,
 				const int ax = x + rcGetDirOffsetX(dir);
 				const int ay = y + rcGetDirOffsetY(dir);
 				const int ai = (int)chf.cells[ax+ay*w].index + rcGetCon(s, dir);
-				if (chf.areas[ai] != area) continue;
+				if (chf.areaIds[ai] != area) continue;
 				if (srcReg[ai] > 0 && (srcReg[ai] & RC_BORDER_REG) == 0)
 				{
 					if ((int)srcDist[ai]+2 < (int)d2)
@@ -488,7 +488,7 @@ static void sortCellsByLevel(unsigned short startLevel,
 			const rcCompactCell& c = chf.cells[x+y*w];
 			for (int i = (int)c.index, ni = (int)(c.index+c.count); i < ni; ++i)
 			{
-				if (chf.areas[i] == RC_NULL_AREA || srcReg[i] != 0)
+				if (chf.areaIds[i] == RC_NULL_AREA || srcReg[i] != 0)
 					continue;
 
 				int level = chf.distancesToBorder[i] >> loglevelsPerStack;
@@ -835,7 +835,7 @@ static bool mergeAndFilterRegions(rcContext* ctx, int minRegionArea, int mergeRe
 				if (reg.connections.size() > 0)
 					continue;
 				
-				reg.areaType = chf.areas[i];
+				reg.areaType = chf.areaIds[i];
 				
 				// Check if this cell is next to a border.
 				int ndir = -1;
@@ -910,9 +910,9 @@ static bool mergeAndFilterRegions(rcContext* ctx, int minRegionArea, int mergeRe
 		}
 		
 		// If the accumulated regions size is too small, remove it.
-		// Do not remove areas which connect to tile borders
+		// Do not remove areaIds which connect to tile borders
 		// as their size cannot be estimated correctly and removing them
-		// can potentially remove necessary areas.
+		// can potentially remove necessary areaIds.
 		if (spanCount < minRegionArea && !connectsToBorder)
 		{
 			// Kill all visited regions.
@@ -1072,7 +1072,7 @@ static bool mergeAndFilterLayerRegions(rcContext* ctx, int minRegionArea,
 			for (int i = (int)c.index, ni = (int)(c.index+c.count); i < ni; ++i)
 			{
 				const rcCompactSpan& s = chf.spans[i];
-				const unsigned char area = chf.areas[i];
+				const unsigned char area = chf.areaIds[i];
 				const unsigned short ri = srcReg[i];
 				if (ri == 0 || ri >= nreg) continue;
 				rcRegion& reg = regions[ri];
@@ -1128,7 +1128,7 @@ static bool mergeAndFilterLayerRegions(rcContext* ctx, int minRegionArea,
 	for (int i = 0; i < nreg; ++i)
 		regions[i].id = 0;
 
-	// Merge montone regions to create non-overlapping areas.
+	// Merge montone regions to create non-overlapping areaIds.
 	rcIntArray stack(32);
 	for (int i = 1; i < nreg; ++i)
 	{
@@ -1159,7 +1159,7 @@ static bool mergeAndFilterLayerRegions(rcContext* ctx, int minRegionArea,
 				// Skip already visited.
 				if (regn.id != 0)
 					continue;
-				// Skip if different area type, do not connect regions with different area type.
+				// Skip if different areaId type, do not connect regions with different areaId type.
 				if (reg.areaType != regn.areaType)
 					continue;
 				// Skip if the neighbour is overlapping root region.
@@ -1317,7 +1317,7 @@ static void paintRectRegion(int minx, int maxx, int miny, int maxy, unsigned sho
 			const rcCompactCell& c = chf.cells[x+y*w];
 			for (int i = (int)c.index, ni = (int)(c.index+c.count); i < ni; ++i)
 			{
-				if (chf.areas[i] != RC_NULL_AREA)
+				if (chf.areaIds[i] != RC_NULL_AREA)
 					srcReg[i] = regId;
 			}
 		}
@@ -1340,7 +1340,7 @@ struct rcSweepSpan
 /// Non-null regions will consist of connected, non-overlapping walkable spans that form a single contour.
 /// Contours will form simple polygons.
 /// 
-/// If multiple regions form an area that is smaller than @p minRegionArea, then all spans will be
+/// If multiple regions form an areaId that is smaller than @p minRegionArea, then all spans will be
 /// re-assigned to the zero (null) region.
 /// 
 /// Partitioning can result in smaller than necessary regions. @p mergeRegionArea helps 
@@ -1414,7 +1414,7 @@ bool rcBuildRegionsMonotone(rcContext* ctx, rcCompactHeightfield& chf,
 			for (int i = (int)c.index, ni = (int)(c.index+c.count); i < ni; ++i)
 			{
 				const rcCompactSpan& s = chf.spans[i];
-				if (chf.areas[i] == RC_NULL_AREA) continue;
+				if (chf.areaIds[i] == RC_NULL_AREA) continue;
 				
 				// -x
 				unsigned short previd = 0;
@@ -1423,7 +1423,7 @@ bool rcBuildRegionsMonotone(rcContext* ctx, rcCompactHeightfield& chf,
 					const int ax = x + rcGetDirOffsetX(0);
 					const int ay = y + rcGetDirOffsetY(0);
 					const int ai = (int)chf.cells[ax+ay*w].index + rcGetCon(s, 0);
-					if ((srcReg[ai] & RC_BORDER_REG) == 0 && chf.areas[i] == chf.areas[ai])
+					if ((srcReg[ai] & RC_BORDER_REG) == 0 && chf.areaIds[i] == chf.areaIds[ai])
 						previd = srcReg[ai];
 				}
 				
@@ -1441,7 +1441,7 @@ bool rcBuildRegionsMonotone(rcContext* ctx, rcCompactHeightfield& chf,
 					const int ax = x + rcGetDirOffsetX(3);
 					const int ay = y + rcGetDirOffsetY(3);
 					const int ai = (int)chf.cells[ax+ay*w].index + rcGetCon(s, 3);
-					if (srcReg[ai] && (srcReg[ai] & RC_BORDER_REG) == 0 && chf.areas[i] == chf.areas[ai])
+					if (srcReg[ai] && (srcReg[ai] & RC_BORDER_REG) == 0 && chf.areaIds[i] == chf.areaIds[ai])
 					{
 						unsigned short nr = srcReg[ai];
 						if (!sweeps[previd].nei || sweeps[previd].nei == nr)
@@ -1513,7 +1513,7 @@ bool rcBuildRegionsMonotone(rcContext* ctx, rcCompactHeightfield& chf,
 /// Non-null regions will consist of connected, non-overlapping walkable spans that form a single contour.
 /// Contours will form simple polygons.
 /// 
-/// If multiple regions form an area that is smaller than @p minRegionArea, then all spans will be
+/// If multiple regions form an areaId that is smaller than @p minRegionArea, then all spans will be
 /// re-assigned to the zero (null) region.
 /// 
 /// Watershed partitioning can result in smaller than necessary regions, especially in diagonal corridors. 
@@ -1723,7 +1723,7 @@ bool rcBuildLayerRegions(rcContext* ctx, rcCompactHeightfield& chf,
 			for (int i = (int)c.index, ni = (int)(c.index+c.count); i < ni; ++i)
 			{
 				const rcCompactSpan& s = chf.spans[i];
-				if (chf.areas[i] == RC_NULL_AREA) continue;
+				if (chf.areaIds[i] == RC_NULL_AREA) continue;
 				
 				// -x
 				unsigned short previd = 0;
@@ -1732,7 +1732,7 @@ bool rcBuildLayerRegions(rcContext* ctx, rcCompactHeightfield& chf,
 					const int ax = x + rcGetDirOffsetX(0);
 					const int ay = y + rcGetDirOffsetY(0);
 					const int ai = (int)chf.cells[ax+ay*w].index + rcGetCon(s, 0);
-					if ((srcReg[ai] & RC_BORDER_REG) == 0 && chf.areas[i] == chf.areas[ai])
+					if ((srcReg[ai] & RC_BORDER_REG) == 0 && chf.areaIds[i] == chf.areaIds[ai])
 						previd = srcReg[ai];
 				}
 				
@@ -1750,7 +1750,7 @@ bool rcBuildLayerRegions(rcContext* ctx, rcCompactHeightfield& chf,
 					const int ax = x + rcGetDirOffsetX(3);
 					const int ay = y + rcGetDirOffsetY(3);
 					const int ai = (int)chf.cells[ax+ay*w].index + rcGetCon(s, 3);
-					if (srcReg[ai] && (srcReg[ai] & RC_BORDER_REG) == 0 && chf.areas[i] == chf.areas[ai])
+					if (srcReg[ai] && (srcReg[ai] & RC_BORDER_REG) == 0 && chf.areaIds[i] == chf.areaIds[ai])
 					{
 						unsigned short nr = srcReg[ai];
 						if (!sweeps[previd].nei || sweeps[previd].nei == nr)
