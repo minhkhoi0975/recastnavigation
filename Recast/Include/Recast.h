@@ -234,10 +234,10 @@ struct rcConfig
 	float cellHeight;
 
 	/// The minimum bounds of the field's AABB. [(x, y, z)] [Units: wu]
-	float bmin[3]; 
+	float boundMin[3]; 
 
 	/// The maximum bounds of the field's AABB. [(x, y, z)] [Units: wu]
-	float bmax[3];
+	float boundMax[3];
 
 	/// The maximum slope that is considered walkable. [Limits: 0 <= value < 90] [Units: Degrees] 
 	float walkableSlopeAngle;

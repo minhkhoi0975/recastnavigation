@@ -310,16 +310,16 @@ int Sample_TempObstacles::rasterizeTileLayers(
 	rcConfig tcfg;
 	memcpy(&tcfg, &cfg, sizeof(tcfg));
 
-	tcfg.bmin[0] = cfg.bmin[0] + tx*tcs;
-	tcfg.bmin[1] = cfg.bmin[1];
-	tcfg.bmin[2] = cfg.bmin[2] + ty*tcs;
-	tcfg.bmax[0] = cfg.bmin[0] + (tx+1)*tcs;
-	tcfg.bmax[1] = cfg.bmax[1];
-	tcfg.bmax[2] = cfg.bmin[2] + (ty+1)*tcs;
-	tcfg.bmin[0] -= tcfg.borderSize*tcfg.cellSize;
-	tcfg.bmin[2] -= tcfg.borderSize*tcfg.cellSize;
-	tcfg.bmax[0] += tcfg.borderSize*tcfg.cellSize;
-	tcfg.bmax[2] += tcfg.borderSize*tcfg.cellSize;
+	tcfg.boundMin[0] = cfg.boundMin[0] + tx*tcs;
+	tcfg.boundMin[1] = cfg.boundMin[1];
+	tcfg.boundMin[2] = cfg.boundMin[2] + ty*tcs;
+	tcfg.boundMax[0] = cfg.boundMin[0] + (tx+1)*tcs;
+	tcfg.boundMax[1] = cfg.boundMax[1];
+	tcfg.boundMax[2] = cfg.boundMin[2] + (ty+1)*tcs;
+	tcfg.boundMin[0] -= tcfg.borderSize*tcfg.cellSize;
+	tcfg.boundMin[2] -= tcfg.borderSize*tcfg.cellSize;
+	tcfg.boundMax[0] += tcfg.borderSize*tcfg.cellSize;
+	tcfg.boundMax[2] += tcfg.borderSize*tcfg.cellSize;
 	
 	// Allocate voxel heightfield where we rasterize our input data to.
 	rc.solid = rcAllocHeightfield();
@@ -328,7 +328,7 @@ int Sample_TempObstacles::rasterizeTileLayers(
 		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Out of memory 'solid'.");
 		return 0;
 	}
-	if (!rcCreateHeightfield(m_ctx, *rc.solid, tcfg.width, tcfg.height, tcfg.bmin, tcfg.bmax, tcfg.cellSize, tcfg.cellHeight))
+	if (!rcCreateHeightfield(m_ctx, *rc.solid, tcfg.width, tcfg.height, tcfg.boundMin, tcfg.boundMax, tcfg.cellSize, tcfg.cellHeight))
 	{
 		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Could not create solid heightfield.");
 		return 0;
@@ -345,10 +345,10 @@ int Sample_TempObstacles::rasterizeTileLayers(
 	}
 	
 	float tbmin[2], tbmax[2];
-	tbmin[0] = tcfg.bmin[0];
-	tbmin[1] = tcfg.bmin[2];
-	tbmax[0] = tcfg.bmax[0];
-	tbmax[1] = tcfg.bmax[2];
+	tbmin[0] = tcfg.boundMin[0];
+	tbmin[1] = tcfg.boundMin[2];
+	tbmax[0] = tcfg.boundMax[0];
+	tbmax[1] = tcfg.boundMax[2];
 	int cid[512];// TODO: Make grow when returning too many items.
 	const int ncid = rcGetChunksOverlappingRect(chunkyMesh, tbmin, tbmax, cid, 512);
 	if (!ncid)
@@ -1243,8 +1243,8 @@ bool Sample_TempObstacles::handleBuild()
 	cfg.height = cfg.tileSize + cfg.borderSize*2;
 	cfg.detailSampleDist = m_detailSampleDist < 0.9f ? 0 : m_cellSize * m_detailSampleDist;
 	cfg.detailSampleMaxError = m_cellHeight * m_detailSampleMaxError;
-	rcCopyVector(cfg.bmin, bmin);
-	rcCopyVector(cfg.bmax, bmax);
+	rcCopyVector(cfg.boundMin, bmin);
+	rcCopyVector(cfg.boundMax, bmax);
 	
 	// Tile cache params.
 	dtTileCacheParams tcparams;

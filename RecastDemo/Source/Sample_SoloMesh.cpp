@@ -407,9 +407,9 @@ bool Sample_SoloMesh::handleBuild()
 	// Set the area where the navigation will be build.
 	// Here the bounds of the input mesh are used, but the
 	// area could be specified by an user defined box, etc.
-	rcCopyVector(m_cfg.bmin, bmin);
-	rcCopyVector(m_cfg.bmax, bmax);
-	rcCalcGridSize(m_cfg.bmin, m_cfg.bmax, m_cfg.cellSize, &m_cfg.width, &m_cfg.height);
+	rcCopyVector(m_cfg.boundMin, bmin);
+	rcCopyVector(m_cfg.boundMax, bmax);
+	rcCalcGridSize(m_cfg.boundMin, m_cfg.boundMax, m_cfg.cellSize, &m_cfg.width, &m_cfg.height);
 
 	// Reset build times gathering.
 	m_ctx->resetTimers();
@@ -432,7 +432,7 @@ bool Sample_SoloMesh::handleBuild()
 		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Out of memory 'solid'.");
 		return false;
 	}
-	if (!rcCreateHeightfield(m_ctx, *m_solid, m_cfg.width, m_cfg.height, m_cfg.bmin, m_cfg.bmax, m_cfg.cellSize, m_cfg.cellHeight))
+	if (!rcCreateHeightfield(m_ctx, *m_solid, m_cfg.width, m_cfg.height, m_cfg.boundMin, m_cfg.boundMax, m_cfg.cellSize, m_cfg.cellHeight))
 	{
 		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Could not create solid heightfield.");
 		return false;

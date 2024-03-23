@@ -107,8 +107,8 @@ Sample_Debug::Sample_Debug() :
 	{
 		m_navMesh->addTileAt(-13,-13, data, dataSize, true);
 		dtMeshHeader* header = (dtMeshHeader*)data;
-		vcopy(m_bmin, header->bmin);
-		vcopy(m_bmax, header->bmax);
+		vcopy(m_bmin, header->boundMin);
+		vcopy(m_bmax, header->boundMax);
 	}
 
 	dataSize = loadBin("Tile_-13_-14.bin", &data);
@@ -202,10 +202,10 @@ void Sample_Debug::handleRender()
 	if (m_ref && m_navMesh)
 		duDebugDrawNavMeshPoly(&m_dd, *m_navMesh, m_ref, duRGBA(255,0,0,128));
 
-/*	float bmin[3], bmax[3];
-	rcSubtractVector(bmin, m_center, m_halfExtents);
-	rcAddVector(bmax, m_center, m_halfExtents);
-	duDebugDrawBoxWire(&dd, bmin[0],bmin[1],bmin[2], bmax[0],bmax[1],bmax[2], duRGBA(255,255,255,128), 1.0f);
+/*	float boundMin[3], boundMax[3];
+	rcSubtractVector(boundMin, m_center, m_halfExtents);
+	rcAddVector(boundMax, m_center, m_halfExtents);
+	duDebugDrawBoxWire(&dd, boundMin[0],boundMin[1],boundMin[2], boundMax[0],boundMax[1],boundMax[2], duRGBA(255,255,255,128), 1.0f);
 	duDebugDrawCross(&dd, m_center[0], m_center[1], m_center[2], 1.0f, duRGBA(255,255,255,128), 2.0f);*/
 
 	if (m_cset)
@@ -222,7 +222,7 @@ void Sample_Debug::handleRender()
 	/*
 	dd.depthMask(false);
 	{
-		const float bmin[3] = {-32.000004f,-11.488281f,-115.343544f};
+		const float boundMin[3] = {-32.000004f,-11.488281f,-115.343544f};
 		const float cellSize = 0.300000f;
 		const float cellHeight = 0.200000f;
 		const int verts[] = {
@@ -276,8 +276,8 @@ void Sample_Debug::handleRender()
 		{
 			const int* va = &verts[j*4];
 			const int* vb = &verts[i*4];
-			dd.vertex(bmin[0]+va[0]*cellSize, bmin[1]+va[1]*cellHeight+j*0.01f, bmin[2]+va[2]*cellSize, colln);
-			dd.vertex(bmin[0]+vb[0]*cellSize, bmin[1]+vb[1]*cellHeight+i*0.01f, bmin[2]+vb[2]*cellSize, colln);
+			dd.vertex(boundMin[0]+va[0]*cellSize, boundMin[1]+va[1]*cellHeight+j*0.01f, boundMin[2]+va[2]*cellSize, colln);
+			dd.vertex(boundMin[0]+vb[0]*cellSize, boundMin[1]+vb[1]*cellHeight+i*0.01f, boundMin[2]+vb[2]*cellSize, colln);
 		}
 		dd.end();
 
@@ -286,7 +286,7 @@ void Sample_Debug::handleRender()
 		for (int i = 0, j = nverts-1; i < nverts; j=i++)
 		{
 			const int* va = &verts[j*4];
-			dd.vertex(bmin[0]+va[0]*cellSize, bmin[1]+va[1]*cellHeight+j*0.01f, bmin[2]+va[2]*cellSize, colpt);
+			dd.vertex(boundMin[0]+va[0]*cellSize, boundMin[1]+va[1]*cellHeight+j*0.01f, boundMin[2]+va[2]*cellSize, colpt);
 		}
 		dd.end();
 
@@ -309,7 +309,7 @@ void Sample_Debug::handleRender()
 		for (int i = 0; i < ntris*3; ++i)
 		{
 			const int* va = &verts[indices[tris[i]]*4];
-			dd.vertex(bmin[0]+va[0]*cellSize, bmin[1]+va[1]*cellHeight, bmin[2]+va[2]*cellSize, coltri);
+			dd.vertex(boundMin[0]+va[0]*cellSize, boundMin[1]+va[1]*cellHeight, boundMin[2]+va[2]*cellSize, coltri);
 		}
 		dd.end();
 		

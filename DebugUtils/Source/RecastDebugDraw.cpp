@@ -433,7 +433,7 @@ void duDebugDrawLayerContours(duDebugDraw* dd, const struct rcLayerContourSet& l
 {
 	if (!dd) return;
 	
-	const float* orig = lcset.bmin;
+	const float* orig = lcset.boundMin;
 	const float cellSize = lcset.cellSize;
 	const float cellHeight = lcset.cellHeight;
 	
@@ -515,7 +515,7 @@ void duDebugDrawLayerPolyMesh(duDebugDraw* dd, const struct rcLayerPolyMesh& lme
 	const int nvp = lmesh.nvp;
 	const float cellSize = lmesh.cellSize;
 	const float cellHeight = lmesh.cellHeight;
-	const float* orig = lmesh.bmin;
+	const float* orig = lmesh.boundMin;
 	
 	const int offs[2*4] = {-1,0, 0,1, 1,0, 0,-1};
 

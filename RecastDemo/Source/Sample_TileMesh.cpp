@@ -850,12 +850,12 @@ unsigned char* Sample_TileMesh::buildTileMesh(const int tx, const int ty, const 
 	// For example if you build a navmesh for terrain, and want the navmesh tiles to match the terrain tile size
 	// you will need to pass in data from neighbour terrain tiles too! In a simple case, just pass in all the 8 neighbours,
 	// or use the bounding box below to only pass in a sliver of each of the 8 neighbours.
-	rcCopyVector(m_cfg.bmin, bmin);
-	rcCopyVector(m_cfg.bmax, bmax);
-	m_cfg.bmin[0] -= m_cfg.borderSize*m_cfg.cellSize;
-	m_cfg.bmin[2] -= m_cfg.borderSize*m_cfg.cellSize;
-	m_cfg.bmax[0] += m_cfg.borderSize*m_cfg.cellSize;
-	m_cfg.bmax[2] += m_cfg.borderSize*m_cfg.cellSize;
+	rcCopyVector(m_cfg.boundMin, bmin);
+	rcCopyVector(m_cfg.boundMax, bmax);
+	m_cfg.boundMin[0] -= m_cfg.borderSize*m_cfg.cellSize;
+	m_cfg.boundMin[2] -= m_cfg.borderSize*m_cfg.cellSize;
+	m_cfg.boundMax[0] += m_cfg.borderSize*m_cfg.cellSize;
+	m_cfg.boundMax[2] += m_cfg.borderSize*m_cfg.cellSize;
 	
 	// Reset build times gathering.
 	m_ctx->resetTimers();
@@ -874,7 +874,7 @@ unsigned char* Sample_TileMesh::buildTileMesh(const int tx, const int ty, const 
 		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Out of memory 'solid'.");
 		return 0;
 	}
-	if (!rcCreateHeightfield(m_ctx, *m_solid, m_cfg.width, m_cfg.height, m_cfg.bmin, m_cfg.bmax, m_cfg.cellSize, m_cfg.cellHeight))
+	if (!rcCreateHeightfield(m_ctx, *m_solid, m_cfg.width, m_cfg.height, m_cfg.boundMin, m_cfg.boundMax, m_cfg.cellSize, m_cfg.cellHeight))
 	{
 		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Could not create solid heightfield.");
 		return 0;
@@ -891,10 +891,10 @@ unsigned char* Sample_TileMesh::buildTileMesh(const int tx, const int ty, const 
 	}
 	
 	float tbmin[2], tbmax[2];
-	tbmin[0] = m_cfg.bmin[0];
-	tbmin[1] = m_cfg.bmin[2];
-	tbmax[0] = m_cfg.bmax[0];
-	tbmax[1] = m_cfg.bmax[2];
+	tbmin[0] = m_cfg.boundMin[0];
+	tbmin[1] = m_cfg.boundMin[2];
+	tbmax[0] = m_cfg.boundMax[0];
+	tbmax[1] = m_cfg.boundMax[2];
 	int cid[512];// TODO: Make grow when returning too many items.
 	const int ncid = rcGetChunksOverlappingRect(chunkyMesh, tbmin, tbmax, cid, 512);
 	if (!ncid)
