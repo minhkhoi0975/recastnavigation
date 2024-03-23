@@ -324,60 +324,58 @@ bool rcCreateHeightfield(rcContext* context, rcHeightfield& heightfield, int siz
 	return true;
 }
 
-static void calcTriNormal(const float* v0, const float* v1, const float* v2, float* faceNormal)
+static void CalculateTriangleNormal(const float* vertex0, const float* vertex1, const float* vertex2, float* faceNormal)
 {
 	float e0[3], e1[3];
-	rcSubtractVector(e0, v1, v0);
-	rcSubtractVector(e1, v2, v0);
+	rcSubtractVector(e0, vertex1, vertex0);
+	rcSubtractVector(e1, vertex2, vertex0);
 	rcCrossProduct(faceNormal, e0, e1);
 	rcNormalize(faceNormal);
 }
 
 void rcMarkWalkableTriangles(rcContext* context, const float walkableSlopeAngle,
-	const float* verts, const int numVerts,
-	const int* tris, const int numTris,
-	unsigned char* triAreaIDs)
+	const float* vertices, const int verticesCount,
+	const int* triangles, const int trianglesCount,
+	unsigned char* triangleAreaIds)
 {
 	rcIgnoreUnused(context);
-	rcIgnoreUnused(numVerts);
+	rcIgnoreUnused(verticesCount);
 
-	const float walkableThr = cosf(walkableSlopeAngle / 180.0f * RC_PI);
+	constexpr float degreesToRadians = RC_PI / 180.0f;
+	const float walkableThreshold = cosf(walkableSlopeAngle * degreesToRadians);
 
-	float norm[3];
+	float triangleNormal[3];
 
-	for (int i = 0; i < numTris; ++i)
+	for (int i = 0; i < trianglesCount; ++i)
 	{
-		const int* tri = &tris[i * 3];
-		calcTriNormal(&verts[tri[0] * 3], &verts[tri[1] * 3], &verts[tri[2] * 3], norm);
+		const int* tri = &triangles[i * 3];
+		CalculateTriangleNormal(&vertices[tri[0] * 3], &vertices[tri[1] * 3], &vertices[tri[2] * 3], triangleNormal);
+
 		// Check if the face is walkable.
-		if (norm[1] > walkableThr)
-		{
-			triAreaIDs[i] = RC_WALKABLE_AREA_ID;
-		}
+		if (triangleNormal[1] > walkableThreshold)
+			triangleAreaIds[i] = RC_WALKABLE_AREA_ID;
 	}
 }
 
 void rcClearUnwalkableTriangles(rcContext* context, const float walkableSlopeAngle,
-	const float* verts, int numVerts,
-	const int* tris, int numTris,
-	unsigned char* triAreaIDs)
+	const float* vertices, int verticesCount,
+	const int* triangles, int trianglesCount,
+	unsigned char* triangleAreaIds)
 {
 	rcIgnoreUnused(context);
-	rcIgnoreUnused(numVerts);
+	rcIgnoreUnused(verticesCount);
 
-	// The minimum Y value for a face normal of a triangle with a walkable slope.
+	// The minimum Y value for a face triangleNormal of a triangle with a walkable slope.
 	const float walkableLimitY = cosf(walkableSlopeAngle / 180.0f * RC_PI);
 
-	float faceNormal[3];
-	for (int i = 0; i < numTris; ++i)
+	float triangleNormal[3];
+	for (int i = 0; i < trianglesCount; ++i)
 	{
-		const int* tri = &tris[i * 3];
-		calcTriNormal(&verts[tri[0] * 3], &verts[tri[1] * 3], &verts[tri[2] * 3], faceNormal);
+		const int* tri = &triangles[i * 3];
+		CalculateTriangleNormal(&vertices[tri[0] * 3], &vertices[tri[1] * 3], &vertices[tri[2] * 3], triangleNormal);
 		// Check if the face is walkable.
-		if (faceNormal[1] <= walkableLimitY)
-		{
-			triAreaIDs[i] = RC_NULL_AREA;
-		}
+		if (triangleNormal[1] <= walkableLimitY)
+			triangleAreaIds[i] = RC_NULL_AREA;
 	}
 }
 
