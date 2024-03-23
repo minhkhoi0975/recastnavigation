@@ -31,7 +31,7 @@ static void rcFreeDefault(void* ptr)
 static rcAllocateFunction* sRecastAllocFunc = rcAllocateDefault;
 static rcFreeFunction* sRecastFreeFunc = rcFreeDefault;
 
-void rcAllocSetCustom(rcAllocateFunction* allocFunc, rcFreeFunction* freeFunc)
+void rcAllocateSetCustom(rcAllocateFunction* allocFunc, rcFreeFunction* freeFunc)
 {
 	sRecastAllocFunc = allocFunc ? allocFunc : rcAllocateDefault;
 	sRecastFreeFunc = freeFunc ? freeFunc : rcFreeDefault;

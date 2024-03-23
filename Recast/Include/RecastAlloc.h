@@ -35,12 +35,12 @@ enum rcAllocateHint
 //  @param[in]		size			The size, in bytes of memory, to allocate.
 //  @param[in]		rcAllocateHint	A hint to the allocator on how long the memory is expected to be in use.
 //  @return A pointer to the beginning of the allocated memory block, or null if the allocation failed.
-///  @see rcAllocSetCustom
+///  @see rcAllocateSetCustom
 typedef void* (rcAllocateFunction)(size_t size, rcAllocateHint hint);
 
 /// A memory deallocation function.
 ///  @param[in]		ptr		A pointer to a memory block previously allocated using #rcAllocFunc.
-/// @see rcAllocSetCustom
+/// @see rcAllocateSetCustom
 typedef void (rcFreeFunction)(void* ptr);
 
 /// Sets the base custom allocation functions to be used by Recast.
@@ -48,7 +48,7 @@ typedef void (rcFreeFunction)(void* ptr);
 ///  @param[in]		freeFunc	The memory de-allocation function to be used by #rcFree
 ///  
 /// @see rcAllocate, rcFree
-void rcAllocSetCustom(rcAllocateFunction* allocFunc, rcFreeFunction* freeFunc);
+void rcAllocateSetCustom(rcAllocateFunction* allocFunc, rcFreeFunction* freeFunc);
 
 /// Allocates a memory block.
 /// 
@@ -56,7 +56,7 @@ void rcAllocSetCustom(rcAllocateFunction* allocFunc, rcFreeFunction* freeFunc);
 /// @param[in]		hint	A hint to the allocator on how long the memory is expected to be in use.
 /// @return A pointer to the beginning of the allocated memory block, or null if the allocation failed.
 /// 
-/// @see rcFree, rcAllocSetCustom
+/// @see rcFree, rcAllocateSetCustom
 void* rcAllocate(size_t size, rcAllocateHint hint);
 
 /// Deallocates a memory block.  If @p ptr is NULL, this does nothing.
@@ -66,7 +66,7 @@ void* rcAllocate(size_t size, rcAllocateHint hint);
 /// 
 /// @param[in]		ptr		A pointer to a memory block previously allocated using #rcAllocate.
 /// 
-/// @see rcAllocate, rcAllocSetCustom
+/// @see rcAllocate, rcAllocateSetCustom
 void rcFree(void* ptr);
 
 /// An implementation of operator new usable for placement new. The default one is part of STL (which we don't use).

@@ -180,7 +180,7 @@ TEST_CASE("rcVector", "[recast, alloc]")
 
 	SECTION("Overlapping init")
 	{
-		rcAllocSetCustom(&AllocAndInit, &FreeAndClear);
+		rcAllocateSetCustom(&AllocAndInit, &FreeAndClear);
 		rcTempVector<Copier> vec;
 		// Force a realloc during push_back().
 		vec.resize(64);
@@ -190,7 +190,7 @@ TEST_CASE("rcVector", "[recast, alloc]")
 
 		// Don't crash.
 		vec.push_back(vec[0]);
-		rcAllocSetCustom(NULL, NULL);
+		rcAllocateSetCustom(NULL, NULL);
 	}
 
 	SECTION("Vector Destructor")
