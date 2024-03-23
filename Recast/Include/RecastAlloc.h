@@ -27,8 +27,8 @@
 /// memory is expected to be used.
 enum rcAllocHint
 {
-	RC_ALLOC_PERM,		///< Memory will persist after a function call.
-	RC_ALLOC_TEMP		///< Memory used temporarily within a function.
+	RC_ALLOC_PERMANENT,	///< Memory will persist after a function call.
+	RC_ALLOC_TEMPORARY	///< Memory used temporarily within a function.
 };
 
 /// A memory allocation function.
@@ -301,8 +301,8 @@ void rcVectorBase<T, H>::destroy_range(rcSizeType begin, rcSizeType end) {
 }
 
 template <typename T>
-class rcTempVector : public rcVectorBase<T, RC_ALLOC_TEMP> {
-	typedef rcVectorBase<T, RC_ALLOC_TEMP> Base;
+class rcTempVector : public rcVectorBase<T, RC_ALLOC_TEMPORARY> {
+	typedef rcVectorBase<T, RC_ALLOC_TEMPORARY> Base;
 public:
 	rcTempVector() : Base() {}
 	explicit rcTempVector(rcSizeType size) : Base(size) {}
@@ -311,8 +311,8 @@ public:
 	rcTempVector(const T* begin, const T* end) : Base(begin, end) {}
 };
 template <typename T>
-class rcPermVector : public rcVectorBase<T, RC_ALLOC_PERM> {
-	typedef rcVectorBase<T, RC_ALLOC_PERM> Base;
+class rcPermVector : public rcVectorBase<T, RC_ALLOC_PERMANENT> {
+	typedef rcVectorBase<T, RC_ALLOC_PERMANENT> Base;
 public:
 	rcPermVector() : Base() {}
 	explicit rcPermVector(rcSizeType size) : Base(size) {}

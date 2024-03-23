@@ -83,7 +83,7 @@ bool rcErodeWalkableArea(rcContext* context, const int erosionRadius, rcCompactH
 	rcScopedTimer timer(context, RC_TIMER_ERODE_AREA);
 
 	unsigned char* distanceToBoundary = (unsigned char*)rcAlloc(sizeof(unsigned char) * compactHeightfield.spanCount,
-	                                                            RC_ALLOC_TEMP);
+	                                                            RC_ALLOC_TEMPORARY);
 	if (!distanceToBoundary)
 	{
 		context->log(RC_LOG_ERROR, "erodeWalkableArea: Out of memory 'dist' (%d).", compactHeightfield.spanCount);
@@ -296,7 +296,7 @@ bool rcMedianFilterWalkableArea(rcContext* context, rcCompactHeightfield& compac
 
 	rcScopedTimer timer(context, RC_TIMER_MEDIAN_AREA);
 
-	unsigned char* areas = (unsigned char*)rcAlloc(sizeof(unsigned char) * compactHeightfield.spanCount, RC_ALLOC_TEMP);
+	unsigned char* areas = (unsigned char*)rcAlloc(sizeof(unsigned char) * compactHeightfield.spanCount, RC_ALLOC_TEMPORARY);
 	if (!areas)
 	{
 		context->log(RC_LOG_ERROR, "medianFilterWalkableArea: Out of memory 'areas' (%d).",
