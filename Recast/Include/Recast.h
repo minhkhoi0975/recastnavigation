@@ -696,11 +696,11 @@ float rcSqrt(float x);
 /// @param[out]		dest	The cross product. [(x, y, z)]
 /// @param[in]		v1		A Vector [(x, y, z)]
 /// @param[in]		v2		A vector [(x, y, z)]
-inline void rcVcross(float* dest, const float* v1, const float* v2)
+inline void rcCrossProduct(float* dest, const float* v1, const float* v2)
 {
-	dest[0] = v1[1]*v2[2] - v1[2]*v2[1];
-	dest[1] = v1[2]*v2[0] - v1[0]*v2[2];
-	dest[2] = v1[0]*v2[1] - v1[1]*v2[0];
+	dest[0] = v1[1] * v2[2] - v1[2] * v2[1];
+	dest[1] = v1[2] * v2[0] - v1[0] * v2[2];
+	dest[2] = v1[0] * v2[1] - v1[1] * v2[0];
 }
 
 /// Derives the dot product of two vectors. (@p v1 . @p v2)

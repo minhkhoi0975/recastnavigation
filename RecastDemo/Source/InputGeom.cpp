@@ -42,7 +42,7 @@ static bool intersectSegmentTriangle(const float* sp, const float* sq,
 	
 	// Compute triangle normal. Can be precalculated or cached if
 	// intersecting multiple segments against the same triangle
-	rcVcross(norm, ab, ac);
+	rcCrossProduct(norm, ab, ac);
 	
 	// Compute denominator d. If d <= 0, segment is parallel to or points
 	// away from triangle, so exit early
@@ -58,7 +58,7 @@ static bool intersectSegmentTriangle(const float* sp, const float* sq,
 	if (t > d) return false; // For segment; exclude this code line for a ray test
 	
 	// Compute barycentric coordinate components and test if within bounds
-	rcVcross(e, qp, ap);
+	rcCrossProduct(e, qp, ap);
 	v = rcVdot(ac, e);
 	if (v < 0.0f || v > d) return false;
 	w = -rcVdot(ab, e);

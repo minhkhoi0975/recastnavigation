@@ -99,7 +99,7 @@ TEST_CASE("rcVcross", "[recast]")
 		float v1[3] = {3, -3, 1};
 		float v2[3] = {4, 9, 2};
 		float result[3];
-		rcVcross(result, v1, v2);
+		rcCrossProduct(result, v1, v2);
 		REQUIRE(result[0] == Catch::Approx(-15));
 		REQUIRE(result[1] == Catch::Approx(-2));
 		REQUIRE(result[2] == Catch::Approx(39));
@@ -109,7 +109,7 @@ TEST_CASE("rcVcross", "[recast]")
 	{
 		float v1[3] = {3, -3, 1};
 		float result[3];
-		rcVcross(result, v1, v1);
+		rcCrossProduct(result, v1, v1);
 		REQUIRE(result[0] == Catch::Approx(0));
 		REQUIRE(result[1] == Catch::Approx(0));
 		REQUIRE(result[2] == Catch::Approx(0));
