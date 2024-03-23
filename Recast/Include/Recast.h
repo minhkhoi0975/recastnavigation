@@ -792,7 +792,7 @@ inline float rcGetDistance(const float* v1, const float* v2)
 /// @param[in]		v1	A point. [(x, y, z)]
 /// @param[in]		v2	A point. [(x, y, z)]
 /// @return The square of the distance between the two points.
-inline float rcVdistSqr(const float* v1, const float* v2)
+inline float rcGetDistanceSquared(const float* v1, const float* v2)
 {
 	float dx = v2[0] - v1[0];
 	float dy = v2[1] - v1[1];

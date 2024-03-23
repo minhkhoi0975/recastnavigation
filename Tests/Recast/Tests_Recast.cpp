@@ -297,7 +297,7 @@ TEST_CASE("rcVdistSqr", "[recast]")
 	{
 		float v1[3] = {3, 1, 3};
 		float v2[3] = {1, 3, 1};
-		float result = rcVdistSqr(v1, v2);
+		float result = rcGetDistanceSquared(v1, v2);
 
 		REQUIRE(result == Catch::Approx(12));
 	}
@@ -306,7 +306,7 @@ TEST_CASE("rcVdistSqr", "[recast]")
 	{
 		float v1[3] = {3, 1, 3};
 		float v2[3] = {0, 0, 0};
-		float distance = rcVdistSqr(v1, v2);
+		float distance = rcGetDistanceSquared(v1, v2);
 		float magnitude = rcSqr(v1[0]) + rcSqr(v1[1]) + rcSqr(v1[2]);
 		REQUIRE(distance == Catch::Approx(magnitude));
 	}

@@ -182,7 +182,7 @@ void ConvexVolumeTool::handleClick(const float* /*s*/, const float* p, bool shif
 		// Create
 
 		// If clicked on that last pt, create the shape.
-		if (m_npts && rcVdistSqr(p, &m_pts[(m_npts-1)*3]) < rcSqr(0.2f))
+		if (m_npts && rcGetDistanceSquared(p, &m_pts[(m_npts-1)*3]) < rcSqr(0.2f))
 		{
 			if (m_nhull > 2)
 			{

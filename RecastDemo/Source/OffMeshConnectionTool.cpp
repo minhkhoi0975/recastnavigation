@@ -94,7 +94,7 @@ void OffMeshConnectionTool::handleClick(const float* /*s*/, const float* p, bool
 		for (int i = 0; i < geom->getOffMeshConnectionCount()*2; ++i)
 		{
 			const float* v = &verts[i*3];
-			float d = rcVdistSqr(p, v);
+			float d = rcGetDistanceSquared(p, v);
 			if (d < nearestDist)
 			{
 				nearestDist = d;
