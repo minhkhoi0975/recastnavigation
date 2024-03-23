@@ -121,7 +121,7 @@ TEST_CASE("rcVdot", "[recast]")
 	SECTION("Dot normalized vector with itself")
 	{
 		float v1[] = { 1, 0, 0 };
-		float result = rcVdot(v1, v1);
+		float result = rcDotProduct(v1, v1);
 		REQUIRE(result == Catch::Approx(1));
 	}
 
@@ -130,7 +130,7 @@ TEST_CASE("rcVdot", "[recast]")
 		float v1[] = { 1, 2, 3 };
 		float v2[] = { 0, 0, 0 };
 
-		float result = rcVdot(v1, v2);
+		float result = rcDotProduct(v1, v2);
 		REQUIRE(result == Catch::Approx(0));
 	}
 }

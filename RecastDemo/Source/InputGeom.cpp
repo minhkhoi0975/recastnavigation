@@ -46,22 +46,22 @@ static bool intersectSegmentTriangle(const float* sp, const float* sq,
 	
 	// Compute denominator d. If d <= 0, segment is parallel to or points
 	// away from triangle, so exit early
-	float d = rcVdot(qp, norm);
+	float d = rcDotProduct(qp, norm);
 	if (d <= 0.0f) return false;
 	
 	// Compute intersection t value of pq with plane of triangle. A ray
 	// intersects iff 0 <= t. Segment intersects iff 0 <= t <= 1. Delay
 	// dividing by d until intersection has been found to pierce triangle
 	rcVsub(ap, sp, a);
-	t = rcVdot(ap, norm);
+	t = rcDotProduct(ap, norm);
 	if (t < 0.0f) return false;
 	if (t > d) return false; // For segment; exclude this code line for a ray test
 	
 	// Compute barycentric coordinate components and test if within bounds
 	rcCrossProduct(e, qp, ap);
-	v = rcVdot(ac, e);
+	v = rcDotProduct(ac, e);
 	if (v < 0.0f || v > d) return false;
-	w = -rcVdot(ab, e);
+	w = -rcDotProduct(ab, e);
 	if (w < 0.0f || v + w > d) return false;
 	
 	// Segment/ray intersects triangle. Perform delayed division
