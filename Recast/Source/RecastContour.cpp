@@ -39,37 +39,37 @@ static int getCornerHeight(int x, int y, int i, int dir,
 	// border vertices which are in between two areaIds to be removed.
 	regs[0] = chf.spans[i].regionId | (chf.areaIds[i] << 16);
 	
-	if (rcGetCon(s, dir) != RC_NOT_CONNECTED)
+	if (rcGetConnection(s, dir) != RC_NOT_CONNECTED)
 	{
-		const int ax = x + rcGetDirOffsetX(dir);
-		const int ay = y + rcGetDirOffsetY(dir);
-		const int ai = (int)chf.cells[ax+ay*chf.width].index + rcGetCon(s, dir);
+		const int ax = x + rcGetDirectionOffsetX(dir);
+		const int ay = y + rcGetDirectionOffsetY(dir);
+		const int ai = (int)chf.cells[ax+ay*chf.width].index + rcGetConnection(s, dir);
 		const rcCompactSpan& as = chf.spans[ai];
 		ch = rcMax(ch, (int)as.y);
 		regs[1] = chf.spans[ai].regionId | (chf.areaIds[ai] << 16);
-		if (rcGetCon(as, dirp) != RC_NOT_CONNECTED)
+		if (rcGetConnection(as, dirp) != RC_NOT_CONNECTED)
 		{
-			const int ax2 = ax + rcGetDirOffsetX(dirp);
-			const int ay2 = ay + rcGetDirOffsetY(dirp);
-			const int ai2 = (int)chf.cells[ax2+ay2*chf.width].index + rcGetCon(as, dirp);
+			const int ax2 = ax + rcGetDirectionOffsetX(dirp);
+			const int ay2 = ay + rcGetDirectionOffsetY(dirp);
+			const int ai2 = (int)chf.cells[ax2+ay2*chf.width].index + rcGetConnection(as, dirp);
 			const rcCompactSpan& as2 = chf.spans[ai2];
 			ch = rcMax(ch, (int)as2.y);
 			regs[2] = chf.spans[ai2].regionId | (chf.areaIds[ai2] << 16);
 		}
 	}
-	if (rcGetCon(s, dirp) != RC_NOT_CONNECTED)
+	if (rcGetConnection(s, dirp) != RC_NOT_CONNECTED)
 	{
-		const int ax = x + rcGetDirOffsetX(dirp);
-		const int ay = y + rcGetDirOffsetY(dirp);
-		const int ai = (int)chf.cells[ax+ay*chf.width].index + rcGetCon(s, dirp);
+		const int ax = x + rcGetDirectionOffsetX(dirp);
+		const int ay = y + rcGetDirectionOffsetY(dirp);
+		const int ai = (int)chf.cells[ax+ay*chf.width].index + rcGetConnection(s, dirp);
 		const rcCompactSpan& as = chf.spans[ai];
 		ch = rcMax(ch, (int)as.y);
 		regs[3] = chf.spans[ai].regionId | (chf.areaIds[ai] << 16);
-		if (rcGetCon(as, dir) != RC_NOT_CONNECTED)
+		if (rcGetConnection(as, dir) != RC_NOT_CONNECTED)
 		{
-			const int ax2 = ax + rcGetDirOffsetX(dir);
-			const int ay2 = ay + rcGetDirOffsetY(dir);
-			const int ai2 = (int)chf.cells[ax2+ay2*chf.width].index + rcGetCon(as, dir);
+			const int ax2 = ax + rcGetDirectionOffsetX(dir);
+			const int ay2 = ay + rcGetDirectionOffsetY(dir);
+			const int ai2 = (int)chf.cells[ax2+ay2*chf.width].index + rcGetConnection(as, dir);
 			const rcCompactSpan& as2 = chf.spans[ai2];
 			ch = rcMax(ch, (int)as2.y);
 			regs[2] = chf.spans[ai2].regionId | (chf.areaIds[ai2] << 16);
@@ -133,11 +133,11 @@ static void walkContour(int x, int y, int i,
 			}
 			int r = 0;
 			const rcCompactSpan& s = chf.spans[i];
-			if (rcGetCon(s, dir) != RC_NOT_CONNECTED)
+			if (rcGetConnection(s, dir) != RC_NOT_CONNECTED)
 			{
-				const int ax = x + rcGetDirOffsetX(dir);
-				const int ay = y + rcGetDirOffsetY(dir);
-				const int ai = (int)chf.cells[ax+ay*chf.width].index + rcGetCon(s, dir);
+				const int ax = x + rcGetDirectionOffsetX(dir);
+				const int ay = y + rcGetDirectionOffsetY(dir);
+				const int ai = (int)chf.cells[ax+ay*chf.width].index + rcGetConnection(s, dir);
 				r = (int)chf.spans[ai].regionId;
 				if (area != chf.areaIds[ai])
 					isAreaBorder = true;
@@ -157,13 +157,13 @@ static void walkContour(int x, int y, int i,
 		else
 		{
 			int ni = -1;
-			const int nx = x + rcGetDirOffsetX(dir);
-			const int ny = y + rcGetDirOffsetY(dir);
+			const int nx = x + rcGetDirectionOffsetX(dir);
+			const int ny = y + rcGetDirectionOffsetY(dir);
 			const rcCompactSpan& s = chf.spans[i];
-			if (rcGetCon(s, dir) != RC_NOT_CONNECTED)
+			if (rcGetConnection(s, dir) != RC_NOT_CONNECTED)
 			{
 				const rcCompactCell& nc = chf.cells[nx+ny*chf.width];
-				ni = (int)nc.index + rcGetCon(s, dir);
+				ni = (int)nc.index + rcGetConnection(s, dir);
 			}
 			if (ni == -1)
 			{
@@ -883,11 +883,11 @@ bool rcBuildContours(rcContext* ctx, const rcCompactHeightfield& chf,
 				for (int dir = 0; dir < 4; ++dir)
 				{
 					unsigned short r = 0;
-					if (rcGetCon(s, dir) != RC_NOT_CONNECTED)
+					if (rcGetConnection(s, dir) != RC_NOT_CONNECTED)
 					{
-						const int ax = x + rcGetDirOffsetX(dir);
-						const int ay = y + rcGetDirOffsetY(dir);
-						const int ai = (int)chf.cells[ax+ay*w].index + rcGetCon(s, dir);
+						const int ax = x + rcGetDirectionOffsetX(dir);
+						const int ay = y + rcGetDirectionOffsetY(dir);
+						const int ai = (int)chf.cells[ax+ay*w].index + rcGetConnection(s, dir);
 						r = chf.spans[ai].regionId;
 					}
 					if (r == chf.spans[i].regionId)

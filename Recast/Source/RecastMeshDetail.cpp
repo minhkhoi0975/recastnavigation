@@ -1003,9 +1003,9 @@ static void seedArrayWithPolyCenter(rcContext* ctx, const rcCompactHeightfield& 
 		// direction in the X-axis
 		int directDir;
 		if (cx == pcx)
-			directDir = rcGetDirForOffset(0, pcy > cy ? 1 : -1);
+			directDir = rcGetDirectionForOffset(0, pcy > cy ? 1 : -1);
 		else
-			directDir = rcGetDirForOffset(pcx > cx ? 1 : -1, 0);
+			directDir = rcGetDirectionForOffset(pcx > cx ? 1 : -1, 0);
 
 		// Push the direct dir last so we start with this on next iteration
 		rcSwap(dirs[directDir], dirs[3]);
@@ -1014,11 +1014,11 @@ static void seedArrayWithPolyCenter(rcContext* ctx, const rcCompactHeightfield& 
 		for (int i = 0; i < 4; i++)
 		{
 			int dir = dirs[i];
-			if (rcGetCon(cs, dir) == RC_NOT_CONNECTED)
+			if (rcGetConnection(cs, dir) == RC_NOT_CONNECTED)
 				continue;
 
-			int newX = cx + rcGetDirOffsetX(dir);
-			int newY = cy + rcGetDirOffsetY(dir);
+			int newX = cx + rcGetDirectionOffsetX(dir);
+			int newY = cy + rcGetDirectionOffsetY(dir);
 
 			int hpx = newX - hp.xmin;
 			int hpy = newY - hp.ymin;
@@ -1031,7 +1031,7 @@ static void seedArrayWithPolyCenter(rcContext* ctx, const rcCompactHeightfield& 
 			hp.data[hpx+hpy*hp.width] = 1;
 			array.push(newX);
 			array.push(newY);
-			array.push((int)chf.cells[(newX+bs)+(newY+bs)*chf.width].index + rcGetCon(cs, dir));
+			array.push((int)chf.cells[(newX+bs)+(newY+bs)*chf.width].index + rcGetConnection(cs, dir));
 		}
 
 		rcSwap(dirs[directDir], dirs[3]);
@@ -1100,11 +1100,11 @@ static void getHeightData(rcContext* ctx, const rcCompactHeightfield& chf,
 						bool border = false;
 						for (int dir = 0; dir < 4; ++dir)
 						{
-							if (rcGetCon(s, dir) != RC_NOT_CONNECTED)
+							if (rcGetConnection(s, dir) != RC_NOT_CONNECTED)
 							{
-								const int ax = x + rcGetDirOffsetX(dir);
-								const int ay = y + rcGetDirOffsetY(dir);
-								const int ai = (int)chf.cells[ax + ay*chf.width].index + rcGetCon(s, dir);
+								const int ax = x + rcGetDirectionOffsetX(dir);
+								const int ay = y + rcGetDirectionOffsetY(dir);
+								const int ai = (int)chf.cells[ax + ay*chf.width].index + rcGetConnection(s, dir);
 								const rcCompactSpan& as = chf.spans[ai];
 								if (as.regionId != region)
 								{
@@ -1151,10 +1151,10 @@ static void getHeightData(rcContext* ctx, const rcCompactHeightfield& chf,
 		const rcCompactSpan& cs = chf.spans[ci];
 		for (int dir = 0; dir < 4; ++dir)
 		{
-			if (rcGetCon(cs, dir) == RC_NOT_CONNECTED) continue;
+			if (rcGetConnection(cs, dir) == RC_NOT_CONNECTED) continue;
 			
-			const int ax = cx + rcGetDirOffsetX(dir);
-			const int ay = cy + rcGetDirOffsetY(dir);
+			const int ax = cx + rcGetDirectionOffsetX(dir);
+			const int ay = cy + rcGetDirectionOffsetY(dir);
 			const int hx = ax - hp.xmin - bs;
 			const int hy = ay - hp.ymin - bs;
 			
@@ -1164,7 +1164,7 @@ static void getHeightData(rcContext* ctx, const rcCompactHeightfield& chf,
 			if (hp.data[hx + hy*hp.width] != RC_UNSET_HEIGHT)
 				continue;
 			
-			const int ai = (int)chf.cells[ax + ay*chf.width].index + rcGetCon(cs, dir);
+			const int ai = (int)chf.cells[ax + ay*chf.width].index + rcGetConnection(cs, dir);
 			const rcCompactSpan& as = chf.spans[ai];
 			
 			hp.data[hx + hy*hp.width] = as.y;

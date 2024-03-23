@@ -494,9 +494,9 @@ bool rcBuildCompactHeightfield(rcContext* context, const int walkableHeight, con
 
 				for (int dir = 0; dir < 4; ++dir)
 				{
-					rcSetCon(span, dir, RC_NOT_CONNECTED);
-					const int neighborX = x + rcGetDirOffsetX(dir);
-					const int neighborZ = z + rcGetDirOffsetY(dir);
+					rcSetConnection(span, dir, RC_NOT_CONNECTED);
+					const int neighborX = x + rcGetDirectionOffsetX(dir);
+					const int neighborZ = z + rcGetDirectionOffsetY(dir);
 					// First check that the neighbour cell is in bounds.
 					if (neighborX < 0 || neighborZ < 0 || neighborX >= xSize || neighborZ >= zSize)
 					{
@@ -523,7 +523,7 @@ bool rcBuildCompactHeightfield(rcContext* context, const int walkableHeight, con
 								maxLayerIndex = rcMax(maxLayerIndex, layerIndex);
 								continue;
 							}
-							rcSetCon(span, dir, layerIndex);
+							rcSetConnection(span, dir, layerIndex);
 							break;
 						}
 					}

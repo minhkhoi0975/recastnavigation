@@ -100,8 +100,8 @@ void rcFilterLedgeSpans(rcContext* context, const int walkableHeight, const int 
 
 				for (int direction = 0; direction < 4; ++direction)
 				{
-					const int neighborX = x + rcGetDirOffsetX(direction);
-					const int neighborZ = z + rcGetDirOffsetY(direction);
+					const int neighborX = x + rcGetDirectionOffsetX(direction);
+					const int neighborZ = z + rcGetDirectionOffsetY(direction);
 
 					// Skip neighbours which are out of bounds.
 					if (neighborX < 0 || neighborZ < 0 || neighborX >= xSize || neighborZ >= zSize)

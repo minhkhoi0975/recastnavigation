@@ -150,11 +150,11 @@ bool rcBuildHeightfieldLayers(rcContext* ctx, const rcCompactHeightfield& chf,
 				unsigned char sid = 0xff;
 
 				// -x
-				if (rcGetCon(s, 0) != RC_NOT_CONNECTED)
+				if (rcGetConnection(s, 0) != RC_NOT_CONNECTED)
 				{
-					const int ax = x + rcGetDirOffsetX(0);
-					const int ay = y + rcGetDirOffsetY(0);
-					const int ai = (int)chf.cells[ax+ay*w].index + rcGetCon(s, 0);
+					const int ax = x + rcGetDirectionOffsetX(0);
+					const int ay = y + rcGetDirectionOffsetY(0);
+					const int ai = (int)chf.cells[ax+ay*w].index + rcGetConnection(s, 0);
 					if (chf.areaIds[ai] != RC_NULL_AREA && srcReg[ai] != 0xff)
 						sid = srcReg[ai];
 				}
@@ -167,11 +167,11 @@ bool rcBuildHeightfieldLayers(rcContext* ctx, const rcCompactHeightfield& chf,
 				}
 				
 				// -y
-				if (rcGetCon(s,3) != RC_NOT_CONNECTED)
+				if (rcGetConnection(s,3) != RC_NOT_CONNECTED)
 				{
-					const int ax = x + rcGetDirOffsetX(3);
-					const int ay = y + rcGetDirOffsetY(3);
-					const int ai = (int)chf.cells[ax+ay*w].index + rcGetCon(s, 3);
+					const int ax = x + rcGetDirectionOffsetX(3);
+					const int ay = y + rcGetDirectionOffsetY(3);
+					const int ai = (int)chf.cells[ax+ay*w].index + rcGetConnection(s, 3);
 					const unsigned char nr = srcReg[ai];
 					if (nr != 0xff)
 					{
@@ -272,11 +272,11 @@ bool rcBuildHeightfieldLayers(rcContext* ctx, const rcCompactHeightfield& chf,
 				// Update neighbours
 				for (int dir = 0; dir < 4; ++dir)
 				{
-					if (rcGetCon(s, dir) != RC_NOT_CONNECTED)
+					if (rcGetConnection(s, dir) != RC_NOT_CONNECTED)
 					{
-						const int ax = x + rcGetDirOffsetX(dir);
-						const int ay = y + rcGetDirOffsetY(dir);
-						const int ai = (int)chf.cells[ax+ay*w].index + rcGetCon(s, dir);
+						const int ax = x + rcGetDirectionOffsetX(dir);
+						const int ay = y + rcGetDirectionOffsetY(dir);
+						const int ai = (int)chf.cells[ax+ay*w].index + rcGetConnection(s, dir);
 						const unsigned char rai = srcReg[ai];
 						if (rai != 0xff && rai != ri)
 						{
@@ -615,11 +615,11 @@ bool rcBuildHeightfieldLayers(rcContext* ctx, const rcCompactHeightfield& chf,
 					unsigned char con = 0;
 					for (int dir = 0; dir < 4; ++dir)
 					{
-						if (rcGetCon(s, dir) != RC_NOT_CONNECTED)
+						if (rcGetConnection(s, dir) != RC_NOT_CONNECTED)
 						{
-							const int ax = cx + rcGetDirOffsetX(dir);
-							const int ay = cy + rcGetDirOffsetY(dir);
-							const int ai = (int)chf.cells[ax+ay*w].index + rcGetCon(s, dir);
+							const int ax = cx + rcGetDirectionOffsetX(dir);
+							const int ay = cy + rcGetDirectionOffsetY(dir);
+							const int ai = (int)chf.cells[ax+ay*w].index + rcGetConnection(s, dir);
 							unsigned char alid = srcReg[ai] != 0xff ? regs[srcReg[ai]].layerId : 0xff;
 							// Portal mask
 							if (chf.areaIds[ai] != RC_NULL_AREA && lid != alid)

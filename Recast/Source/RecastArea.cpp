@@ -110,14 +110,14 @@ bool rcErodeWalkableArea(rcContext* context, const int erosionRadius, rcCompactH
 				int neighborCount = 0;
 				for (int direction = 0; direction < 4; ++direction)
 				{
-					const int neighborConnection = rcGetCon(span, direction);
+					const int neighborConnection = rcGetConnection(span, direction);
 					if (neighborConnection == RC_NOT_CONNECTED)
 					{
 						break;
 					}
 					
-					const int neighborX = x + rcGetDirOffsetX(direction);
-					const int neighborZ = z + rcGetDirOffsetY(direction);
+					const int neighborX = x + rcGetDirectionOffsetX(direction);
+					const int neighborZ = z + rcGetDirectionOffsetY(direction);
 					const int neighborSpanIndex = (int)compactHeightfield.cells[neighborX + neighborZ * zStride].index + neighborConnection;
 					
 					if (compactHeightfield.areaIds[neighborSpanIndex] == RC_NULL_AREA)
@@ -149,12 +149,12 @@ bool rcErodeWalkableArea(rcContext* context, const int erosionRadius, rcCompactH
 			{
 				const rcCompactSpan& span = compactHeightfield.spans[spanIndex];
 
-				if (rcGetCon(span, 0) != RC_NOT_CONNECTED)
+				if (rcGetConnection(span, 0) != RC_NOT_CONNECTED)
 				{
 					// (-1,0)
-					const int aX = x + rcGetDirOffsetX(0);
-					const int aY = z + rcGetDirOffsetY(0);
-					const int aIndex = (int)compactHeightfield.cells[aX + aY * xSize].index + rcGetCon(span, 0);
+					const int aX = x + rcGetDirectionOffsetX(0);
+					const int aY = z + rcGetDirectionOffsetY(0);
+					const int aIndex = (int)compactHeightfield.cells[aX + aY * xSize].index + rcGetConnection(span, 0);
 					const rcCompactSpan& aSpan = compactHeightfield.spans[aIndex];
 					newDistance = (unsigned char)rcMin((int)distanceToBoundary[aIndex] + 2, 255);
 					if (newDistance < distanceToBoundary[spanIndex])
@@ -163,11 +163,11 @@ bool rcErodeWalkableArea(rcContext* context, const int erosionRadius, rcCompactH
 					}
 
 					// (-1,-1)
-					if (rcGetCon(aSpan, 3) != RC_NOT_CONNECTED)
+					if (rcGetConnection(aSpan, 3) != RC_NOT_CONNECTED)
 					{
-						const int bX = aX + rcGetDirOffsetX(3);
-						const int bY = aY + rcGetDirOffsetY(3);
-						const int bIndex = (int)compactHeightfield.cells[bX + bY * xSize].index + rcGetCon(aSpan, 3);
+						const int bX = aX + rcGetDirectionOffsetX(3);
+						const int bY = aY + rcGetDirectionOffsetY(3);
+						const int bIndex = (int)compactHeightfield.cells[bX + bY * xSize].index + rcGetConnection(aSpan, 3);
 						newDistance = (unsigned char)rcMin((int)distanceToBoundary[bIndex] + 3, 255);
 						if (newDistance < distanceToBoundary[spanIndex])
 						{
@@ -175,12 +175,12 @@ bool rcErodeWalkableArea(rcContext* context, const int erosionRadius, rcCompactH
 						}
 					}
 				}
-				if (rcGetCon(span, 3) != RC_NOT_CONNECTED)
+				if (rcGetConnection(span, 3) != RC_NOT_CONNECTED)
 				{
 					// (0,-1)
-					const int aX = x + rcGetDirOffsetX(3);
-					const int aY = z + rcGetDirOffsetY(3);
-					const int aIndex = (int)compactHeightfield.cells[aX + aY * xSize].index + rcGetCon(span, 3);
+					const int aX = x + rcGetDirectionOffsetX(3);
+					const int aY = z + rcGetDirectionOffsetY(3);
+					const int aIndex = (int)compactHeightfield.cells[aX + aY * xSize].index + rcGetConnection(span, 3);
 					const rcCompactSpan& aSpan = compactHeightfield.spans[aIndex];
 					newDistance = (unsigned char)rcMin((int)distanceToBoundary[aIndex] + 2, 255);
 					if (newDistance < distanceToBoundary[spanIndex])
@@ -189,11 +189,11 @@ bool rcErodeWalkableArea(rcContext* context, const int erosionRadius, rcCompactH
 					}
 
 					// (1,-1)
-					if (rcGetCon(aSpan, 2) != RC_NOT_CONNECTED)
+					if (rcGetConnection(aSpan, 2) != RC_NOT_CONNECTED)
 					{
-						const int bX = aX + rcGetDirOffsetX(2);
-						const int bY = aY + rcGetDirOffsetY(2);
-						const int bIndex = (int)compactHeightfield.cells[bX + bY * xSize].index + rcGetCon(aSpan, 2);
+						const int bX = aX + rcGetDirectionOffsetX(2);
+						const int bY = aY + rcGetDirectionOffsetY(2);
+						const int bIndex = (int)compactHeightfield.cells[bX + bY * xSize].index + rcGetConnection(aSpan, 2);
 						newDistance = (unsigned char)rcMin((int)distanceToBoundary[bIndex] + 3, 255);
 						if (newDistance < distanceToBoundary[spanIndex])
 						{
@@ -216,12 +216,12 @@ bool rcErodeWalkableArea(rcContext* context, const int erosionRadius, rcCompactH
 			{
 				const rcCompactSpan& span = compactHeightfield.spans[spanIndex];
 
-				if (rcGetCon(span, 2) != RC_NOT_CONNECTED)
+				if (rcGetConnection(span, 2) != RC_NOT_CONNECTED)
 				{
 					// (1,0)
-					const int aX = x + rcGetDirOffsetX(2);
-					const int aY = z + rcGetDirOffsetY(2);
-					const int aIndex = (int)compactHeightfield.cells[aX + aY * xSize].index + rcGetCon(span, 2);
+					const int aX = x + rcGetDirectionOffsetX(2);
+					const int aY = z + rcGetDirectionOffsetY(2);
+					const int aIndex = (int)compactHeightfield.cells[aX + aY * xSize].index + rcGetConnection(span, 2);
 					const rcCompactSpan& aSpan = compactHeightfield.spans[aIndex];
 					newDistance = (unsigned char)rcMin((int)distanceToBoundary[aIndex] + 2, 255);
 					if (newDistance < distanceToBoundary[spanIndex])
@@ -230,11 +230,11 @@ bool rcErodeWalkableArea(rcContext* context, const int erosionRadius, rcCompactH
 					}
 
 					// (1,1)
-					if (rcGetCon(aSpan, 1) != RC_NOT_CONNECTED)
+					if (rcGetConnection(aSpan, 1) != RC_NOT_CONNECTED)
 					{
-						const int bX = aX + rcGetDirOffsetX(1);
-						const int bY = aY + rcGetDirOffsetY(1);
-						const int bIndex = (int)compactHeightfield.cells[bX + bY * xSize].index + rcGetCon(aSpan, 1);
+						const int bX = aX + rcGetDirectionOffsetX(1);
+						const int bY = aY + rcGetDirectionOffsetY(1);
+						const int bIndex = (int)compactHeightfield.cells[bX + bY * xSize].index + rcGetConnection(aSpan, 1);
 						newDistance = (unsigned char)rcMin((int)distanceToBoundary[bIndex] + 3, 255);
 						if (newDistance < distanceToBoundary[spanIndex])
 						{
@@ -242,12 +242,12 @@ bool rcErodeWalkableArea(rcContext* context, const int erosionRadius, rcCompactH
 						}
 					}
 				}
-				if (rcGetCon(span, 1) != RC_NOT_CONNECTED)
+				if (rcGetConnection(span, 1) != RC_NOT_CONNECTED)
 				{
 					// (0,1)
-					const int aX = x + rcGetDirOffsetX(1);
-					const int aY = z + rcGetDirOffsetY(1);
-					const int aIndex = (int)compactHeightfield.cells[aX + aY * xSize].index + rcGetCon(span, 1);
+					const int aX = x + rcGetDirectionOffsetX(1);
+					const int aY = z + rcGetDirectionOffsetY(1);
+					const int aIndex = (int)compactHeightfield.cells[aX + aY * xSize].index + rcGetConnection(span, 1);
 					const rcCompactSpan& aSpan = compactHeightfield.spans[aIndex];
 					newDistance = (unsigned char)rcMin((int)distanceToBoundary[aIndex] + 2, 255);
 					if (newDistance < distanceToBoundary[spanIndex])
@@ -256,11 +256,11 @@ bool rcErodeWalkableArea(rcContext* context, const int erosionRadius, rcCompactH
 					}
 
 					// (-1,1)
-					if (rcGetCon(aSpan, 0) != RC_NOT_CONNECTED)
+					if (rcGetConnection(aSpan, 0) != RC_NOT_CONNECTED)
 					{
-						const int bX = aX + rcGetDirOffsetX(0);
-						const int bY = aY + rcGetDirOffsetY(0);
-						const int bIndex = (int)compactHeightfield.cells[bX + bY * xSize].index + rcGetCon(aSpan, 0);
+						const int bX = aX + rcGetDirectionOffsetX(0);
+						const int bY = aY + rcGetDirectionOffsetY(0);
+						const int bIndex = (int)compactHeightfield.cells[bX + bY * xSize].index + rcGetConnection(aSpan, 0);
 						newDistance = (unsigned char)rcMin((int)distanceToBoundary[bIndex] + 3, 255);
 						if (newDistance < distanceToBoundary[spanIndex])
 						{
@@ -328,14 +328,14 @@ bool rcMedianFilterWalkableArea(rcContext* context, rcCompactHeightfield& compac
 
 				for (int dir = 0; dir < 4; ++dir)
 				{
-					if (rcGetCon(span, dir) == RC_NOT_CONNECTED)
+					if (rcGetConnection(span, dir) == RC_NOT_CONNECTED)
 					{
 						continue;
 					}
 					
-					const int aX = x + rcGetDirOffsetX(dir);
-					const int aZ = z + rcGetDirOffsetY(dir);
-					const int aIndex = (int)compactHeightfield.cells[aX + aZ * zStride].index + rcGetCon(span, dir);
+					const int aX = x + rcGetDirectionOffsetX(dir);
+					const int aZ = z + rcGetDirectionOffsetY(dir);
+					const int aIndex = (int)compactHeightfield.cells[aX + aZ * zStride].index + rcGetConnection(span, dir);
 					if (compactHeightfield.areaIds[aIndex] != RC_NULL_AREA)
 					{
 						neighborAreas[dir * 2 + 0] = compactHeightfield.areaIds[aIndex];
@@ -343,11 +343,11 @@ bool rcMedianFilterWalkableArea(rcContext* context, rcCompactHeightfield& compac
 
 					const rcCompactSpan& aSpan = compactHeightfield.spans[aIndex];
 					const int dir2 = (dir + 1) & 0x3;
-					const int neighborConnection2 = rcGetCon(aSpan, dir2);
+					const int neighborConnection2 = rcGetConnection(aSpan, dir2);
 					if (neighborConnection2 != RC_NOT_CONNECTED)
 					{
-						const int bX = aX + rcGetDirOffsetX(dir2);
-						const int bZ = aZ + rcGetDirOffsetY(dir2);
+						const int bX = aX + rcGetDirectionOffsetX(dir2);
+						const int bZ = aZ + rcGetDirectionOffsetY(dir2);
 						const int bIndex = (int)compactHeightfield.cells[bX + bZ * zStride].index + neighborConnection2;
 						if (compactHeightfield.areaIds[bIndex] != RC_NULL_AREA)
 						{
