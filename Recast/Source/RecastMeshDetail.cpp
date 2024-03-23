@@ -200,7 +200,7 @@ static float distToPoly(int nvert, const float* verts, const float* p)
 
 
 static unsigned short getHeight(const float fx, const float fy, const float fz,
-								const float /*cs*/, const float ics, const float ch,
+								const float /*cellSize*/, const float ics, const float ch,
 								const int radius, const rcHeightPatch& hp)
 {
 	int ix = (int)floorf(fx*ics + 0.01f);

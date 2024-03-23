@@ -434,8 +434,8 @@ void duDebugDrawLayerContours(duDebugDraw* dd, const struct rcLayerContourSet& l
 	if (!dd) return;
 	
 	const float* orig = lcset.bmin;
-	const float cs = lcset.cs;
-	const float ch = lcset.ch;
+	const float cellSize = lcset.cellSize;
+	const float cellHeight = lcset.cellHeight;
 	
 	const unsigned char a = 255;// (unsigned char)(alpha*255.0f);
 	
@@ -455,12 +455,12 @@ void duDebugDrawLayerContours(duDebugDraw* dd, const struct rcLayerContourSet& l
 			const int k = (j+1) % c.nverts;
 			const unsigned char* va = &c.verts[j*4];
 			const unsigned char* vb = &c.verts[k*4];
-			const float ax = orig[0] + va[0]*cs;
-			const float ay = orig[1] + (va[1]+1+(i&1))*ch;
-			const float az = orig[2] + va[2]*cs;
-			const float bx = orig[0] + vb[0]*cs;
-			const float by = orig[1] + (vb[1]+1+(i&1))*ch;
-			const float bz = orig[2] + vb[2]*cs;
+			const float ax = orig[0] + va[0]*cellSize;
+			const float ay = orig[1] + (va[1]+1+(i&1))*cellHeight;
+			const float az = orig[2] + va[2]*cellSize;
+			const float bx = orig[0] + vb[0]*cellSize;
+			const float by = orig[1] + (vb[1]+1+(i&1))*cellHeight;
+			const float bz = orig[2] + vb[2]*cellSize;
 			unsigned int col = color;
 			if ((va[3] & 0xf) != 0xf)
 			{
@@ -471,15 +471,15 @@ void duDebugDrawLayerContours(duDebugDraw* dd, const struct rcLayerContourSet& l
 				const float cy = (ay+by)*0.5f;
 				const float cz = (az+bz)*0.5f;
 				
-				const float dx = cx + offs[d*2+0]*2*cs;
+				const float dx = cx + offs[d*2+0]*2*cellSize;
 				const float dy = cy;
-				const float dz = cz + offs[d*2+1]*2*cs;
+				const float dz = cz + offs[d*2+1]*2*cellSize;
 				
 				dd->vertex(cx,cy,cz,duRGBA(255,0,0,255));
 				dd->vertex(dx,dy,dz,duRGBA(255,0,0,255));
 			}
 			
-			duAppendArrow(dd, ax,ay,az, bx,by,bz, 0.0f, cs*0.5f, col);
+			duAppendArrow(dd, ax,ay,az, bx,by,bz, 0.0f, cellSize*0.5f, col);
 		}
 	}
 	dd->end();
@@ -499,9 +499,9 @@ void duDebugDrawLayerContours(duDebugDraw* dd, const struct rcLayerContourSet& l
 			if (va[3] & 0x80)
 				color = duRGBA(255,0,0,255);
 
-			float fx = orig[0] + va[0]*cs;
-			float fy = orig[1] + (va[1]+1+(i&1))*ch;
-			float fz = orig[2] + va[2]*cs;
+			float fx = orig[0] + va[0]*cellSize;
+			float fy = orig[1] + (va[1]+1+(i&1))*cellHeight;
+			float fz = orig[2] + va[2]*cellSize;
 			dd->vertex(fx,fy,fz, color);
 		}
 	}
@@ -513,8 +513,8 @@ void duDebugDrawLayerPolyMesh(duDebugDraw* dd, const struct rcLayerPolyMesh& lme
 	if (!dd) return;
 	
 	const int nvp = lmesh.nvp;
-	const float cs = lmesh.cs;
-	const float ch = lmesh.ch;
+	const float cellSize = lmesh.cellSize;
+	const float cellHeight = lmesh.cellHeight;
 	const float* orig = lmesh.bmin;
 	
 	const int offs[2*4] = {-1,0, 0,1, 1,0, 0,-1};
@@ -543,9 +543,9 @@ void duDebugDrawLayerPolyMesh(duDebugDraw* dd, const struct rcLayerPolyMesh& lme
 			for (int k = 0; k < 3; ++k)
 			{
 				const unsigned short* v = &lmesh.verts[vi[k]*3];
-				const float x = orig[0] + v[0]*cs;
-				const float y = orig[1] + (v[1]+1)*ch;
-				const float z = orig[2] + v[2]*cs;
+				const float x = orig[0] + v[0]*cellSize;
+				const float y = orig[1] + (v[1]+1)*cellHeight;
+				const float z = orig[2] + v[2]*cellSize;
 				dd->vertex(x,y,z, color);
 			}
 		}
@@ -568,9 +568,9 @@ void duDebugDrawLayerPolyMesh(duDebugDraw* dd, const struct rcLayerPolyMesh& lme
 			for (int k = 0; k < 2; ++k)
 			{
 				const unsigned short* v = &lmesh.verts[vi[k]*3];
-				const float x = orig[0] + v[0]*cs;
-				const float y = orig[1] + (v[1]+1)*ch + 0.1f;
-				const float z = orig[2] + v[2]*cs;
+				const float x = orig[0] + v[0]*cellSize;
+				const float y = orig[1] + (v[1]+1)*cellHeight + 0.1f;
+				const float z = orig[2] + v[2]*cellSize;
 				dd->vertex(x, y, z, coln);
 			}
 		}
@@ -596,12 +596,12 @@ void duDebugDrawLayerPolyMesh(duDebugDraw* dd, const struct rcLayerPolyMesh& lme
 				const unsigned short* va = &lmesh.verts[vi[0]*3];
 				const unsigned short* vb = &lmesh.verts[vi[1]*3];
 
-				const float ax = orig[0] + va[0]*cs;
-				const float ay = orig[1] + (va[1]+1+(i&1))*ch;
-				const float az = orig[2] + va[2]*cs;
-				const float bx = orig[0] + vb[0]*cs;
-				const float by = orig[1] + (vb[1]+1+(i&1))*ch;
-				const float bz = orig[2] + vb[2]*cs;
+				const float ax = orig[0] + va[0]*cellSize;
+				const float ay = orig[1] + (va[1]+1+(i&1))*cellHeight;
+				const float az = orig[2] + va[2]*cellSize;
+				const float bx = orig[0] + vb[0]*cellSize;
+				const float by = orig[1] + (vb[1]+1+(i&1))*cellHeight;
+				const float bz = orig[2] + vb[2]*cellSize;
 				
 				const float cx = (ax+bx)*0.5f;
 				const float cy = (ay+by)*0.5f;
@@ -609,9 +609,9 @@ void duDebugDrawLayerPolyMesh(duDebugDraw* dd, const struct rcLayerPolyMesh& lme
 				
 				int d = p[nvp+j] & 0xf;
 				
-				const float dx = cx + offs[d*2+0]*2*cs;
+				const float dx = cx + offs[d*2+0]*2*cellSize;
 				const float dy = cy;
-				const float dz = cz + offs[d*2+1]*2*cs;
+				const float dz = cz + offs[d*2+1]*2*cellSize;
 				
 				dd->vertex(cx,cy,cz,duRGBA(255,0,0,255));
 				dd->vertex(dx,dy,dz,duRGBA(255,0,0,255));
@@ -622,9 +622,9 @@ void duDebugDrawLayerPolyMesh(duDebugDraw* dd, const struct rcLayerPolyMesh& lme
 			for (int k = 0; k < 2; ++k)
 			{
 				const unsigned short* v = &lmesh.verts[vi[k]*3];
-				const float x = orig[0] + v[0]*cs;
-				const float y = orig[1] + (v[1]+1)*ch + 0.1f;
-				const float z = orig[2] + v[2]*cs;
+				const float x = orig[0] + v[0]*cellSize;
+				const float y = orig[1] + (v[1]+1)*cellHeight + 0.1f;
+				const float z = orig[2] + v[2]*cellSize;
 				dd->vertex(x, y, z, col);
 			}
 		}
@@ -636,9 +636,9 @@ void duDebugDrawLayerPolyMesh(duDebugDraw* dd, const struct rcLayerPolyMesh& lme
 	for (int i = 0; i < lmesh.nverts; ++i)
 	{
 		const unsigned short* v = &lmesh.verts[i*3];
-		const float x = orig[0] + v[0]*cs;
-		const float y = orig[1] + (v[1]+1)*ch + 0.1f;
-		const float z = orig[2] + v[2]*cs;
+		const float x = orig[0] + v[0]*cellSize;
+		const float y = orig[1] + (v[1]+1)*cellHeight + 0.1f;
+		const float z = orig[2] + v[2]*cellSize;
 		dd->vertex(x,y,z, colv);
 	}
 	dd->end();

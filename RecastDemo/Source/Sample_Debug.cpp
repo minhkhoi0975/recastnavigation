@@ -223,8 +223,8 @@ void Sample_Debug::handleRender()
 	dd.depthMask(false);
 	{
 		const float bmin[3] = {-32.000004f,-11.488281f,-115.343544f};
-		const float cs = 0.300000f;
-		const float ch = 0.200000f;
+		const float cellSize = 0.300000f;
+		const float cellHeight = 0.200000f;
 		const int verts[] = {
 			158,46,336,0,
 			157,47,331,0,
@@ -276,8 +276,8 @@ void Sample_Debug::handleRender()
 		{
 			const int* va = &verts[j*4];
 			const int* vb = &verts[i*4];
-			dd.vertex(bmin[0]+va[0]*cs, bmin[1]+va[1]*ch+j*0.01f, bmin[2]+va[2]*cs, colln);
-			dd.vertex(bmin[0]+vb[0]*cs, bmin[1]+vb[1]*ch+i*0.01f, bmin[2]+vb[2]*cs, colln);
+			dd.vertex(bmin[0]+va[0]*cellSize, bmin[1]+va[1]*cellHeight+j*0.01f, bmin[2]+va[2]*cellSize, colln);
+			dd.vertex(bmin[0]+vb[0]*cellSize, bmin[1]+vb[1]*cellHeight+i*0.01f, bmin[2]+vb[2]*cellSize, colln);
 		}
 		dd.end();
 
@@ -286,7 +286,7 @@ void Sample_Debug::handleRender()
 		for (int i = 0, j = nverts-1; i < nverts; j=i++)
 		{
 			const int* va = &verts[j*4];
-			dd.vertex(bmin[0]+va[0]*cs, bmin[1]+va[1]*ch+j*0.01f, bmin[2]+va[2]*cs, colpt);
+			dd.vertex(bmin[0]+va[0]*cellSize, bmin[1]+va[1]*cellHeight+j*0.01f, bmin[2]+va[2]*cellSize, colpt);
 		}
 		dd.end();
 
@@ -309,7 +309,7 @@ void Sample_Debug::handleRender()
 		for (int i = 0; i < ntris*3; ++i)
 		{
 			const int* va = &verts[indices[tris[i]]*4];
-			dd.vertex(bmin[0]+va[0]*cs, bmin[1]+va[1]*ch, bmin[2]+va[2]*cs, coltri);
+			dd.vertex(bmin[0]+va[0]*cellSize, bmin[1]+va[1]*cellHeight, bmin[2]+va[2]*cellSize, coltri);
 		}
 		dd.end();
 		

@@ -305,7 +305,7 @@ int Sample_TempObstacles::rasterizeTileLayers(
 	const rcChunkyTriMesh* chunkyMesh = m_geom->getChunkyMesh();
 	
 	// Tile bounds.
-	const float tcs = cfg.tileSize * cfg.cs;
+	const float tcs = cfg.tileSize * cfg.cellSize;
 	
 	rcConfig tcfg;
 	memcpy(&tcfg, &cfg, sizeof(tcfg));
@@ -316,10 +316,10 @@ int Sample_TempObstacles::rasterizeTileLayers(
 	tcfg.bmax[0] = cfg.bmin[0] + (tx+1)*tcs;
 	tcfg.bmax[1] = cfg.bmax[1];
 	tcfg.bmax[2] = cfg.bmin[2] + (ty+1)*tcs;
-	tcfg.bmin[0] -= tcfg.borderSize*tcfg.cs;
-	tcfg.bmin[2] -= tcfg.borderSize*tcfg.cs;
-	tcfg.bmax[0] += tcfg.borderSize*tcfg.cs;
-	tcfg.bmax[2] += tcfg.borderSize*tcfg.cs;
+	tcfg.bmin[0] -= tcfg.borderSize*tcfg.cellSize;
+	tcfg.bmin[2] -= tcfg.borderSize*tcfg.cellSize;
+	tcfg.bmax[0] += tcfg.borderSize*tcfg.cellSize;
+	tcfg.bmax[2] += tcfg.borderSize*tcfg.cellSize;
 	
 	// Allocate voxel heightfield where we rasterize our input data to.
 	rc.solid = rcAllocHeightfield();
@@ -328,7 +328,7 @@ int Sample_TempObstacles::rasterizeTileLayers(
 		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Out of memory 'solid'.");
 		return 0;
 	}
-	if (!rcCreateHeightfield(m_ctx, *rc.solid, tcfg.width, tcfg.height, tcfg.bmin, tcfg.bmax, tcfg.cs, tcfg.ch))
+	if (!rcCreateHeightfield(m_ctx, *rc.solid, tcfg.width, tcfg.height, tcfg.bmin, tcfg.bmax, tcfg.cellSize, tcfg.cellHeight))
 	{
 		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Could not create solid heightfield.");
 		return 0;
@@ -1226,12 +1226,12 @@ bool Sample_TempObstacles::handleBuild()
 	// Generation params.
 	rcConfig cfg;
 	memset(&cfg, 0, sizeof(cfg));
-	cfg.cs = m_cellSize;
-	cfg.ch = m_cellHeight;
+	cfg.cellSize = m_cellSize;
+	cfg.cellHeight = m_cellHeight;
 	cfg.walkableSlopeAngle = m_agentMaxSlope;
-	cfg.walkableHeight = (int)ceilf(m_agentHeight / cfg.ch);
-	cfg.walkableClimb = (int)floorf(m_agentMaxClimb / cfg.ch);
-	cfg.walkableRadius = (int)ceilf(m_agentRadius / cfg.cs);
+	cfg.walkableHeight = (int)ceilf(m_agentHeight / cfg.cellHeight);
+	cfg.walkableClimb = (int)floorf(m_agentMaxClimb / cfg.cellHeight);
+	cfg.walkableRadius = (int)ceilf(m_agentRadius / cfg.cellSize);
 	cfg.maxEdgeLen = (int)(m_edgeMaxLen / m_cellSize);
 	cfg.maxSimplificationError = m_edgeMaxError;
 	cfg.minRegionArea = (int)rcSqr(m_regionMinSize);		// Note: area = size*size
