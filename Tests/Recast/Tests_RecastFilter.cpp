@@ -23,13 +23,13 @@ TEST_CASE("rcFilterLowHangingWalkableObstacles", "[recast, filtering]")
 	heightfield.boundMax[2] = 1;
 	heightfield.cellSize = 1;
 	heightfield.cellHeight = 1;
-	heightfield.spans = (rcSpan**)rcAlloc(heightfield.width * heightfield.height * sizeof(rcSpan*), RC_ALLOC_PERMANENT);
+	heightfield.spans = (rcSpan**)rcAllocate(heightfield.width * heightfield.height * sizeof(rcSpan*), RC_ALLOC_PERMANENT);
 	heightfield.pools = NULL;
 	heightfield.freelist = NULL;
 
 	SECTION("Span with no spans above it is unchanged")
 	{
-		rcSpan* span = (rcSpan*)rcAlloc(sizeof(rcSpan), RC_ALLOC_PERMANENT);
+		rcSpan* span = (rcSpan*)rcAllocate(sizeof(rcSpan), RC_ALLOC_PERMANENT);
 		span->area = 1;
 		span->next = NULL;
 		span->smin = 0;
@@ -46,13 +46,13 @@ TEST_CASE("rcFilterLowHangingWalkableObstacles", "[recast, filtering]")
 	SECTION("Span with span above that is higher than walkableHeight is unchanged")
 	{
 		// Put the second span just above the first one.
-		rcSpan* secondSpan = (rcSpan*)rcAlloc(sizeof(rcSpan), RC_ALLOC_PERMANENT);
+		rcSpan* secondSpan = (rcSpan*)rcAllocate(sizeof(rcSpan), RC_ALLOC_PERMANENT);
 		secondSpan->area = RC_NULL_AREA;
 		secondSpan->next = NULL;
 		secondSpan->smin = 1 + walkableHeight;
 		secondSpan->smax = secondSpan->smin + 1;
 
-		rcSpan* span = (rcSpan*)rcAlloc(sizeof(rcSpan), RC_ALLOC_PERMANENT);
+		rcSpan* span = (rcSpan*)rcAllocate(sizeof(rcSpan), RC_ALLOC_PERMANENT);
 		span->area = 1;
 		span->next = secondSpan;
 		span->smin = 0;
@@ -83,13 +83,13 @@ TEST_CASE("rcFilterLowHangingWalkableObstacles", "[recast, filtering]")
 	SECTION("Marks low obstacles walkable if they're below the walkableClimb")
 	{
 		// Put the second span just above the first one.
-		rcSpan* secondSpan = (rcSpan*)rcAlloc(sizeof(rcSpan), RC_ALLOC_PERMANENT);
+		rcSpan* secondSpan = (rcSpan*)rcAllocate(sizeof(rcSpan), RC_ALLOC_PERMANENT);
 		secondSpan->area = RC_NULL_AREA;
 		secondSpan->next = NULL;
 		secondSpan->smin = 1 + (walkableHeight - 1);
 		secondSpan->smax = secondSpan->smin + 1;
 
-		rcSpan* span = (rcSpan*)rcAlloc(sizeof(rcSpan), RC_ALLOC_PERMANENT);
+		rcSpan* span = (rcSpan*)rcAllocate(sizeof(rcSpan), RC_ALLOC_PERMANENT);
 		span->area = 1;
 		span->next = secondSpan;
 		span->smin = 0;
@@ -110,13 +110,13 @@ TEST_CASE("rcFilterLowHangingWalkableObstacles", "[recast, filtering]")
 	SECTION("Low obstacle that overlaps the walkableClimb distance is not changed")
 	{
 		// Put the second span just above the first one.
-		rcSpan* secondSpan = (rcSpan*)rcAlloc(sizeof(rcSpan), RC_ALLOC_PERMANENT);
+		rcSpan* secondSpan = (rcSpan*)rcAllocate(sizeof(rcSpan), RC_ALLOC_PERMANENT);
 		secondSpan->area = RC_NULL_AREA;
 		secondSpan->next = NULL;
 		secondSpan->smin = 2 + (walkableHeight - 1);
 		secondSpan->smax = secondSpan->smin + 1;
 
-		rcSpan* span = (rcSpan*)rcAlloc(sizeof(rcSpan), RC_ALLOC_PERMANENT);
+		rcSpan* span = (rcSpan*)rcAllocate(sizeof(rcSpan), RC_ALLOC_PERMANENT);
 		span->area = 1;
 		span->next = secondSpan;
 		span->smin = 0;
@@ -136,7 +136,7 @@ TEST_CASE("rcFilterLowHangingWalkableObstacles", "[recast, filtering]")
 
 	SECTION("Only the first of multiple, low obstacles are marked walkable")
 	{
-		rcSpan* span = (rcSpan*)rcAlloc(sizeof(rcSpan), RC_ALLOC_PERMANENT);
+		rcSpan* span = (rcSpan*)rcAllocate(sizeof(rcSpan), RC_ALLOC_PERMANENT);
 		span->area = 1;
 		span->next = NULL;
 		span->smin = 0;
@@ -146,7 +146,7 @@ TEST_CASE("rcFilterLowHangingWalkableObstacles", "[recast, filtering]")
 		rcSpan* previousSpan = span;
 		for (int i = 0; i < 9; ++i)
 		{
-			rcSpan* nextSpan = (rcSpan*)rcAlloc(sizeof(rcSpan), RC_ALLOC_PERMANENT);
+			rcSpan* nextSpan = (rcSpan*)rcAllocate(sizeof(rcSpan), RC_ALLOC_PERMANENT);
 			nextSpan->area = RC_NULL_AREA;
 			nextSpan->next = NULL;
 			nextSpan->smin = previousSpan->smax + (walkableHeight - 1);
@@ -198,7 +198,7 @@ TEST_CASE("rcFilterLedgeSpans", "[recast, filtering]")
 	heightfield.boundMax[2] = 10;
 	heightfield.cellSize = 1;
 	heightfield.cellHeight = 1;
-	heightfield.spans = (rcSpan**)rcAlloc(heightfield.width * heightfield.height * sizeof(rcSpan*), RC_ALLOC_PERMANENT);
+	heightfield.spans = (rcSpan**)rcAllocate(heightfield.width * heightfield.height * sizeof(rcSpan*), RC_ALLOC_PERMANENT);
 	heightfield.pools = NULL;
 	heightfield.freelist = NULL;
 
@@ -209,7 +209,7 @@ TEST_CASE("rcFilterLedgeSpans", "[recast, filtering]")
 		{
 			for (int z = 0; z < heightfield.height; ++z)
 			{
-				rcSpan* span = (rcSpan*)rcAlloc(sizeof(rcSpan), RC_ALLOC_PERMANENT);
+				rcSpan* span = (rcSpan*)rcAllocate(sizeof(rcSpan), RC_ALLOC_PERMANENT);
 				span->area = 1;
 				span->next = NULL;
 				span->smin = 0;
@@ -269,13 +269,13 @@ TEST_CASE("rcFilterWalkableLowHeightSpans", "[recast, filtering]")
 	heightfield.boundMax[2] = 1;
 	heightfield.cellSize = 1;
 	heightfield.cellHeight = 1;
-	heightfield.spans = (rcSpan**)rcAlloc(heightfield.width * heightfield.height * sizeof(rcSpan*), RC_ALLOC_PERMANENT);
+	heightfield.spans = (rcSpan**)rcAllocate(heightfield.width * heightfield.height * sizeof(rcSpan*), RC_ALLOC_PERMANENT);
 	heightfield.pools = NULL;
 	heightfield.freelist = NULL;
 
 	SECTION("span nothing above is unchanged")
 	{
-		rcSpan* span = (rcSpan*)rcAlloc(sizeof(rcSpan), RC_ALLOC_PERMANENT);
+		rcSpan* span = (rcSpan*)rcAllocate(sizeof(rcSpan), RC_ALLOC_PERMANENT);
 		span->area = 1;
 		span->next = NULL;
 		span->smin = 0;
@@ -291,13 +291,13 @@ TEST_CASE("rcFilterWalkableLowHeightSpans", "[recast, filtering]")
 
 	SECTION("span with lots of room above is unchanged")
 	{
-		rcSpan* overheadSpan = (rcSpan*)rcAlloc(sizeof(rcSpan), RC_ALLOC_PERMANENT);
+		rcSpan* overheadSpan = (rcSpan*)rcAllocate(sizeof(rcSpan), RC_ALLOC_PERMANENT);
 		overheadSpan->area = RC_NULL_AREA;
 		overheadSpan->next = NULL;
 		overheadSpan->smin = 10;
 		overheadSpan->smax = 11;
 
-		rcSpan* span = (rcSpan*)rcAlloc(sizeof(rcSpan), RC_ALLOC_PERMANENT);
+		rcSpan* span = (rcSpan*)rcAllocate(sizeof(rcSpan), RC_ALLOC_PERMANENT);
 		span->area = 1;
 		span->next = overheadSpan;
 		span->smin = 0;
@@ -315,13 +315,13 @@ TEST_CASE("rcFilterWalkableLowHeightSpans", "[recast, filtering]")
 
 	SECTION("Span with low hanging obstacle is marked as unwalkable")
 	{
-		rcSpan* overheadSpan = (rcSpan*)rcAlloc(sizeof(rcSpan), RC_ALLOC_PERMANENT);
+		rcSpan* overheadSpan = (rcSpan*)rcAllocate(sizeof(rcSpan), RC_ALLOC_PERMANENT);
 		overheadSpan->area = RC_NULL_AREA;
 		overheadSpan->next = NULL;
 		overheadSpan->smin = 3;
 		overheadSpan->smax = 4;
 
-		rcSpan* span = (rcSpan*)rcAlloc(sizeof(rcSpan), RC_ALLOC_PERMANENT);
+		rcSpan* span = (rcSpan*)rcAllocate(sizeof(rcSpan), RC_ALLOC_PERMANENT);
 		span->area = 1;
 		span->next = overheadSpan;
 		span->smin = 0;

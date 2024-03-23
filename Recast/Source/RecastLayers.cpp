@@ -112,7 +112,7 @@ bool rcBuildHeightfieldLayers(rcContext* ctx, const rcCompactHeightfield& chf,
 	const int w = chf.width;
 	const int h = chf.height;
 	
-	rcScopedDelete<unsigned char> srcReg((unsigned char*)rcAlloc(sizeof(unsigned char)*chf.spanCount, RC_ALLOC_TEMPORARY));
+	rcScopedDelete<unsigned char> srcReg((unsigned char*)rcAllocate(sizeof(unsigned char)*chf.spanCount, RC_ALLOC_TEMPORARY));
 	if (!srcReg)
 	{
 		ctx->log(RC_LOG_ERROR, "rcBuildHeightfieldLayers: Out of memory 'srcReg' (%d).", chf.spanCount);
@@ -121,7 +121,7 @@ bool rcBuildHeightfieldLayers(rcContext* ctx, const rcCompactHeightfield& chf,
 	memset(srcReg,0xff,sizeof(unsigned char)*chf.spanCount);
 	
 	const int nsweeps = chf.width;
-	rcScopedDelete<rcLayerSweepSpan> sweeps((rcLayerSweepSpan*)rcAlloc(sizeof(rcLayerSweepSpan)*nsweeps, RC_ALLOC_TEMPORARY));
+	rcScopedDelete<rcLayerSweepSpan> sweeps((rcLayerSweepSpan*)rcAllocate(sizeof(rcLayerSweepSpan)*nsweeps, RC_ALLOC_TEMPORARY));
 	if (!sweeps)
 	{
 		ctx->log(RC_LOG_ERROR, "rcBuildHeightfieldLayers: Out of memory 'sweeps' (%d).", nsweeps);
@@ -232,7 +232,7 @@ bool rcBuildHeightfieldLayers(rcContext* ctx, const rcCompactHeightfield& chf,
 
 	// Allocate and init layer regions.
 	const int nregs = (int)regId;
-	rcScopedDelete<rcLayerRegion> regs((rcLayerRegion*)rcAlloc(sizeof(rcLayerRegion)*nregs, RC_ALLOC_TEMPORARY));
+	rcScopedDelete<rcLayerRegion> regs((rcLayerRegion*)rcAllocate(sizeof(rcLayerRegion)*nregs, RC_ALLOC_TEMPORARY));
 	if (!regs)
 	{
 		ctx->log(RC_LOG_ERROR, "rcBuildHeightfieldLayers: Out of memory 'regs' (%d).", nregs);
@@ -508,7 +508,7 @@ bool rcBuildHeightfieldLayers(rcContext* ctx, const rcCompactHeightfield& chf,
 	
 	lset.nlayers = (int)layerId;
 	
-	lset.layers = (rcHeightfieldLayer*)rcAlloc(sizeof(rcHeightfieldLayer)*lset.nlayers, RC_ALLOC_PERMANENT);
+	lset.layers = (rcHeightfieldLayer*)rcAllocate(sizeof(rcHeightfieldLayer)*lset.nlayers, RC_ALLOC_PERMANENT);
 	if (!lset.layers)
 	{
 		ctx->log(RC_LOG_ERROR, "rcBuildHeightfieldLayers: Out of memory 'layers' (%d).", lset.nlayers);
@@ -526,7 +526,7 @@ bool rcBuildHeightfieldLayers(rcContext* ctx, const rcCompactHeightfield& chf,
 
 		const int gridSize = sizeof(unsigned char)*lw*lh;
 
-		layer->heights = (unsigned char*)rcAlloc(gridSize, RC_ALLOC_PERMANENT);
+		layer->heights = (unsigned char*)rcAllocate(gridSize, RC_ALLOC_PERMANENT);
 		if (!layer->heights)
 		{
 			ctx->log(RC_LOG_ERROR, "rcBuildHeightfieldLayers: Out of memory 'heights' (%d).", gridSize);
@@ -534,7 +534,7 @@ bool rcBuildHeightfieldLayers(rcContext* ctx, const rcCompactHeightfield& chf,
 		}
 		memset(layer->heights, 0xff, gridSize);
 
-		layer->areaIds = (unsigned char*)rcAlloc(gridSize, RC_ALLOC_PERMANENT);
+		layer->areaIds = (unsigned char*)rcAllocate(gridSize, RC_ALLOC_PERMANENT);
 		if (!layer->areaIds)
 		{
 			ctx->log(RC_LOG_ERROR, "rcBuildHeightfieldLayers: Out of memory 'areas' (%d).", gridSize);
@@ -542,7 +542,7 @@ bool rcBuildHeightfieldLayers(rcContext* ctx, const rcCompactHeightfield& chf,
 		}
 		memset(layer->areaIds, 0, gridSize);
 
-		layer->connections = (unsigned char*)rcAlloc(gridSize, RC_ALLOC_PERMANENT);
+		layer->connections = (unsigned char*)rcAllocate(gridSize, RC_ALLOC_PERMANENT);
 		if (!layer->connections)
 		{
 			ctx->log(RC_LOG_ERROR, "rcBuildHeightfieldLayers: Out of memory 'cons' (%d).", gridSize);

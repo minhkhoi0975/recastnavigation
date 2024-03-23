@@ -48,7 +48,7 @@ static rcSpan* allocSpan(rcHeightfield& heightfield)
 	{
 		// Create new page.
 		// Allocate memory for the new pool.
-		rcSpanPool* spanPool = (rcSpanPool*)rcAlloc(sizeof(rcSpanPool), RC_ALLOC_PERMANENT);
+		rcSpanPool* spanPool = (rcSpanPool*)rcAllocate(sizeof(rcSpanPool), RC_ALLOC_PERMANENT);
 		if (spanPool == NULL)
 		{
 			return NULL;

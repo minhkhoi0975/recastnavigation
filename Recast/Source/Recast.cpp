@@ -32,7 +32,7 @@ namespace
 template<typename T>
 T* rcNew(const rcAllocHint allocLifetime)
 {
-	T* ptr = (T*)rcAlloc(sizeof(T), allocLifetime);
+	T* ptr = (T*)rcAllocate(sizeof(T), allocLifetime);
 	::new(rcNewTag(), (void*)ptr) T();
 	return ptr;
 }
@@ -315,7 +315,7 @@ bool rcCreateHeightfield(rcContext* context, rcHeightfield& heightfield, int siz
 	rcCopyVector(heightfield.boundMax, maxBounds);
 	heightfield.cellSize = cellSize;
 	heightfield.cellHeight = cellHeight;
-	heightfield.spans = (rcSpan**)rcAlloc(sizeof(rcSpan*) * heightfield.width * heightfield.height, RC_ALLOC_PERMANENT);
+	heightfield.spans = (rcSpan**)rcAllocate(sizeof(rcSpan*) * heightfield.width * heightfield.height, RC_ALLOC_PERMANENT);
 	if (!heightfield.spans)
 	{
 		return false;
@@ -423,21 +423,21 @@ bool rcBuildCompactHeightfield(rcContext* context, const int walkableHeight, con
 	compactHeightfield.boundMax[1] += walkableHeight * heightfield.cellHeight;
 	compactHeightfield.cellSize = heightfield.cellSize;
 	compactHeightfield.cellHeight = heightfield.cellHeight;
-	compactHeightfield.cells = (rcCompactCell*)rcAlloc(sizeof(rcCompactCell) * xSize * zSize, RC_ALLOC_PERMANENT);
+	compactHeightfield.cells = (rcCompactCell*)rcAllocate(sizeof(rcCompactCell) * xSize * zSize, RC_ALLOC_PERMANENT);
 	if (!compactHeightfield.cells)
 	{
 		context->log(RC_LOG_ERROR, "rcBuildCompactHeightfield: Out of memory 'chf.cells' (%d)", xSize * zSize);
 		return false;
 	}
 	memset(compactHeightfield.cells, 0, sizeof(rcCompactCell) * xSize * zSize);
-	compactHeightfield.spans = (rcCompactSpan*)rcAlloc(sizeof(rcCompactSpan) * spanCount, RC_ALLOC_PERMANENT);
+	compactHeightfield.spans = (rcCompactSpan*)rcAllocate(sizeof(rcCompactSpan) * spanCount, RC_ALLOC_PERMANENT);
 	if (!compactHeightfield.spans)
 	{
 		context->log(RC_LOG_ERROR, "rcBuildCompactHeightfield: Out of memory 'chf.spans' (%d)", spanCount);
 		return false;
 	}
 	memset(compactHeightfield.spans, 0, sizeof(rcCompactSpan) * spanCount);
-	compactHeightfield.areaIds = (unsigned char*)rcAlloc(sizeof(unsigned char) * spanCount, RC_ALLOC_PERMANENT);
+	compactHeightfield.areaIds = (unsigned char*)rcAllocate(sizeof(unsigned char) * spanCount, RC_ALLOC_PERMANENT);
 	if (!compactHeightfield.areaIds)
 	{
 		context->log(RC_LOG_ERROR, "rcBuildCompactHeightfield: Out of memory 'chf.areas' (%d)", spanCount);

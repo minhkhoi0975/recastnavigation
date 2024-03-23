@@ -36,19 +36,19 @@ enum rcAllocHint
 //  @param[in]		rcAllocHint	A hint to the allocator on how long the memory is expected to be in use.
 //  @return A pointer to the beginning of the allocated memory block, or null if the allocation failed.
 ///  @see rcAllocSetCustom
-typedef void* (rcAllocFunc)(size_t size, rcAllocHint hint);
+typedef void* (rcAllocateFunction)(size_t size, rcAllocHint hint);
 
 /// A memory deallocation function.
 ///  @param[in]		ptr		A pointer to a memory block previously allocated using #rcAllocFunc.
 /// @see rcAllocSetCustom
-typedef void (rcFreeFunc)(void* ptr);
+typedef void (rcFreeFunction)(void* ptr);
 
 /// Sets the base custom allocation functions to be used by Recast.
-///  @param[in]		allocFunc	The memory allocation function to be used by #rcAlloc
+///  @param[in]		allocFunc	The memory allocation function to be used by #rcAllocate
 ///  @param[in]		freeFunc	The memory de-allocation function to be used by #rcFree
 ///  
-/// @see rcAlloc, rcFree
-void rcAllocSetCustom(rcAllocFunc *allocFunc, rcFreeFunc *freeFunc);
+/// @see rcAllocate, rcFree
+void rcAllocSetCustom(rcAllocateFunction *allocFunc, rcFreeFunction *freeFunc);
 
 /// Allocates a memory block.
 /// 
@@ -57,16 +57,16 @@ void rcAllocSetCustom(rcAllocFunc *allocFunc, rcFreeFunc *freeFunc);
 /// @return A pointer to the beginning of the allocated memory block, or null if the allocation failed.
 /// 
 /// @see rcFree, rcAllocSetCustom
-void* rcAlloc(size_t size, rcAllocHint hint);
+void* rcAllocate(size_t size, rcAllocHint hint);
 
 /// Deallocates a memory block.  If @p ptr is NULL, this does nothing.
 ///
 /// @warning This function leaves the value of @p ptr unchanged.  So it still
 /// points to the same (now invalid) location, and not to null.
 /// 
-/// @param[in]		ptr		A pointer to a memory block previously allocated using #rcAlloc.
+/// @param[in]		ptr		A pointer to a memory block previously allocated using #rcAllocate.
 /// 
-/// @see rcAlloc, rcAllocSetCustom
+/// @see rcAllocate, rcAllocSetCustom
 void rcFree(void* ptr);
 
 /// An implementation of operator new usable for placement new. The default one is part of STL (which we don't use).
@@ -92,7 +92,7 @@ typedef intptr_t rcSizeType;
 #endif
 
 /// Variable-sized storage type. Mimics the interface of std::vector<T> with some notable differences:
-///  * Uses rcAlloc()/rcFree() to handle storage.
+///  * Uses rcAllocate()/rcFree() to handle storage.
 ///  * No support for a custom allocator.
 ///  * Uses signed size instead of size_t to avoid warnings in for loops: "for (int i = 0; i < foo.size(); i++)"
 ///  * Omits methods of limited utility: insert/erase, (bad performance), at (we don't use exceptions), operator=.
@@ -184,7 +184,7 @@ bool rcVectorBase<T, H>::reserve(rcSizeType count) {
 template <typename T, rcAllocHint H>
 T* rcVectorBase<T, H>::allocate_and_copy(rcSizeType size) {
 	rcAssert(RC_SIZE_MAX / static_cast<rcSizeType>(sizeof(T)) >= size);
-	T* new_data = static_cast<T*>(rcAlloc(sizeof(T) * size, H));
+	T* new_data = static_cast<T*>(rcAllocate(sizeof(T) * size, H));
 	if (new_data) {
 		copy_range(new_data, m_data, m_data + m_size);
 	}

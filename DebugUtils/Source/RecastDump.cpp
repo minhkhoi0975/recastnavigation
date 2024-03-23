@@ -209,7 +209,7 @@ bool duReadContourSet(struct rcContourSet& cset, duFileIO* io)
 	
 	io->read(&cset.contoursCount, sizeof(cset.contoursCount));
 
-	cset.contours = (rcContour*)rcAlloc(sizeof(rcContour)*cset.contoursCount, RC_ALLOC_PERMANENT);
+	cset.contours = (rcContour*)rcAllocate(sizeof(rcContour)*cset.contoursCount, RC_ALLOC_PERMANENT);
 	if (!cset.contours)
 	{
 		printf("duReadContourSet: Could not alloc contours (%d)\n", cset.contoursCount);
@@ -235,13 +235,13 @@ bool duReadContourSet(struct rcContourSet& cset, duFileIO* io)
 		io->read(&cont.regionId, sizeof(cont.regionId));
 		io->read(&cont.areaId, sizeof(cont.areaId));
 
-		cont.vertices = (int*)rcAlloc(sizeof(int)*4*cont.verticesCount, RC_ALLOC_PERMANENT);
+		cont.vertices = (int*)rcAllocate(sizeof(int)*4*cont.verticesCount, RC_ALLOC_PERMANENT);
 		if (!cont.vertices)
 		{
 			printf("duReadContourSet: Could not alloc contour verts (%d)\n", cont.verticesCount);
 			return false;
 		}
-		cont.rawVertices = (int*)rcAlloc(sizeof(int)*4*cont.rawVerticesCount, RC_ALLOC_PERMANENT);
+		cont.rawVertices = (int*)rcAllocate(sizeof(int)*4*cont.rawVerticesCount, RC_ALLOC_PERMANENT);
 		if (!cont.rawVertices)
 		{
 			printf("duReadContourSet: Could not alloc contour rverts (%d)\n", cont.rawVerticesCount);
@@ -364,7 +364,7 @@ bool duReadCompactHeightfield(struct rcCompactHeightfield& chf, duFileIO* io)
 	
 	if (tmp & 1)
 	{
-		chf.cells = (rcCompactCell*)rcAlloc(sizeof(rcCompactCell)*chf.width*chf.height, RC_ALLOC_PERMANENT);
+		chf.cells = (rcCompactCell*)rcAllocate(sizeof(rcCompactCell)*chf.width*chf.height, RC_ALLOC_PERMANENT);
 		if (!chf.cells)
 		{
 			printf("duReadCompactHeightfield: Could not alloc cells (%d)\n", chf.width*chf.height);
@@ -374,7 +374,7 @@ bool duReadCompactHeightfield(struct rcCompactHeightfield& chf, duFileIO* io)
 	}
 	if (tmp & 2)
 	{
-		chf.spans = (rcCompactSpan*)rcAlloc(sizeof(rcCompactSpan)*chf.spanCount, RC_ALLOC_PERMANENT);
+		chf.spans = (rcCompactSpan*)rcAllocate(sizeof(rcCompactSpan)*chf.spanCount, RC_ALLOC_PERMANENT);
 		if (!chf.spans)
 		{
 			printf("duReadCompactHeightfield: Could not alloc spans (%d)\n", chf.spanCount);
@@ -384,7 +384,7 @@ bool duReadCompactHeightfield(struct rcCompactHeightfield& chf, duFileIO* io)
 	}
 	if (tmp & 4)
 	{
-		chf.distancesToBorder = (unsigned short*)rcAlloc(sizeof(unsigned short)*chf.spanCount, RC_ALLOC_PERMANENT);
+		chf.distancesToBorder = (unsigned short*)rcAllocate(sizeof(unsigned short)*chf.spanCount, RC_ALLOC_PERMANENT);
 		if (!chf.distancesToBorder)
 		{
 			printf("duReadCompactHeightfield: Could not alloc dist (%d)\n", chf.spanCount);
@@ -394,7 +394,7 @@ bool duReadCompactHeightfield(struct rcCompactHeightfield& chf, duFileIO* io)
 	}
 	if (tmp & 8)
 	{
-		chf.areaIds = (unsigned char*)rcAlloc(sizeof(unsigned char)*chf.spanCount, RC_ALLOC_PERMANENT);
+		chf.areaIds = (unsigned char*)rcAllocate(sizeof(unsigned char)*chf.spanCount, RC_ALLOC_PERMANENT);
 		if (!chf.areaIds)
 		{
 			printf("duReadCompactHeightfield: Could not alloc areas (%d)\n", chf.spanCount);

@@ -1206,13 +1206,13 @@ bool rcBuildPolyMeshDetail(rcContext* ctx, const rcPolyMesh& mesh, const rcCompa
 	int nPolyVerts = 0;
 	int maxhw = 0, maxhh = 0;
 	
-	rcScopedDelete<int> bounds((int*)rcAlloc(sizeof(int)*mesh.polygonsCount*4, RC_ALLOC_TEMPORARY));
+	rcScopedDelete<int> bounds((int*)rcAllocate(sizeof(int)*mesh.polygonsCount*4, RC_ALLOC_TEMPORARY));
 	if (!bounds)
 	{
 		ctx->log(RC_LOG_ERROR, "rcBuildPolyMeshDetail: Out of memory 'bounds' (%d).", mesh.polygonsCount*4);
 		return false;
 	}
-	rcScopedDelete<float> poly((float*)rcAlloc(sizeof(float)*nvp*3, RC_ALLOC_TEMPORARY));
+	rcScopedDelete<float> poly((float*)rcAllocate(sizeof(float)*nvp*3, RC_ALLOC_TEMPORARY));
 	if (!poly)
 	{
 		ctx->log(RC_LOG_ERROR, "rcBuildPolyMeshDetail: Out of memory 'poly' (%d).", nvp*3);
@@ -1250,7 +1250,7 @@ bool rcBuildPolyMeshDetail(rcContext* ctx, const rcPolyMesh& mesh, const rcCompa
 		maxhh = rcMax(maxhh, ymax-ymin);
 	}
 	
-	hp.data = (unsigned short*)rcAlloc(sizeof(unsigned short)*maxhw*maxhh, RC_ALLOC_TEMPORARY);
+	hp.data = (unsigned short*)rcAllocate(sizeof(unsigned short)*maxhw*maxhh, RC_ALLOC_TEMPORARY);
 	if (!hp.data)
 	{
 		ctx->log(RC_LOG_ERROR, "rcBuildPolyMeshDetail: Out of memory 'hp.data' (%d).", maxhw*maxhh);
@@ -1260,7 +1260,7 @@ bool rcBuildPolyMeshDetail(rcContext* ctx, const rcPolyMesh& mesh, const rcCompa
 	dmesh.meshesCount = mesh.polygonsCount;
 	dmesh.verticesCount = 0;
 	dmesh.trianglesCount = 0;
-	dmesh.meshes = (unsigned int*)rcAlloc(sizeof(unsigned int)*dmesh.meshesCount*4, RC_ALLOC_PERMANENT);
+	dmesh.meshes = (unsigned int*)rcAllocate(sizeof(unsigned int)*dmesh.meshesCount*4, RC_ALLOC_PERMANENT);
 	if (!dmesh.meshes)
 	{
 		ctx->log(RC_LOG_ERROR, "rcBuildPolyMeshDetail: Out of memory 'dmesh.meshes' (%d).", dmesh.meshesCount*4);
@@ -1271,14 +1271,14 @@ bool rcBuildPolyMeshDetail(rcContext* ctx, const rcPolyMesh& mesh, const rcCompa
 	int tcap = vcap*2;
 	
 	dmesh.verticesCount = 0;
-	dmesh.vertices = (float*)rcAlloc(sizeof(float)*vcap*3, RC_ALLOC_PERMANENT);
+	dmesh.vertices = (float*)rcAllocate(sizeof(float)*vcap*3, RC_ALLOC_PERMANENT);
 	if (!dmesh.vertices)
 	{
 		ctx->log(RC_LOG_ERROR, "rcBuildPolyMeshDetail: Out of memory 'dmesh.verts' (%d).", vcap*3);
 		return false;
 	}
 	dmesh.trianglesCount = 0;
-	dmesh.triangles = (unsigned char*)rcAlloc(sizeof(unsigned char)*tcap*4, RC_ALLOC_PERMANENT);
+	dmesh.triangles = (unsigned char*)rcAllocate(sizeof(unsigned char)*tcap*4, RC_ALLOC_PERMANENT);
 	if (!dmesh.triangles)
 	{
 		ctx->log(RC_LOG_ERROR, "rcBuildPolyMeshDetail: Out of memory 'dmesh.tris' (%d).", tcap*4);
@@ -1348,7 +1348,7 @@ bool rcBuildPolyMeshDetail(rcContext* ctx, const rcPolyMesh& mesh, const rcCompa
 			while (dmesh.verticesCount+nverts > vcap)
 				vcap += 256;
 			
-			float* newv = (float*)rcAlloc(sizeof(float)*vcap*3, RC_ALLOC_PERMANENT);
+			float* newv = (float*)rcAllocate(sizeof(float)*vcap*3, RC_ALLOC_PERMANENT);
 			if (!newv)
 			{
 				ctx->log(RC_LOG_ERROR, "rcBuildPolyMeshDetail: Out of memory 'newv' (%d).", vcap*3);
@@ -1372,7 +1372,7 @@ bool rcBuildPolyMeshDetail(rcContext* ctx, const rcPolyMesh& mesh, const rcCompa
 		{
 			while (dmesh.trianglesCount+ntris > tcap)
 				tcap += 256;
-			unsigned char* newt = (unsigned char*)rcAlloc(sizeof(unsigned char)*tcap*4, RC_ALLOC_PERMANENT);
+			unsigned char* newt = (unsigned char*)rcAllocate(sizeof(unsigned char)*tcap*4, RC_ALLOC_PERMANENT);
 			if (!newt)
 			{
 				ctx->log(RC_LOG_ERROR, "rcBuildPolyMeshDetail: Out of memory 'newt' (%d).", tcap*4);
@@ -1417,7 +1417,7 @@ bool rcMergePolyMeshDetails(rcContext* ctx, rcPolyMeshDetail** meshes, const int
 	}
 	
 	mesh.meshesCount = 0;
-	mesh.meshes = (unsigned int*)rcAlloc(sizeof(unsigned int)*maxMeshes*4, RC_ALLOC_PERMANENT);
+	mesh.meshes = (unsigned int*)rcAllocate(sizeof(unsigned int)*maxMeshes*4, RC_ALLOC_PERMANENT);
 	if (!mesh.meshes)
 	{
 		ctx->log(RC_LOG_ERROR, "rcBuildPolyMeshDetail: Out of memory 'pmdtl.meshes' (%d).", maxMeshes*4);
@@ -1425,7 +1425,7 @@ bool rcMergePolyMeshDetails(rcContext* ctx, rcPolyMeshDetail** meshes, const int
 	}
 	
 	mesh.trianglesCount = 0;
-	mesh.triangles = (unsigned char*)rcAlloc(sizeof(unsigned char)*maxTris*4, RC_ALLOC_PERMANENT);
+	mesh.triangles = (unsigned char*)rcAllocate(sizeof(unsigned char)*maxTris*4, RC_ALLOC_PERMANENT);
 	if (!mesh.triangles)
 	{
 		ctx->log(RC_LOG_ERROR, "rcBuildPolyMeshDetail: Out of memory 'dmesh.tris' (%d).", maxTris*4);
@@ -1433,7 +1433,7 @@ bool rcMergePolyMeshDetails(rcContext* ctx, rcPolyMeshDetail** meshes, const int
 	}
 	
 	mesh.verticesCount = 0;
-	mesh.vertices = (float*)rcAlloc(sizeof(float)*maxVerts*3, RC_ALLOC_PERMANENT);
+	mesh.vertices = (float*)rcAllocate(sizeof(float)*maxVerts*3, RC_ALLOC_PERMANENT);
 	if (!mesh.vertices)
 	{
 		ctx->log(RC_LOG_ERROR, "rcBuildPolyMeshDetail: Out of memory 'dmesh.verts' (%d).", maxVerts*3);

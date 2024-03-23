@@ -28,16 +28,16 @@ static void rcFreeDefault(void *ptr)
 	free(ptr);
 }
 
-static rcAllocFunc* sRecastAllocFunc = rcAllocDefault;
-static rcFreeFunc* sRecastFreeFunc = rcFreeDefault;
+static rcAllocateFunction* sRecastAllocFunc = rcAllocDefault;
+static rcFreeFunction* sRecastFreeFunc = rcFreeDefault;
 
-void rcAllocSetCustom(rcAllocFunc* allocFunc, rcFreeFunc* freeFunc)
+void rcAllocSetCustom(rcAllocateFunction* allocFunc, rcFreeFunction* freeFunc)
 {
 	sRecastAllocFunc = allocFunc ? allocFunc : rcAllocDefault;
 	sRecastFreeFunc = freeFunc ? freeFunc : rcFreeDefault;
 }
 
-void* rcAlloc(size_t size, rcAllocHint hint)
+void* rcAllocate(size_t size, rcAllocHint hint)
 {
 	return sRecastAllocFunc(size, hint);
 }
