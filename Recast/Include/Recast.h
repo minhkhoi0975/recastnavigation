@@ -20,7 +20,7 @@
 #define RECAST_H
 
 /// The value of PI used by Recast.
-static const float RC_PI = 3.14159265f;
+static constexpr float RC_PI = 3.14159265f;
 
 /// Used to ignore unused function parameters and silence any compiler warnings.
 template<class T> void rcIgnoreUnused(const T&) { }
