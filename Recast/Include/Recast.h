@@ -891,8 +891,8 @@ void rcMarkWalkableTriangles(rcContext* context, float walkableSlopeAngle, const
 /// @param[in]		triangles				The triangle vertex indices. [(vertA, vertB, vertC) * @p nt]
 /// @param[in]		trianglesCount				The number of triangles.
 /// @param[out]		triangleAreaIds			The triangle area ids. [Length: >= @p nt]
-void rcClearUnwalkableTriangles(rcContext* context, float walkableSlopeAngle, const float* verts, int numVerts,
-								const int* tris, int numTris, unsigned char* triAreaIDs); 
+void rcClearUnwalkableTriangles(rcContext* context, float walkableSlopeAngle, const float* vertices, int verticesCount,
+								const int* triangles, int trianglesCount, unsigned char* triangleAreaIds); 
 
 /// Adds a span to the specified heightfield.
 /// 
