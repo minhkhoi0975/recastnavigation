@@ -16,7 +16,6 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //
 
-#include <cstdio>
 #include <cmath>
 
 #include "SDL.h"
@@ -27,6 +26,7 @@
 #	include <GL/glu.h>
 #endif
 
+#include <iostream>
 #include <vector>
 #include <string>
 
@@ -73,7 +73,7 @@ int main(int /*argc*/, char** /*argv*/)
 	// Init SDL
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
 	{
-		printf("Could not initialise SDL.\nError: %s\n", SDL_GetError());
+		std::cout << "Could not initialize SDL.\nError: " << SDL_GetError() << '\n';
 		return -1;
 	}
 
@@ -121,7 +121,7 @@ int main(int /*argc*/, char** /*argv*/)
 
 	if (errorCode != 0 || !window || !renderer)
 	{
-		printf("Could not initialise SDL opengl\nError: %s\n", SDL_GetError());
+		std::cout << "Could not initialize SDL opengl.\nError: " << SDL_GetError() << '\n';
 		return -1;
 	}
 
@@ -129,20 +129,20 @@ int main(int /*argc*/, char** /*argv*/)
 
 	if (!imguiRenderGLInit("DroidSans.ttf"))
 	{
-		printf("Could not init GUI renderer.\n");
+		std::cout << "Could not init GUI renderer.\n";
 		SDL_Quit();
 		return -1;
 	}
 	
 	float timeAcc = 0.0f;
 	Uint32 prevFrameTime = SDL_GetTicks();
-	int mousePos[2] = {0, 0};
-	int origMousePos[2] = {0, 0}; // Used to compute mouse movement totals across frames.
+	int mousePosition[2] = {0, 0};
+	int originalMousePosition[2] = {0, 0}; // Used to compute mouse movement totals across frames.
 	
 	float cameraEulers[] = {45, -45};
-	float cameraPos[] = {0, 0, 0};
+	float cameraPosition[] = {0, 0, 0};
 	float camr = 1000;
-	float origCameraEulers[] = {0, 0}; // Used to compute rotational changes across frames.
+	float originalCameraEulers[] = {0, 0}; // Used to compute rotational changes across frames.
 	
 	float moveFront = 0.0f, moveBack = 0.0f, moveLeft = 0.0f, moveRight = 0.0f, moveUp = 0.0f, moveDown = 0.0f;
 	
@@ -174,7 +174,7 @@ int main(int /*argc*/, char** /*argv*/)
 	float markerPosition[3] = {0, 0, 0};
 	bool markerPositionSet = false;
 	
-	InputGeom* geom = 0;
+	InputGeom* inputGeometry = 0;
 	Sample* sample = 0;
 
 	const string testCasesFolder = "TestCases";
@@ -235,18 +235,18 @@ int main(int /*argc*/, char** /*argv*/)
 					}
 					else if (event.key.keysym.sym == SDLK_9)
 					{
-						if (sample && geom)
+						if (sample && inputGeometry)
 						{
 							string savePath = meshesFolder + "/";
 							BuildSettings settings;
 							memset(&settings, 0, sizeof(settings));
 
-							rcVcopy(settings.navMeshBMin, geom->getNavMeshBoundsMin());
-							rcVcopy(settings.navMeshBMax, geom->getNavMeshBoundsMax());
+							rcVcopy(settings.navMeshBMin, inputGeometry->getNavMeshBoundsMin());
+							rcVcopy(settings.navMeshBMax, inputGeometry->getNavMeshBoundsMax());
 
 							sample->collectSettings(settings);
 
-							geom->saveGeomSet(&settings);
+							inputGeometry->saveGeomSet(&settings);
 						}
 					}
 					break;
@@ -284,10 +284,10 @@ int main(int /*argc*/, char** /*argv*/)
 							// Rotate view
 							rotate = true;
 							movedDuringRotate = false;
-							origMousePos[0] = mousePos[0];
-							origMousePos[1] = mousePos[1];
-							origCameraEulers[0] = cameraEulers[0];
-							origCameraEulers[1] = cameraEulers[1];
+							originalMousePosition[0] = mousePosition[0];
+							originalMousePosition[1] = mousePosition[1];
+							originalCameraEulers[0] = cameraEulers[0];
+							originalCameraEulers[1] = cameraEulers[1];
 						}
 					}
 					break;
@@ -318,15 +318,15 @@ int main(int /*argc*/, char** /*argv*/)
 					break;
 					
 				case SDL_MOUSEMOTION:
-					mousePos[0] = event.motion.x;
-					mousePos[1] = height-1 - event.motion.y;
+					mousePosition[0] = event.motion.x;
+					mousePosition[1] = height-1 - event.motion.y;
 					
 					if (rotate)
 					{
-						int dx = mousePos[0] - origMousePos[0];
-						int dy = mousePos[1] - origMousePos[1];
-						cameraEulers[0] = origCameraEulers[0] - dy * 0.25f;
-						cameraEulers[1] = origCameraEulers[1] + dx * 0.25f;
+						int dx = mousePosition[0] - originalMousePosition[0];
+						int dy = mousePosition[1] - originalMousePosition[1];
+						cameraEulers[0] = originalCameraEulers[0] - dy * 0.25f;
+						cameraEulers[1] = originalCameraEulers[1] + dx * 0.25f;
 						if (dx * dx + dy * dy > 3 * 3)
 						{
 							movedDuringRotate = true;
@@ -354,10 +354,10 @@ int main(int /*argc*/, char** /*argv*/)
 		prevFrameTime = time;
 
 		// Hit test mesh.
-		if (processHitTest && geom && sample)
+		if (processHitTest && inputGeometry && sample)
 		{
 			float hitTime;
-			bool hit = geom->raycastMesh(rayStart, rayEnd, hitTime);
+			bool hit = inputGeometry->raycastMesh(rayStart, rayEnd, hitTime);
 			
 			if (hit)
 			{
@@ -437,17 +437,17 @@ int main(int /*argc*/, char** /*argv*/)
 		glLoadIdentity();
 		glRotatef(cameraEulers[0], 1, 0, 0);
 		glRotatef(cameraEulers[1], 0, 1, 0);
-		glTranslatef(-cameraPos[0], -cameraPos[1], -cameraPos[2]);
+		glTranslatef(-cameraPosition[0], -cameraPosition[1], -cameraPosition[2]);
 		GLdouble modelviewMatrix[16];
 		glGetDoublev(GL_MODELVIEW_MATRIX, modelviewMatrix);
 		
 		// Get hit ray position and direction.
 		GLdouble x, y, z;
-		gluUnProject(mousePos[0], mousePos[1], 0.0f, modelviewMatrix, projectionMatrix, viewport, &x, &y, &z);
+		gluUnProject(mousePosition[0], mousePosition[1], 0.0f, modelviewMatrix, projectionMatrix, viewport, &x, &y, &z);
 		rayStart[0] = (float)x;
 		rayStart[1] = (float)y;
 		rayStart[2] = (float)z;
-		gluUnProject(mousePos[0], mousePos[1], 1.0f, modelviewMatrix, projectionMatrix, viewport, &x, &y, &z);
+		gluUnProject(mousePosition[0], mousePosition[1], 1.0f, modelviewMatrix, projectionMatrix, viewport, &x, &y, &z);
 		rayEnd[0] = (float)x;
 		rayEnd[1] = (float)y;
 		rayEnd[2] = (float)z;
@@ -471,15 +471,15 @@ int main(int /*argc*/, char** /*argv*/)
 		float movey = (moveBack - moveFront) * keybSpeed * dt + scrollZoom * 2.0f;
 		scrollZoom = 0;
 		
-		cameraPos[0] += movex * (float)modelviewMatrix[0];
-		cameraPos[1] += movex * (float)modelviewMatrix[4];
-		cameraPos[2] += movex * (float)modelviewMatrix[8];
+		cameraPosition[0] += movex * (float)modelviewMatrix[0];
+		cameraPosition[1] += movex * (float)modelviewMatrix[4];
+		cameraPosition[2] += movex * (float)modelviewMatrix[8];
 		
-		cameraPos[0] += movey * (float)modelviewMatrix[2];
-		cameraPos[1] += movey * (float)modelviewMatrix[6];
-		cameraPos[2] += movey * (float)modelviewMatrix[10];
+		cameraPosition[0] += movey * (float)modelviewMatrix[2];
+		cameraPosition[1] += movey * (float)modelviewMatrix[6];
+		cameraPosition[2] += movey * (float)modelviewMatrix[10];
 
-		cameraPos[1] += (moveUp - moveDown) * keybSpeed * dt;
+		cameraPosition[1] += (moveUp - moveDown) * keybSpeed * dt;
 
 		glEnable(GL_FOG);
 
@@ -500,7 +500,7 @@ int main(int /*argc*/, char** /*argv*/)
 		
 		mouseOverMenu = false;
 		
-		imguiBeginFrame(mousePos[0], mousePos[1], mouseButtonMask, mouseScroll);
+		imguiBeginFrame(mousePosition[0], mousePosition[1], mouseButtonMask, mouseScroll);
 		
 		if (sample)
 		{
@@ -562,17 +562,17 @@ int main(int /*argc*/, char** /*argv*/)
 					scanDirectoryAppend(meshesFolder, ".gset", files);
 				}
 			}
-			if (geom)
+			if (inputGeometry)
 			{
 				char text[64];
 				snprintf(text, 64, "Verts: %.1fk  Tris: %.1fk",
-						 geom->getMesh()->getVertCount()/1000.0f,
-						 geom->getMesh()->getTriCount()/1000.0f);
+						 inputGeometry->getMesh()->getVertCount()/1000.0f,
+						 inputGeometry->getMesh()->getTriCount()/1000.0f);
 				imguiValue(text);
 			}
 			imguiSeparator();
 
-			if (geom && sample)
+			if (inputGeometry && sample)
 			{
 				imguiSeparatorLine();
 				
@@ -627,21 +627,21 @@ int main(int /*argc*/, char** /*argv*/)
 				delete sample;
 				sample = newSample;
 				sample->setContext(&ctx);
-				if (geom)
+				if (inputGeometry)
 				{
-					sample->handleMeshChanged(geom);
+					sample->handleMeshChanged(inputGeometry);
 				}
 				showSample = false;
 			}
 
-			if (geom || sample)
+			if (inputGeometry || sample)
 			{
 				const float* bmin = 0;
 				const float* bmax = 0;
-				if (geom)
+				if (inputGeometry)
 				{
-					bmin = geom->getNavMeshBoundsMin();
-					bmax = geom->getNavMeshBoundsMax();
+					bmin = inputGeometry->getNavMeshBoundsMin();
+					bmax = inputGeometry->getNavMeshBoundsMax();
 				}
 				// Reset camera and fog to match the mesh bounds.
 				if (bmin && bmax)
@@ -649,9 +649,9 @@ int main(int /*argc*/, char** /*argv*/)
 					camr = sqrtf(rcSqr(bmax[0]-bmin[0]) +
 								 rcSqr(bmax[1]-bmin[1]) +
 								 rcSqr(bmax[2]-bmin[2])) / 2;
-					cameraPos[0] = (bmax[0] + bmin[0]) / 2 + camr;
-					cameraPos[1] = (bmax[1] + bmin[1]) / 2 + camr;
-					cameraPos[2] = (bmax[2] + bmin[2]) / 2 + camr;
+					cameraPosition[0] = (bmax[0] + bmin[0]) / 2 + camr;
+					cameraPosition[1] = (bmax[1] + bmin[1]) / 2 + camr;
+					cameraPosition[2] = (bmax[2] + bmin[2]) / 2 + camr;
 					camr *= 3;
 				}
 				cameraEulers[0] = 45;
@@ -686,16 +686,16 @@ int main(int /*argc*/, char** /*argv*/)
 				meshName = *levelToLoad;
 				showLevels = false;
 				
-				delete geom;
-				geom = 0;
+				delete inputGeometry;
+				inputGeometry = 0;
 				
 				string path = meshesFolder + "/" + meshName;
 				
-				geom = new InputGeom;
-				if (!geom->load(&ctx, path))
+				inputGeometry = new InputGeom;
+				if (!inputGeometry->load(&ctx, path))
 				{
-					delete geom;
-					geom = 0;
+					delete inputGeometry;
+					inputGeometry = 0;
 
 					// Destroy the sample if it already had geometry loaded, as we've just deleted it!
 					if (sample && sample->getInputGeom())
@@ -708,19 +708,19 @@ int main(int /*argc*/, char** /*argv*/)
 					logScroll = 0;
 					ctx.dumpLog("Geom load log %s:", meshName.c_str());
 				}
-				if (sample && geom)
+				if (sample && inputGeometry)
 				{
-					sample->handleMeshChanged(geom);
+					sample->handleMeshChanged(inputGeometry);
 				}
 
-				if (geom || sample)
+				if (inputGeometry || sample)
 				{
 					const float* bmin = 0;
 					const float* bmax = 0;
-					if (geom)
+					if (inputGeometry)
 					{
-						bmin = geom->getNavMeshBoundsMin();
-						bmax = geom->getNavMeshBoundsMax();
+						bmin = inputGeometry->getNavMeshBoundsMin();
+						bmax = inputGeometry->getNavMeshBoundsMax();
 					}
 					// Reset camera and fog to match the mesh bounds.
 					if (bmin && bmax)
@@ -728,9 +728,9 @@ int main(int /*argc*/, char** /*argv*/)
 						camr = sqrtf(rcSqr(bmax[0]-bmin[0]) +
 									 rcSqr(bmax[1]-bmin[1]) +
 									 rcSqr(bmax[2]-bmin[2])) / 2;
-						cameraPos[0] = (bmax[0] + bmin[0]) / 2 + camr;
-						cameraPos[1] = (bmax[1] + bmin[1]) / 2 + camr;
-						cameraPos[2] = (bmax[2] + bmin[2]) / 2 + camr;
+						cameraPosition[0] = (bmax[0] + bmin[0]) / 2 + camr;
+						cameraPosition[1] = (bmax[1] + bmin[1]) / 2 + camr;
+						cameraPosition[2] = (bmax[2] + bmin[2]) / 2 + camr;
 						camr *= 3;
 					}
 					cameraEulers[0] = 45;
@@ -802,21 +802,21 @@ int main(int /*argc*/, char** /*argv*/)
 					
 					path = meshesFolder + "/" + meshName;
 					
-					delete geom;
-					geom = new InputGeom;
-					if (!geom || !geom->load(&ctx, path))
+					delete inputGeometry;
+					inputGeometry = new InputGeom;
+					if (!inputGeometry || !inputGeometry->load(&ctx, path))
 					{
-						delete geom;
-						geom = 0;
+						delete inputGeometry;
+						inputGeometry = 0;
 						delete sample;
 						sample = 0;
 						showLog = true;
 						logScroll = 0;
 						ctx.dumpLog("Geom load log %s:", meshName.c_str());
 					}
-					if (sample && geom)
+					if (sample && inputGeometry)
 					{
-						sample->handleMeshChanged(geom);
+						sample->handleMeshChanged(inputGeometry);
 					}
 
 					// This will ensure that tile & poly bits are updated in tiled sample.
@@ -829,14 +829,14 @@ int main(int /*argc*/, char** /*argv*/)
 						ctx.dumpLog("Build log %s:", meshName.c_str());
 					}
 					
-					if (geom || sample)
+					if (inputGeometry || sample)
 					{
 						const float* bmin = 0;
 						const float* bmax = 0;
-						if (geom)
+						if (inputGeometry)
 						{
-							bmin = geom->getNavMeshBoundsMin();
-							bmax = geom->getNavMeshBoundsMax();
+							bmin = inputGeometry->getNavMeshBoundsMin();
+							bmax = inputGeometry->getNavMeshBoundsMax();
 						}
 						// Reset camera and fog to match the mesh bounds.
 						if (bmin && bmax)
@@ -844,9 +844,9 @@ int main(int /*argc*/, char** /*argv*/)
 							camr = sqrtf(rcSqr(bmax[0] - bmin[0]) +
 										 rcSqr(bmax[1] - bmin[1]) +
 										 rcSqr(bmax[2] - bmin[2])) / 2;
-							cameraPos[0] = (bmax[0] + bmin[0]) / 2 + camr;
-							cameraPos[1] = (bmax[1] + bmin[1]) / 2 + camr;
-							cameraPos[2] = (bmax[2] + bmin[2]) / 2 + camr;
+							cameraPosition[0] = (bmax[0] + bmin[0]) / 2 + camr;
+							cameraPosition[1] = (bmax[1] + bmin[1]) / 2 + camr;
+							cameraPosition[2] = (bmax[2] + bmin[2]) / 2 + camr;
 							camr *= 3;
 						}
 						cameraEulers[0] = 45;
@@ -919,7 +919,7 @@ int main(int /*argc*/, char** /*argv*/)
 	SDL_Quit();
 	
 	delete sample;
-	delete geom;
+	delete inputGeometry;
 	
 	return 0;
 }
