@@ -341,8 +341,8 @@ void rcMarkWalkableTriangles(rcContext* context, const float walkableSlopeAngle,
 	rcIgnoreUnused(context);
 	rcIgnoreUnused(verticesCount);
 
-	constexpr float degreesToRadians = RC_PI / 180.0f;
-	const float walkableThreshold = cosf(walkableSlopeAngle * degreesToRadians);
+	constexpr float DEGREES_TO_RADIANS = RC_PI / 180.0f;
+	const float walkableThreshold = cosf(walkableSlopeAngle * DEGREES_TO_RADIANS);
 
 	float triangleNormal[3];
 
@@ -383,16 +383,14 @@ int rcGetHeightFieldSpanCount(rcContext* context, const rcHeightfield& heightfie
 {
 	rcIgnoreUnused(context);
 
-	const int numCols = heightfield.width * heightfield.height;
+	const int columnsCount = heightfield.width * heightfield.height;
 	int spanCount = 0;
-	for (int columnIndex = 0; columnIndex < numCols; ++columnIndex)
+	for (int columnIndex = 0; columnIndex < columnsCount; ++columnIndex)
 	{
-		for (rcSpan* span = heightfield.spans[columnIndex]; span != NULL; span = span->next)
+		for (rcSpan* span = heightfield.spans[columnIndex]; span != nullptr; span = span->next)
 		{
 			if (span->area != RC_NULL_AREA)
-			{
 				spanCount++;
-			}
 		}
 	}
 	return spanCount;
@@ -443,33 +441,31 @@ bool rcBuildCompactHeightfield(rcContext* context, const int walkableHeight, con
 	}
 	memset(compactHeightfield.areaIds, RC_NULL_AREA, sizeof(unsigned char) * spanCount);
 
-	const int MAX_HEIGHT = 0xffff;
+	constexpr int MAX_HEIGHT = 0xffff;
 
 	// Fill in cells and spans.
 	int currentCellIndex = 0;
-	const int numColumns = xSize * zSize;
-	for (int columnIndex = 0; columnIndex < numColumns; ++columnIndex)
+	const int columnsCount = xSize * zSize;
+	for (int columnIndex = 0; columnIndex < columnsCount; ++columnIndex)
 	{
 		const rcSpan* span = heightfield.spans[columnIndex];
 
 		// If there are no spans at this cell, just leave the data to index=0, count=0.
-		if (span == NULL)
-		{
+		if (span == nullptr)
 			continue;
-		}
 
 		rcCompactCell& cell = compactHeightfield.cells[columnIndex];
 		cell.index = currentCellIndex;
 		cell.count = 0;
 
-		for (; span != NULL; span = span->next)
+		for (; span != nullptr; span = span->next)
 		{
 			if (span->area != RC_NULL_AREA)
 			{
-				const int bot = (int)span->smax;
+				const int bottom = (int)span->smax;
 				const int top = span->next ? (int)span->next->smin : MAX_HEIGHT;
-				compactHeightfield.spans[currentCellIndex].y = (unsigned short)rcClamp(bot, 0, 0xffff);
-				compactHeightfield.spans[currentCellIndex].height = (unsigned char)rcClamp(top - bot, 0, 0xff);
+				compactHeightfield.spans[currentCellIndex].y = (unsigned short)rcClamp(bottom, 0, 0xffff);
+				compactHeightfield.spans[currentCellIndex].height = (unsigned char)rcClamp(top - bottom, 0, 0xff);
 				compactHeightfield.areaIds[currentCellIndex] = span->area;
 				currentCellIndex++;
 				cell.count++;
@@ -478,7 +474,7 @@ bool rcBuildCompactHeightfield(rcContext* context, const int walkableHeight, con
 	}
 
 	// Find neighbour connections.
-	const int MAX_LAYERS = RC_NOT_CONNECTED - 1;
+	constexpr int MAX_LAYERS = RC_NOT_CONNECTED - 1;
 	int maxLayerIndex = 0;
 	const int zStride = xSize; // for readability
 	for (int z = 0; z < zSize; ++z)
@@ -490,16 +486,15 @@ bool rcBuildCompactHeightfield(rcContext* context, const int walkableHeight, con
 			{
 				rcCompactSpan& span = compactHeightfield.spans[i];
 
-				for (int dir = 0; dir < 4; ++dir)
+				for (int direction = 0; direction < 4; ++direction)
 				{
-					rcSetConnection(span, dir, RC_NOT_CONNECTED);
-					const int neighborX = x + rcGetDirectionOffsetX(dir);
-					const int neighborZ = z + rcGetDirectionOffsetY(dir);
+					rcSetConnection(span, direction, RC_NOT_CONNECTED);
+					const int neighborX = x + rcGetDirectionOffsetX(direction);
+					const int neighborZ = z + rcGetDirectionOffsetY(direction);
+
 					// First check that the neighbour cell is in bounds.
 					if (neighborX < 0 || neighborZ < 0 || neighborX >= xSize || neighborZ >= zSize)
-					{
 						continue;
-					}
 
 					// Iterate over all neighbour spans and check if any of the is
 					// accessible from current cell.
@@ -507,12 +502,12 @@ bool rcBuildCompactHeightfield(rcContext* context, const int walkableHeight, con
 					for (int k = (int)neighborCell.index, nk = (int)(neighborCell.index + neighborCell.count); k < nk; ++k)
 					{
 						const rcCompactSpan& neighborSpan = compactHeightfield.spans[k];
-						const int bot = rcMax(span.y, neighborSpan.y);
+						const int bottom = rcMax(span.y, neighborSpan.y);
 						const int top = rcMin(span.y + span.height, neighborSpan.y + neighborSpan.height);
 
 						// Check that the gap between the spans is walkable,
 						// and that the climb height between the gaps is not too high.
-						if ((top - bot) >= walkableHeight && rcAbs((int)neighborSpan.y - (int)span.y) <= walkableClimb)
+						if ((top - bottom) >= walkableHeight && rcAbs((int)neighborSpan.y - (int)span.y) <= walkableClimb)
 						{
 							// Mark direction as walkable.
 							const int layerIndex = k - (int)neighborCell.index;
@@ -521,7 +516,7 @@ bool rcBuildCompactHeightfield(rcContext* context, const int walkableHeight, con
 								maxLayerIndex = rcMax(maxLayerIndex, layerIndex);
 								continue;
 							}
-							rcSetConnection(span, dir, layerIndex);
+							rcSetConnection(span, direction, layerIndex);
 							break;
 						}
 					}
