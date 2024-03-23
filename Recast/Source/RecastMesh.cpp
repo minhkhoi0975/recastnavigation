@@ -51,16 +51,16 @@ static bool buildMeshAdjacency(unsigned short* polys, const int npolys,
 	}
 	
 	for (int i = 0; i < nverts; i++)
-		firstEdge[i] = RC_MESH_NULL_IDX;
+		firstEdge[i] = RC_MESH_NULL_INDEX;
 	
 	for (int i = 0; i < npolys; ++i)
 	{
 		unsigned short* t = &polys[i*vertsPerPoly*2];
 		for (int j = 0; j < vertsPerPoly; ++j)
 		{
-			if (t[j] == RC_MESH_NULL_IDX) break;
+			if (t[j] == RC_MESH_NULL_INDEX) break;
 			unsigned short v0 = t[j];
-			unsigned short v1 = (j+1 >= vertsPerPoly || t[j+1] == RC_MESH_NULL_IDX) ? t[0] : t[j+1];
+			unsigned short v1 = (j+1 >= vertsPerPoly || t[j+1] == RC_MESH_NULL_INDEX) ? t[0] : t[j+1];
 			if (v0 < v1)
 			{
 				rcEdge& edge = edges[edgeCount];
@@ -83,12 +83,12 @@ static bool buildMeshAdjacency(unsigned short* polys, const int npolys,
 		unsigned short* t = &polys[i*vertsPerPoly*2];
 		for (int j = 0; j < vertsPerPoly; ++j)
 		{
-			if (t[j] == RC_MESH_NULL_IDX) break;
+			if (t[j] == RC_MESH_NULL_INDEX) break;
 			unsigned short v0 = t[j];
-			unsigned short v1 = (j+1 >= vertsPerPoly || t[j+1] == RC_MESH_NULL_IDX) ? t[0] : t[j+1];
+			unsigned short v1 = (j+1 >= vertsPerPoly || t[j+1] == RC_MESH_NULL_INDEX) ? t[0] : t[j+1];
 			if (v0 > v1)
 			{
-				for (unsigned short e = firstEdge[v1]; e != RC_MESH_NULL_IDX; e = nextEdge[e])
+				for (unsigned short e = firstEdge[v1]; e != RC_MESH_NULL_INDEX; e = nextEdge[e])
 				{
 					rcEdge& edge = edges[e];
 					if (edge.vert[1] == v0 && edge.poly[0] == edge.poly[1])
@@ -453,7 +453,7 @@ static int triangulate(int n, const int* verts, int* indices, int* tris)
 static int countPolyVerts(const unsigned short* p, const int nvp)
 {
 	for (int i = 0; i < nvp; ++i)
-		if (p[i] == RC_MESH_NULL_IDX)
+		if (p[i] == RC_MESH_NULL_INDEX)
 			return i;
 	return nvp;
 }
@@ -897,7 +897,7 @@ static bool removeVertex(rcContext* ctx, rcPolyMesh& mesh, const unsigned short 
 			// If this polygon covers multiple region types then
 			// mark it as such
 			if (hreg[t[0]] != hreg[t[1]] || hreg[t[1]] != hreg[t[2]])
-				pregs[npolys] = RC_MULTIPLE_REGS;
+				pregs[npolys] = RC_MULTIPLE_REGIONS;
 			else
 				pregs[npolys] = (unsigned short)hreg[t[0]];
 
@@ -943,7 +943,7 @@ static bool removeVertex(rcContext* ctx, rcPolyMesh& mesh, const unsigned short 
 				unsigned short* pb = &polys[bestPb*nvp];
 				mergePolyVerts(pa, pb, bestEa, bestEb, tmpPoly, nvp);
 				if (pregs[bestPa] != pregs[bestPb])
-					pregs[bestPa] = RC_MULTIPLE_REGS;
+					pregs[bestPa] = RC_MULTIPLE_REGIONS;
 
 				unsigned short* last = &polys[(npolys-1)*nvp];
 				if (pb != last)
@@ -1263,12 +1263,12 @@ bool rcBuildPolyMesh(rcContext* ctx, const rcContourSet& cset, const int nvp, rc
 			unsigned short* p = &mesh.polygons[i*2*nvp];
 			for (int j = 0; j < nvp; ++j)
 			{
-				if (p[j] == RC_MESH_NULL_IDX) break;
+				if (p[j] == RC_MESH_NULL_INDEX) break;
 				// Skip connected edges.
-				if (p[nvp+j] != RC_MESH_NULL_IDX)
+				if (p[nvp+j] != RC_MESH_NULL_INDEX)
 					continue;
 				int nj = j+1;
-				if (nj >= nvp || p[nj] == RC_MESH_NULL_IDX) nj = 0;
+				if (nj >= nvp || p[nj] == RC_MESH_NULL_INDEX) nj = 0;
 				const unsigned short* va = &mesh.vertices[p[j]*3];
 				const unsigned short* vb = &mesh.vertices[p[nj]*3];
 
@@ -1429,7 +1429,7 @@ bool rcMergePolyMeshes(rcContext* ctx, rcPolyMesh** meshes, const int nmeshes, r
 			mesh.polygonsCount++;
 			for (int k = 0; k < mesh.maxVerticesPerPolygon; ++k)
 			{
-				if (src[k] == RC_MESH_NULL_IDX) break;
+				if (src[k] == RC_MESH_NULL_INDEX) break;
 				tgt[k] = vremap[src[k]];
 			}
 

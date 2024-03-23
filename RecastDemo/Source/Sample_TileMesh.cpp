@@ -1099,7 +1099,7 @@ unsigned char* Sample_TileMesh::buildTileMesh(const int tx, const int ty, const 
 		// Update poly flags from areaIds.
 		for (int i = 0; i < m_pmesh->polygonsCount; ++i)
 		{
-			if (m_pmesh->areaIds[i] == RC_WALKABLE_AREA)
+			if (m_pmesh->areaIds[i] == RC_WALKABLE_AREA_ID)
 				m_pmesh->areaIds[i] = SAMPLE_POLYAREA_GROUND;
 			
 			if (m_pmesh->areaIds[i] == SAMPLE_POLYAREA_GROUND ||

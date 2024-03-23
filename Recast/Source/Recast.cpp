@@ -352,7 +352,7 @@ void rcMarkWalkableTriangles(rcContext* context, const float walkableSlopeAngle,
 		// Check if the face is walkable.
 		if (norm[1] > walkableThr)
 		{
-			triAreaIDs[i] = RC_WALKABLE_AREA;
+			triAreaIDs[i] = RC_WALKABLE_AREA_ID;
 		}
 	}
 }

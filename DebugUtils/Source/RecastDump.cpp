@@ -79,7 +79,7 @@ bool duDumpPolyMeshToObj(rcPolyMesh& pmesh, duFileIO* io)
 		const unsigned short* p = &pmesh.polygons[i*nvp*2];
 		for (int j = 2; j < nvp; ++j)
 		{
-			if (p[j] == RC_MESH_NULL_IDX) break;
+			if (p[j] == RC_MESH_NULL_INDEX) break;
 			ioprintf(io, "f %d %d %d\n", p[0]+1, p[j-1]+1, p[j]+1); 
 		}
 	}

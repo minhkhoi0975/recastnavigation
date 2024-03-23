@@ -452,7 +452,7 @@ TEST_CASE("rcMarkWalkableTriangles", "[recast]")
 	SECTION("One walkable triangle")
 	{
 		rcMarkWalkableTriangles(ctx, walkableSlopeAngle, verts, nv, walkable_tri, nt, areas);
-		REQUIRE(areas[0] == RC_WALKABLE_AREA);
+		REQUIRE(areas[0] == RC_WALKABLE_AREA_ID);
 	}
 
 	SECTION("One non-walkable triangle")

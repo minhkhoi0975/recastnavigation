@@ -291,7 +291,7 @@ static bool floodRegion(int x, int y, int i,
 				if (chf.areaIds[ai] != area)
 					continue;
 				unsigned short nr = srcReg[ai];
-				if (nr & RC_BORDER_REG) // Do not take borders into account.
+				if (nr & RC_BORDER_REGION) // Do not take borders into account.
 					continue;
 				if (nr != 0 && nr != r)
 				{
@@ -426,7 +426,7 @@ static void expandRegions(int maxIter, unsigned short level,
 				const int ay = y + rcGetDirOffsetY(dir);
 				const int ai = (int)chf.cells[ax+ay*w].index + rcGetCon(s, dir);
 				if (chf.areaIds[ai] != area) continue;
-				if (srcReg[ai] > 0 && (srcReg[ai] & RC_BORDER_REG) == 0)
+				if (srcReg[ai] > 0 && (srcReg[ai] & RC_BORDER_REGION) == 0)
 				{
 					if ((int)srcDist[ai]+2 < (int)d2)
 					{
@@ -864,7 +864,7 @@ static bool mergeAndFilterRegions(rcContext* ctx, int minRegionArea, int mergeRe
 	for (int i = 0; i < nreg; ++i)
 	{
 		rcRegion& reg = regions[i];
-		if (reg.id == 0 || (reg.id & RC_BORDER_REG))
+		if (reg.id == 0 || (reg.id & RC_BORDER_REGION))
 			continue;                       
 		if (reg.spanCount == 0)
 			continue;
@@ -893,7 +893,7 @@ static bool mergeAndFilterRegions(rcContext* ctx, int minRegionArea, int mergeRe
 
 			for (int j = 0; j < creg.connections.size(); ++j)
 			{
-				if (creg.connections[j] & RC_BORDER_REG)
+				if (creg.connections[j] & RC_BORDER_REGION)
 				{
 					connectsToBorder = true;
 					continue;
@@ -901,7 +901,7 @@ static bool mergeAndFilterRegions(rcContext* ctx, int minRegionArea, int mergeRe
 				rcRegion& neireg = regions[creg.connections[j]];
 				if (neireg.visited)
 					continue;
-				if (neireg.id == 0 || (neireg.id & RC_BORDER_REG))
+				if (neireg.id == 0 || (neireg.id & RC_BORDER_REGION))
 					continue;
 				// Visit
 				stack.push(neireg.id);
@@ -932,7 +932,7 @@ static bool mergeAndFilterRegions(rcContext* ctx, int minRegionArea, int mergeRe
 		for (int i = 0; i < nreg; ++i)
 		{
 			rcRegion& reg = regions[i];
-			if (reg.id == 0 || (reg.id & RC_BORDER_REG))
+			if (reg.id == 0 || (reg.id & RC_BORDER_REGION))
 				continue;
 			if (reg.overlap)
 				continue;
@@ -950,9 +950,9 @@ static bool mergeAndFilterRegions(rcContext* ctx, int minRegionArea, int mergeRe
 			unsigned short mergeId = reg.id;
 			for (int j = 0; j < reg.connections.size(); ++j)
 			{
-				if (reg.connections[j] & RC_BORDER_REG) continue;
+				if (reg.connections[j] & RC_BORDER_REGION) continue;
 				rcRegion& mreg = regions[reg.connections[j]];
-				if (mreg.id == 0 || (mreg.id & RC_BORDER_REG) || mreg.overlap) continue;
+				if (mreg.id == 0 || (mreg.id & RC_BORDER_REGION) || mreg.overlap) continue;
 				if (mreg.spanCount < smallest &&
 					canMergeWithRegion(reg, mreg) &&
 					canMergeWithRegion(mreg, reg))
@@ -973,7 +973,7 @@ static bool mergeAndFilterRegions(rcContext* ctx, int minRegionArea, int mergeRe
 					// Fixup regions pointing to current region.
 					for (int j = 0; j < nreg; ++j)
 					{
-						if (regions[j].id == 0 || (regions[j].id & RC_BORDER_REG)) continue;
+						if (regions[j].id == 0 || (regions[j].id & RC_BORDER_REGION)) continue;
 						// If another region was already merged into current region
 						// change the nid of the previous region too.
 						if (regions[j].id == oldId)
@@ -994,7 +994,7 @@ static bool mergeAndFilterRegions(rcContext* ctx, int minRegionArea, int mergeRe
 	{
 		regions[i].remap = false;
 		if (regions[i].id == 0) continue;       // Skip nil regions.
-		if (regions[i].id & RC_BORDER_REG) continue;    // Skip external regions.
+		if (regions[i].id & RC_BORDER_REGION) continue;    // Skip external regions.
 		regions[i].remap = true;
 	}
 	
@@ -1019,7 +1019,7 @@ static bool mergeAndFilterRegions(rcContext* ctx, int minRegionArea, int mergeRe
 	// Remap regions.
 	for (int i = 0; i < chf.spanCount; ++i)
 	{
-		if ((srcReg[i] & RC_BORDER_REG) == 0)
+		if ((srcReg[i] & RC_BORDER_REGION) == 0)
 			srcReg[i] = regions[srcReg[i]].id;
 	}
 
@@ -1097,7 +1097,7 @@ static bool mergeAndFilterLayerRegions(rcContext* ctx, int minRegionArea,
 						const unsigned short rai = srcReg[ai];
 						if (rai > 0 && rai < nreg && rai != ri)
 							addUniqueConnection(reg, rai);
-						if (rai & RC_BORDER_REG)
+						if (rai & RC_BORDER_REGION)
 							reg.connectsToBorder = true;
 					}
 				}
@@ -1211,7 +1211,7 @@ static bool mergeAndFilterLayerRegions(rcContext* ctx, int minRegionArea,
 	{
 		regions[i].remap = false;
 		if (regions[i].id == 0) continue;				// Skip nil regions.
-		if (regions[i].id & RC_BORDER_REG) continue;    // Skip external regions.
+		if (regions[i].id & RC_BORDER_REGION) continue;    // Skip external regions.
 		regions[i].remap = true;
 	}
 	
@@ -1236,7 +1236,7 @@ static bool mergeAndFilterLayerRegions(rcContext* ctx, int minRegionArea,
 	// Remap regions.
 	for (int i = 0; i < chf.spanCount; ++i)
 	{
-		if ((srcReg[i] & RC_BORDER_REG) == 0)
+		if ((srcReg[i] & RC_BORDER_REGION) == 0)
 			srcReg[i] = regions[srcReg[i]].id;
 	}
 	
@@ -1389,10 +1389,10 @@ bool rcBuildRegionsMonotone(rcContext* ctx, rcCompactHeightfield& chf,
 		const int bw = rcMin(w, borderSize);
 		const int bh = rcMin(h, borderSize);
 		// Paint regions
-		paintRectRegion(0, bw, 0, h, id|RC_BORDER_REG, chf, srcReg); id++;
-		paintRectRegion(w-bw, w, 0, h, id|RC_BORDER_REG, chf, srcReg); id++;
-		paintRectRegion(0, w, 0, bh, id|RC_BORDER_REG, chf, srcReg); id++;
-		paintRectRegion(0, w, h-bh, h, id|RC_BORDER_REG, chf, srcReg); id++;
+		paintRectRegion(0, bw, 0, h, id|RC_BORDER_REGION, chf, srcReg); id++;
+		paintRectRegion(w-bw, w, 0, h, id|RC_BORDER_REGION, chf, srcReg); id++;
+		paintRectRegion(0, w, 0, bh, id|RC_BORDER_REGION, chf, srcReg); id++;
+		paintRectRegion(0, w, h-bh, h, id|RC_BORDER_REGION, chf, srcReg); id++;
 	}
 
 	chf.borderSize = borderSize;
@@ -1423,7 +1423,7 @@ bool rcBuildRegionsMonotone(rcContext* ctx, rcCompactHeightfield& chf,
 					const int ax = x + rcGetDirOffsetX(0);
 					const int ay = y + rcGetDirOffsetY(0);
 					const int ai = (int)chf.cells[ax+ay*w].index + rcGetCon(s, 0);
-					if ((srcReg[ai] & RC_BORDER_REG) == 0 && chf.areaIds[i] == chf.areaIds[ai])
+					if ((srcReg[ai] & RC_BORDER_REGION) == 0 && chf.areaIds[i] == chf.areaIds[ai])
 						previd = srcReg[ai];
 				}
 				
@@ -1441,7 +1441,7 @@ bool rcBuildRegionsMonotone(rcContext* ctx, rcCompactHeightfield& chf,
 					const int ax = x + rcGetDirOffsetX(3);
 					const int ay = y + rcGetDirOffsetY(3);
 					const int ai = (int)chf.cells[ax+ay*w].index + rcGetCon(s, 3);
-					if (srcReg[ai] && (srcReg[ai] & RC_BORDER_REG) == 0 && chf.areaIds[i] == chf.areaIds[ai])
+					if (srcReg[ai] && (srcReg[ai] & RC_BORDER_REGION) == 0 && chf.areaIds[i] == chf.areaIds[ai])
 					{
 						unsigned short nr = srcReg[ai];
 						if (!sweeps[previd].nei || sweeps[previd].nei == nr)
@@ -1577,10 +1577,10 @@ bool rcBuildRegions(rcContext* ctx, rcCompactHeightfield& chf,
 		const int bh = rcMin(h, borderSize);
 		
 		// Paint regions
-		paintRectRegion(0, bw, 0, h, regionId|RC_BORDER_REG, chf, srcReg); regionId++;
-		paintRectRegion(w-bw, w, 0, h, regionId|RC_BORDER_REG, chf, srcReg); regionId++;
-		paintRectRegion(0, w, 0, bh, regionId|RC_BORDER_REG, chf, srcReg); regionId++;
-		paintRectRegion(0, w, h-bh, h, regionId|RC_BORDER_REG, chf, srcReg); regionId++;
+		paintRectRegion(0, bw, 0, h, regionId|RC_BORDER_REGION, chf, srcReg); regionId++;
+		paintRectRegion(w-bw, w, 0, h, regionId|RC_BORDER_REGION, chf, srcReg); regionId++;
+		paintRectRegion(0, w, 0, bh, regionId|RC_BORDER_REGION, chf, srcReg); regionId++;
+		paintRectRegion(0, w, h-bh, h, regionId|RC_BORDER_REGION, chf, srcReg); regionId++;
 	}
 
 	chf.borderSize = borderSize;
@@ -1698,10 +1698,10 @@ bool rcBuildLayerRegions(rcContext* ctx, rcCompactHeightfield& chf,
 		const int bw = rcMin(w, borderSize);
 		const int bh = rcMin(h, borderSize);
 		// Paint regions
-		paintRectRegion(0, bw, 0, h, id|RC_BORDER_REG, chf, srcReg); id++;
-		paintRectRegion(w-bw, w, 0, h, id|RC_BORDER_REG, chf, srcReg); id++;
-		paintRectRegion(0, w, 0, bh, id|RC_BORDER_REG, chf, srcReg); id++;
-		paintRectRegion(0, w, h-bh, h, id|RC_BORDER_REG, chf, srcReg); id++;
+		paintRectRegion(0, bw, 0, h, id|RC_BORDER_REGION, chf, srcReg); id++;
+		paintRectRegion(w-bw, w, 0, h, id|RC_BORDER_REGION, chf, srcReg); id++;
+		paintRectRegion(0, w, 0, bh, id|RC_BORDER_REGION, chf, srcReg); id++;
+		paintRectRegion(0, w, h-bh, h, id|RC_BORDER_REGION, chf, srcReg); id++;
 	}
 
 	chf.borderSize = borderSize;
@@ -1732,7 +1732,7 @@ bool rcBuildLayerRegions(rcContext* ctx, rcCompactHeightfield& chf,
 					const int ax = x + rcGetDirOffsetX(0);
 					const int ay = y + rcGetDirOffsetY(0);
 					const int ai = (int)chf.cells[ax+ay*w].index + rcGetCon(s, 0);
-					if ((srcReg[ai] & RC_BORDER_REG) == 0 && chf.areaIds[i] == chf.areaIds[ai])
+					if ((srcReg[ai] & RC_BORDER_REGION) == 0 && chf.areaIds[i] == chf.areaIds[ai])
 						previd = srcReg[ai];
 				}
 				
@@ -1750,7 +1750,7 @@ bool rcBuildLayerRegions(rcContext* ctx, rcCompactHeightfield& chf,
 					const int ax = x + rcGetDirOffsetX(3);
 					const int ay = y + rcGetDirOffsetY(3);
 					const int ai = (int)chf.cells[ax+ay*w].index + rcGetCon(s, 3);
-					if (srcReg[ai] && (srcReg[ai] & RC_BORDER_REG) == 0 && chf.areaIds[i] == chf.areaIds[ai])
+					if (srcReg[ai] && (srcReg[ai] & RC_BORDER_REGION) == 0 && chf.areaIds[i] == chf.areaIds[ai])
 					{
 						unsigned short nr = srcReg[ai];
 						if (!sweeps[previd].nei || sweeps[previd].nei == nr)

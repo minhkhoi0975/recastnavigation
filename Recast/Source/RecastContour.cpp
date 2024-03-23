@@ -86,8 +86,8 @@ static int getCornerHeight(int x, int y, int i, int dir,
 		
 		// The vertex is a border vertex there are two same exterior cells in a row,
 		// followed by two interior cells and none of the regions are out of bounds.
-		const bool twoSameExts = (regs[a] & regs[b] & RC_BORDER_REG) != 0 && regs[a] == regs[b];
-		const bool twoInts = ((regs[c] | regs[d]) & RC_BORDER_REG) == 0;
+		const bool twoSameExts = (regs[a] & regs[b] & RC_BORDER_REGION) != 0 && regs[a] == regs[b];
+		const bool twoInts = ((regs[c] | regs[d]) & RC_BORDER_REGION) == 0;
 		const bool intsSameArea = (regs[c]>>16) == (regs[d]>>16);
 		const bool noZeros = regs[a] != 0 && regs[b] != 0 && regs[c] != 0 && regs[d] != 0;
 		if (twoSameExts && twoInts && intsSameArea && noZeros)
@@ -213,7 +213,7 @@ static void simplifyContour(rcIntArray& points, rcIntArray& simplified,
 	bool hasConnections = false;
 	for (int i = 0; i < points.size(); i += 4)
 	{
-		if ((points[i+3] & RC_CONTOUR_REG_MASK) != 0)
+		if ((points[i+3] & RC_CONTOUR_REGION_MASK) != 0)
 		{
 			hasConnections = true;
 			break;
@@ -227,7 +227,7 @@ static void simplifyContour(rcIntArray& points, rcIntArray& simplified,
 		for (int i = 0, ni = points.size()/4; i < ni; ++i)
 		{
 			int ii = (i+1) % ni;
-			const bool differentRegs = (points[i*4+3] & RC_CONTOUR_REG_MASK) != (points[ii*4+3] & RC_CONTOUR_REG_MASK);
+			const bool differentRegs = (points[i*4+3] & RC_CONTOUR_REGION_MASK) != (points[ii*4+3] & RC_CONTOUR_REGION_MASK);
 			const bool areaBorders = (points[i*4+3] & RC_AREA_BORDER) != (points[ii*4+3] & RC_AREA_BORDER);
 			if (differentRegs || areaBorders)
 			{
@@ -322,7 +322,7 @@ static void simplifyContour(rcIntArray& points, rcIntArray& simplified,
 		}
 		
 		// Tessellate only outer edges or edges between areaIds.
-		if ((points[ci*4+3] & RC_CONTOUR_REG_MASK) == 0 ||
+		if ((points[ci*4+3] & RC_CONTOUR_REGION_MASK) == 0 ||
 			(points[ci*4+3] & RC_AREA_BORDER))
 		{
 			while (ci != endi)
@@ -386,7 +386,7 @@ static void simplifyContour(rcIntArray& points, rcIntArray& simplified,
 			// Tessellate only outer edges or edges between areaIds.
 			bool tess = false;
 			// Wall edges.
-			if ((buildFlags & RC_CONTOUR_TESS_WALL_EDGES) && (points[ci*4+3] & RC_CONTOUR_REG_MASK) == 0)
+			if ((buildFlags & RC_CONTOUR_TESS_WALL_EDGES) && (points[ci*4+3] & RC_CONTOUR_REGION_MASK) == 0)
 				tess = true;
 			// Edges between areaIds.
 			if ((buildFlags & RC_CONTOUR_TESS_AREA_EDGES) && (points[ci*4+3] & RC_AREA_BORDER))
@@ -445,7 +445,7 @@ static void simplifyContour(rcIntArray& points, rcIntArray& simplified,
 		// and the neighbour region is take from the next raw point.
 		const int ai = (simplified[i*4+3]+1) % pn;
 		const int bi = simplified[i*4+3];
-		simplified[i*4+3] = (points[ai*4+3] & (RC_CONTOUR_REG_MASK|RC_AREA_BORDER)) | (points[bi*4+3] & RC_BORDER_VERTEX);
+		simplified[i*4+3] = (points[ai*4+3] & (RC_CONTOUR_REGION_MASK|RC_AREA_BORDER)) | (points[bi*4+3] & RC_BORDER_VERTEX);
 	}
 	
 }
@@ -875,7 +875,7 @@ bool rcBuildContours(rcContext* ctx, const rcCompactHeightfield& chf,
 			{
 				unsigned char res = 0;
 				const rcCompactSpan& s = chf.spans[i];
-				if (!chf.spans[i].regionId || (chf.spans[i].regionId & RC_BORDER_REG))
+				if (!chf.spans[i].regionId || (chf.spans[i].regionId & RC_BORDER_REGION))
 				{
 					flags[i] = 0;
 					continue;
@@ -916,7 +916,7 @@ bool rcBuildContours(rcContext* ctx, const rcCompactHeightfield& chf,
 					continue;
 				}
 				const unsigned short reg = chf.spans[i].regionId;
-				if (!reg || (reg & RC_BORDER_REG))
+				if (!reg || (reg & RC_BORDER_REGION))
 					continue;
 				const unsigned char area = chf.areaIds[i];
 				

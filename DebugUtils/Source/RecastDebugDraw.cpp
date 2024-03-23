@@ -192,7 +192,7 @@ void duDebugDrawHeightfieldWalkable(duDebugDraw* dd, const rcHeightfield& hf)
 			const rcSpan* s = hf.spans[x + y*w];
 			while (s)
 			{
-				if (s->area == RC_WALKABLE_AREA)
+				if (s->area == RC_WALKABLE_AREA_ID)
 					fcol[0] = duRGBA(64,128,160,255);
 				else if (s->area == RC_NULL_AREA)
 					fcol[0] = duRGBA(64,64,64,255);
@@ -231,7 +231,7 @@ void duDebugDrawCompactHeightfieldSolid(duDebugDraw* dd, const rcCompactHeightfi
 
 				const unsigned char area = chf.areaIds[i];
 				unsigned int color;
-				if (area == RC_WALKABLE_AREA)
+				if (area == RC_WALKABLE_AREA_ID)
 					color = duRGBA(0,192,255,64);
 				else if (area == RC_NULL_AREA)
 					color = duRGBA(0,0,0,64);
@@ -398,7 +398,7 @@ void duDebugDrawHeightfieldLayer(duDebugDraw* dd, const struct rcHeightfieldLaye
 			const unsigned char area = layer.areaIds[lidx];
 			
 			unsigned int col;
-			if (area == RC_WALKABLE_AREA)
+			if (area == RC_WALKABLE_AREA_ID)
 				col = duLerpCol(color, duRGBA(0,192,255,64), 32);
 			else if (area == RC_NULL_AREA)
 				col = duLerpCol(color, duRGBA(0,0,0,64), 32);
@@ -526,7 +526,7 @@ void duDebugDrawLayerPolyMesh(duDebugDraw* dd, const struct rcLayerPolyMesh& lme
 		const unsigned short* p = &lmesh.polygons[i*maxVerticesPerPolygon*2];
 		
 		unsigned int color;
-		if (lmesh.areaIds[i] == RC_WALKABLE_AREA)
+		if (lmesh.areaIds[i] == RC_WALKABLE_AREA_ID)
 			color = duRGBA(0,192,255,64);
 		else if (lmesh.areaIds[i] == RC_NULL_AREA)
 			color = duRGBA(0,0,0,64);
@@ -536,7 +536,7 @@ void duDebugDrawLayerPolyMesh(duDebugDraw* dd, const struct rcLayerPolyMesh& lme
 		unsigned short vi[3];
 		for (int j = 2; j < maxVerticesPerPolygon; ++j)
 		{
-			if (p[j] == RC_MESH_NULL_IDX) break;
+			if (p[j] == RC_MESH_NULL_INDEX) break;
 			vi[0] = p[0];
 			vi[1] = p[j-1];
 			vi[2] = p[j];
@@ -560,9 +560,9 @@ void duDebugDrawLayerPolyMesh(duDebugDraw* dd, const struct rcLayerPolyMesh& lme
 		const unsigned short* p = &lmesh.polygons[i*maxVerticesPerPolygon*2];
 		for (int j = 0; j < maxVerticesPerPolygon; ++j)
 		{
-			if (p[j] == RC_MESH_NULL_IDX) break;
+			if (p[j] == RC_MESH_NULL_INDEX) break;
 			if (p[maxVerticesPerPolygon+j] & 0x8000) continue;
-			const int nj = (j+1 >= maxVerticesPerPolygon || p[j+1] == RC_MESH_NULL_IDX) ? 0 : j+1; 
+			const int nj = (j+1 >= maxVerticesPerPolygon || p[j+1] == RC_MESH_NULL_INDEX) ? 0 : j+1; 
 			int vi[2] = {p[j], p[nj]};
 			
 			for (int k = 0; k < 2; ++k)
@@ -585,9 +585,9 @@ void duDebugDrawLayerPolyMesh(duDebugDraw* dd, const struct rcLayerPolyMesh& lme
 		const unsigned short* p = &lmesh.polygons[i*maxVerticesPerPolygon*2];
 		for (int j = 0; j < maxVerticesPerPolygon; ++j)
 		{
-			if (p[j] == RC_MESH_NULL_IDX) break;
+			if (p[j] == RC_MESH_NULL_INDEX) break;
 			if ((p[maxVerticesPerPolygon+j] & 0x8000) == 0) continue;
-			const int nj = (j+1 >= maxVerticesPerPolygon || p[j+1] == RC_MESH_NULL_IDX) ? 0 : j+1; 
+			const int nj = (j+1 >= maxVerticesPerPolygon || p[j+1] == RC_MESH_NULL_INDEX) ? 0 : j+1; 
 			int vi[2] = {p[j], p[nj]};
 			
 			unsigned int col = colb;
@@ -869,7 +869,7 @@ void duDebugDrawPolyMesh(duDebugDraw* dd, const struct rcPolyMesh& mesh)
 		const unsigned char area = mesh.areaIds[i];
 		
 		unsigned int color;
-		if (area == RC_WALKABLE_AREA)
+		if (area == RC_WALKABLE_AREA_ID)
 			color = duRGBA(0,192,255,64);
 		else if (area == RC_NULL_AREA)
 			color = duRGBA(0,0,0,64);
@@ -879,7 +879,7 @@ void duDebugDrawPolyMesh(duDebugDraw* dd, const struct rcPolyMesh& mesh)
 		unsigned short vi[3];
 		for (int j = 2; j < nvp; ++j)
 		{
-			if (p[j] == RC_MESH_NULL_IDX) break;
+			if (p[j] == RC_MESH_NULL_INDEX) break;
 			vi[0] = p[0];
 			vi[1] = p[j-1];
 			vi[2] = p[j];
@@ -903,9 +903,9 @@ void duDebugDrawPolyMesh(duDebugDraw* dd, const struct rcPolyMesh& mesh)
 		const unsigned short* p = &mesh.polygons[i*nvp*2];
 		for (int j = 0; j < nvp; ++j)
 		{
-			if (p[j] == RC_MESH_NULL_IDX) break;
+			if (p[j] == RC_MESH_NULL_INDEX) break;
 			if (p[nvp+j] & 0x8000) continue;
-			const int nj = (j+1 >= nvp || p[j+1] == RC_MESH_NULL_IDX) ? 0 : j+1; 
+			const int nj = (j+1 >= nvp || p[j+1] == RC_MESH_NULL_INDEX) ? 0 : j+1; 
 			const int vi[2] = {p[j], p[nj]};
 			
 			for (int k = 0; k < 2; ++k)
@@ -928,9 +928,9 @@ void duDebugDrawPolyMesh(duDebugDraw* dd, const struct rcPolyMesh& mesh)
 		const unsigned short* p = &mesh.polygons[i*nvp*2];
 		for (int j = 0; j < nvp; ++j)
 		{
-			if (p[j] == RC_MESH_NULL_IDX) break;
+			if (p[j] == RC_MESH_NULL_INDEX) break;
 			if ((p[nvp+j] & 0x8000) == 0) continue;
-			const int nj = (j+1 >= nvp || p[j+1] == RC_MESH_NULL_IDX) ? 0 : j+1; 
+			const int nj = (j+1 >= nvp || p[j+1] == RC_MESH_NULL_INDEX) ? 0 : j+1; 
 			const int vi[2] = {p[j], p[nj]};
 			
 			unsigned int col = colb;

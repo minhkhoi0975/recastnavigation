@@ -521,7 +521,7 @@ void rcFreeHeightField(rcHeightfield* heightfield);
 /// @return A compact heightfield that is ready for initialization, or null on failure.
 /// @ingroup recast
 /// @see rcBuildCompactHeightfield, rcFreeCompactHeightfield
-rcCompactHeightfield* rcAllocCompactHeightfield();
+rcCompactHeightfield* rcAllocateCompactHeightfield();
 
 /// Frees the specified compact heightfield object using the Recast allocator.
 /// @param[in]		compactHeightfield		A compact heightfield allocated using #rcAllocCompactHeightfield
@@ -584,7 +584,7 @@ void rcFreePolyMeshDetail(rcPolyMeshDetail* detailMesh);
 /// region and its spans are considered un-walkable.
 /// (Used during the region and contour build process.)
 /// @see rcCompactSpan::reg
-static const unsigned short RC_BORDER_REG = 0x8000;
+static constexpr unsigned short RC_BORDER_REGION = 0x8000;
 
 /// Polygon touches multiple regions.
 /// If a polygon has this region ID it was merged with or created
@@ -592,7 +592,7 @@ static const unsigned short RC_BORDER_REG = 0x8000;
 /// build step that removes redundant border vertices. 
 /// (Used during the polymesh and detail polymesh build processes)
 /// @see rcPolyMesh::regs
-static const unsigned short RC_MULTIPLE_REGS = 0;
+static constexpr unsigned short RC_MULTIPLE_REGIONS = 0;
 
 /// Border vertex flag.
 /// If a region ID has this bit set, then the associated element lies on
@@ -601,14 +601,14 @@ static const unsigned short RC_MULTIPLE_REGS = 0;
 /// at tile boundaries.
 /// (Used during the build process.)
 /// @see rcCompactSpan::reg, #rcContour::verts, #rcContour::rverts
-static const int RC_BORDER_VERTEX = 0x10000;
+static constexpr int RC_BORDER_VERTEX = 0x10000;
 
 /// Area border flag.
 /// If a region ID has this bit set, then the associated element lies on
 /// the border of an area.
 /// (Used during the region and contour build process.)
 /// @see rcCompactSpan::reg, #rcContour::verts, #rcContour::rverts
-static const int RC_AREA_BORDER = 0x20000;
+static constexpr int RC_AREA_BORDER = 0x20000;
 
 /// Contour build flags.
 /// @see rcBuildContours
@@ -622,26 +622,26 @@ enum rcBuildContoursFlags
 /// The region id field of a vertex may have several flags applied to it.  So the
 /// fields value can't be used directly.
 /// @see rcContour::verts, rcContour::rverts
-static const int RC_CONTOUR_REG_MASK = 0xffff;
+static constexpr int RC_CONTOUR_REGION_MASK = 0xffff;
 
 /// An value which indicates an invalid index within a mesh.
 /// @note This does not necessarily indicate an error.
 /// @see rcPolyMesh::polys
-static const unsigned short RC_MESH_NULL_IDX = 0xffff;
+static constexpr unsigned short RC_MESH_NULL_INDEX = 0xffff;
 
 /// Represents the null area.
 /// When a data element is given this value it is considered to no longer be 
 /// assigned to a usable area.  (E.g. It is un-walkable.)
-static const unsigned char RC_NULL_AREA = 0;
+static constexpr unsigned char RC_NULL_AREA = 0;
 
 /// The default area id used to indicate a walkable polygon. 
 /// This is also the maximum allowed area id, and the only non-null area id 
 /// recognized by some steps in the build process. 
-static const unsigned char RC_WALKABLE_AREA = 63;
+static constexpr unsigned char RC_WALKABLE_AREA_ID = 63;
 
 /// The value returned by #rcGetCon if the specified direction is not connected
 /// to another span. (Has no neighbor.)
-static const int RC_NOT_CONNECTED = 0x3f;
+static constexpr int RC_NOT_CONNECTED = 0x3f;
 
 /// @name General helper functions
 /// @{

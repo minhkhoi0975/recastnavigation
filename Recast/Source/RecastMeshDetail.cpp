@@ -1075,7 +1075,7 @@ static void getHeightData(rcContext* ctx, const rcCompactHeightfield& chf,
 	// We cannot sample from this poly if it was created from polygons
 	// of different regions. If it was then it could potentially be overlapping
 	// with polygons of that region and the heights sampled here could be wrong.
-	if (region != RC_MULTIPLE_REGS)
+	if (region != RC_MULTIPLE_REGIONS)
 	{
 		// Copy the height from the same region, and mark region borders
 		// as seed points to fill the rest.
@@ -1233,7 +1233,7 @@ bool rcBuildPolyMeshDetail(rcContext* ctx, const rcPolyMesh& mesh, const rcCompa
 		ymax = 0;
 		for (int j = 0; j < nvp; ++j)
 		{
-			if(p[j] == RC_MESH_NULL_IDX) break;
+			if(p[j] == RC_MESH_NULL_INDEX) break;
 			const unsigned short* v = &mesh.vertices[p[j]*3];
 			xmin = rcMin(xmin, (int)v[0]);
 			xmax = rcMax(xmax, (int)v[0]);
@@ -1293,7 +1293,7 @@ bool rcBuildPolyMeshDetail(rcContext* ctx, const rcPolyMesh& mesh, const rcCompa
 		int npoly = 0;
 		for (int j = 0; j < nvp; ++j)
 		{
-			if(p[j] == RC_MESH_NULL_IDX) break;
+			if(p[j] == RC_MESH_NULL_INDEX) break;
 			const unsigned short* v = &mesh.vertices[p[j]*3];
 			poly[j*3+0] = v[0]*cs;
 			poly[j*3+1] = v[1]*ch;
