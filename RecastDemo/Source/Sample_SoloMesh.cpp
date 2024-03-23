@@ -392,7 +392,7 @@ bool Sample_SoloMesh::handleBuild()
 	memset(&m_cfg, 0, sizeof(m_cfg));
 	m_cfg.cellSize = m_cellSize;
 	m_cfg.cellHeight = m_cellHeight;
-	m_cfg.walkableSlopeAngle = m_agentMaxSlope;
+	m_cfg.maxWalkableSlopeAngle = m_agentMaxSlope;
 	m_cfg.walkableHeight = (int)ceilf(m_agentHeight / m_cfg.cellHeight);
 	m_cfg.walkableClimb = (int)floorf(m_agentMaxClimb / m_cfg.cellHeight);
 	m_cfg.walkableRadius = (int)ceilf(m_agentRadius / m_cfg.cellSize);
@@ -452,7 +452,7 @@ bool Sample_SoloMesh::handleBuild()
 	// If your input data is multiple meshes, you can transform them here, calculate
 	// the are type for each of the meshes and rasterize them.
 	memset(m_triareas, 0, ntris*sizeof(unsigned char));
-	rcMarkWalkableTriangles(m_ctx, m_cfg.walkableSlopeAngle, verts, nverts, tris, ntris, m_triareas);
+	rcMarkWalkableTriangles(m_ctx, m_cfg.maxWalkableSlopeAngle, verts, nverts, tris, ntris, m_triareas);
 	if (!rcRasterizeTriangles(m_ctx, verts, nverts, tris, m_triareas, ntris, *m_solid, m_cfg.walkableClimb))
 	{
 		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Could not rasterize triangles.");

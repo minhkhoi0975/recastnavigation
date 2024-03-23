@@ -813,7 +813,7 @@ unsigned char* Sample_TileMesh::buildTileMesh(const int tx, const int ty, const 
 	memset(&m_cfg, 0, sizeof(m_cfg));
 	m_cfg.cellSize = m_cellSize;
 	m_cfg.cellHeight = m_cellHeight;
-	m_cfg.walkableSlopeAngle = m_agentMaxSlope;
+	m_cfg.maxWalkableSlopeAngle = m_agentMaxSlope;
 	m_cfg.walkableHeight = (int)ceilf(m_agentHeight / m_cfg.cellHeight);
 	m_cfg.walkableClimb = (int)floorf(m_agentMaxClimb / m_cfg.cellHeight);
 	m_cfg.walkableRadius = (int)ceilf(m_agentRadius / m_cfg.cellSize);
@@ -911,7 +911,7 @@ unsigned char* Sample_TileMesh::buildTileMesh(const int tx, const int ty, const 
 		m_tileTriCount += nctris;
 		
 		memset(m_triareas, 0, nctris*sizeof(unsigned char));
-		rcMarkWalkableTriangles(m_ctx, m_cfg.walkableSlopeAngle,
+		rcMarkWalkableTriangles(m_ctx, m_cfg.maxWalkableSlopeAngle,
 								verts, nverts, ctris, nctris, m_triareas);
 		
 		if (!rcRasterizeTriangles(m_ctx, verts, nverts, ctris, m_triareas, nctris, *m_solid, m_cfg.walkableClimb))

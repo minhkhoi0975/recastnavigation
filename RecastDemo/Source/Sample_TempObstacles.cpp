@@ -363,7 +363,7 @@ int Sample_TempObstacles::rasterizeTileLayers(
 		const int ntris = node.n;
 		
 		memset(rc.triareas, 0, ntris*sizeof(unsigned char));
-		rcMarkWalkableTriangles(m_ctx, tcfg.walkableSlopeAngle,
+		rcMarkWalkableTriangles(m_ctx, tcfg.maxWalkableSlopeAngle,
 								verts, nverts, tris, ntris, rc.triareas);
 		
 		if (!rcRasterizeTriangles(m_ctx, verts, nverts, tris, rc.triareas, ntris, *rc.solid, tcfg.walkableClimb))
@@ -1228,7 +1228,7 @@ bool Sample_TempObstacles::handleBuild()
 	memset(&cfg, 0, sizeof(cfg));
 	cfg.cellSize = m_cellSize;
 	cfg.cellHeight = m_cellHeight;
-	cfg.walkableSlopeAngle = m_agentMaxSlope;
+	cfg.maxWalkableSlopeAngle = m_agentMaxSlope;
 	cfg.walkableHeight = (int)ceilf(m_agentHeight / cfg.cellHeight);
 	cfg.walkableClimb = (int)floorf(m_agentMaxClimb / cfg.cellHeight);
 	cfg.walkableRadius = (int)ceilf(m_agentRadius / cfg.cellSize);
