@@ -692,10 +692,10 @@ float rcSqrt(float x);
 /// @name Vector helper functions.
 /// @{
 
-/// Derives the cross product of two vectors. (@p v1 x @p v2)
+/// Derives the cross product of two vectors. (@p vertex1 x @p vertex2)
 /// @param[out]		dest	The cross product. [(x, y, z)]
-/// @param[in]		v1		A Vector [(x, y, z)]
-/// @param[in]		v2		A vector [(x, y, z)]
+/// @param[in]		vertex1		A Vector [(x, y, z)]
+/// @param[in]		vertex2		A vector [(x, y, z)]
 inline void rcCrossProduct(float* dest, const float* v1, const float* v2)
 {
 	dest[0] = v1[1] * v2[2] - v1[2] * v2[1];
@@ -703,20 +703,20 @@ inline void rcCrossProduct(float* dest, const float* v1, const float* v2)
 	dest[2] = v1[0] * v2[1] - v1[1] * v2[0];
 }
 
-/// Derives the dot product of two vectors. (@p v1 . @p v2)
-/// @param[in]		v1	A Vector [(x, y, z)]
-/// @param[in]		v2	A vector [(x, y, z)]
+/// Derives the dot product of two vectors. (@p vertex1 . @p vertex2)
+/// @param[in]		vertex1	A Vector [(x, y, z)]
+/// @param[in]		vertex2	A vector [(x, y, z)]
 /// @return The dot product.
 inline float rcDotProduct(const float* v1, const float* v2)
 {
 	return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2];
 }
 
-/// Performs a scaled vector addition. (@p v1 + (@p v2 * @p s))
+/// Performs a scaled vector addition. (@p vertex1 + (@p vertex2 * @p s))
 /// @param[out]		dest	The result vector. [(x, y, z)]
-/// @param[in]		v1		The base vector. [(x, y, z)]
-/// @param[in]		v2		The vector to scale and add to @p v1. [(x, y, z)]
-/// @param[in]		s		The amount to scale @p v2 by before adding to @p v1.
+/// @param[in]		vertex1		The base vector. [(x, y, z)]
+/// @param[in]		vertex2		The vector to scale and add to @p vertex1. [(x, y, z)]
+/// @param[in]		s		The amount to scale @p vertex2 by before adding to @p vertex1.
 inline void rcAddVectorScaled(float* dest, const float* v1, const float* v2, const float s)
 {
 	dest[0] = v1[0] + v2[0] * s;
@@ -724,10 +724,10 @@ inline void rcAddVectorScaled(float* dest, const float* v1, const float* v2, con
 	dest[2] = v1[2] + v2[2] * s;
 }
 
-/// Performs a vector addition. (@p v1 + @p v2)
+/// Performs a vector addition. (@p vertex1 + @p vertex2)
 /// @param[out]		dest	The result vector. [(x, y, z)]
-/// @param[in]		v1		The base vector. [(x, y, z)]
-/// @param[in]		v2		The vector to add to @p v1. [(x, y, z)]
+/// @param[in]		vertex1		The base vector. [(x, y, z)]
+/// @param[in]		vertex2		The vector to add to @p vertex1. [(x, y, z)]
 inline void rcAddVector(float* dest, const float* v1, const float* v2)
 {
 	dest[0] = v1[0] + v2[0];
@@ -735,10 +735,10 @@ inline void rcAddVector(float* dest, const float* v1, const float* v2)
 	dest[2] = v1[2] + v2[2];
 }
 
-/// Performs a vector subtraction. (@p v1 - @p v2)
+/// Performs a vector subtraction. (@p vertex1 - @p vertex2)
 /// @param[out]		dest	The result vector. [(x, y, z)]
-/// @param[in]		v1		The base vector. [(x, y, z)]
-/// @param[in]		v2		The vector to subtract from @p v1. [(x, y, z)]
+/// @param[in]		vertex1		The base vector. [(x, y, z)]
+/// @param[in]		vertex2		The vector to subtract from @p vertex1. [(x, y, z)]
 inline void rcSubtractVector(float* dest, const float* v1, const float* v2)
 {
 	dest[0] = v1[0] - v2[0];
@@ -777,8 +777,8 @@ inline void rcCopyVector(float* dest, const float* source)
 }
 
 /// Returns the distance between two points.
-/// @param[in]		v1	A point. [(x, y, z)]
-/// @param[in]		v2	A point. [(x, y, z)]
+/// @param[in]		vertex1	A point. [(x, y, z)]
+/// @param[in]		vertex2	A point. [(x, y, z)]
 /// @return The distance between the two points.
 inline float rcGetDistance(const float* v1, const float* v2)
 {
@@ -789,8 +789,8 @@ inline float rcGetDistance(const float* v1, const float* v2)
 }
 
 /// Returns the square of the distance between two points.
-/// @param[in]		v1	A point. [(x, y, z)]
-/// @param[in]		v2	A point. [(x, y, z)]
+/// @param[in]		vertex1	A point. [(x, y, z)]
+/// @param[in]		vertex2	A point. [(x, y, z)]
 /// @return The square of the distance between the two points.
 inline float rcGetDistanceSquared(const float* v1, const float* v2)
 {
@@ -926,17 +926,17 @@ bool rcAddSpan(rcContext* context, rcHeightfield& heightfield,
 /// @see rcHeightfield
 /// @ingroup recast
 /// @param[in,out]	context				The build context to use during the operation.
-/// @param[in]		v0					Triangle vertex 0 [(x, y, z)]
-/// @param[in]		v1					Triangle vertex 1 [(x, y, z)]
-/// @param[in]		v2					Triangle vertex 2 [(x, y, z)]
+/// @param[in]		vertex0				Triangle vertex 0 [(x, y, z)]
+/// @param[in]		vertex1				Triangle vertex 1 [(x, y, z)]
+/// @param[in]		vertex2				Triangle vertex 2 [(x, y, z)]
 /// @param[in]		areaId				The area id of the triangle. [Limit: <= #RC_WALKABLE_AREA]
 /// @param[in,out]	heightfield			An initialized heightfield.
 /// @param[in]		flagMergeThreshold	The distance where the walkable flag is favored over the non-walkable flag.
 /// 									[Limit: >= 0] [Units: vx]
 /// @returns True if the operation completed successfully.
 bool rcRasterizeTriangle(rcContext* context,
-                         const float* v0, const float* v1, const float* v2,
-                         unsigned char areaID, rcHeightfield& heightfield, int flagMergeThreshold = 1);
+                         const float* vertex0, const float* vertex1, const float* vertex2,
+                         unsigned char areaId, rcHeightfield& heightfield, int flagMergeThreshold = 1);
 
 /// Rasterizes an indexed triangle mesh into the specified heightfield.
 ///
@@ -955,8 +955,8 @@ bool rcRasterizeTriangle(rcContext* context,
 ///										[Limit: >= 0] [Units: vx]
 /// @returns True if the operation completed successfully.
 bool rcRasterizeTriangles(rcContext* context,
-                          const float* verts, int numVerts,
-                          const int* tris, const unsigned char* triAreaIDs, int numTris,
+                          const float* vertices, int verticesCount,
+                          const int* triangles, const unsigned char* triangleAreaId, int trianglesCount,
                           rcHeightfield& heightfield, int flagMergeThreshold = 1);
 
 /// Rasterizes an indexed triangle mesh into the specified heightfield.
