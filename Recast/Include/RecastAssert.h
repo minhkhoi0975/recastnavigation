@@ -30,19 +30,19 @@
 //  @param[in]		file  Filename of the failed assertion.
 //  @param[in]		line  Line number of the failed assertion.
 ///  @see rcAssertFailSetCustom
-typedef void (rcAssertFailFunc)(const char* expression, const char* file, int line);
+typedef void (rcAssertFailFunction)(const char* expression, const char* file, int line);
 
 /// Sets the base custom assertion failure function to be used by Recast.
 ///  @param[in]		assertFailFunc	The function to be used in case of failure of #dtAssert
-void rcAssertFailSetCustom(rcAssertFailFunc* assertFailFunc);
+void rcAssertFailSetCustom(rcAssertFailFunction* assertFailFunc);
 
 /// Gets the base custom assertion failure function to be used by Recast.
-rcAssertFailFunc* rcAssertFailGetCustom();
+rcAssertFailFunction* rcAssertFailGetCustom();
 
 #	include <assert.h> 
 #	define rcAssert(expression) \
 		{ \
-			rcAssertFailFunc* failFunc = rcAssertFailGetCustom(); \
+			rcAssertFailFunction* failFunc = rcAssertFailGetCustom(); \
 			if (failFunc == NULL) { assert(expression); } \
 			else if (!(expression)) { (*failFunc)(#expression, __FILE__, __LINE__); } \
 		}
