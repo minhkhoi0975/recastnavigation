@@ -802,7 +802,7 @@ inline float rcGetDistanceSquared(const float* v1, const float* v2)
 
 /// Normalizes the vector.
 /// @param[in,out]	source	The vector to normalize. [(x, y, z)]
-inline void rcVnormalize(float* v)
+inline void rcNormalize(float* v)
 {
 	float d = 1.0f / rcSqrt(rcSqr(v[0]) + rcSqr(v[1]) + rcSqr(v[2]));
 	v[0] *= d;

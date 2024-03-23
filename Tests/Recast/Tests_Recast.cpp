@@ -317,7 +317,7 @@ TEST_CASE("rcVnormalize", "[recast]")
 	SECTION("normalizing reduces magnitude to 1")
 	{
 		float v[3] = {3, 3, 3};
-		rcVnormalize(v);
+		rcNormalize(v);
 		REQUIRE(v[0] == Catch::Approx(rcSqrt(1.0f / 3.0f)));
 		REQUIRE(v[1] == Catch::Approx(rcSqrt(1.0f / 3.0f)));
 		REQUIRE(v[2] == Catch::Approx(rcSqrt(1.0f / 3.0f)));

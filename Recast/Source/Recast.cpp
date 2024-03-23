@@ -330,7 +330,7 @@ static void calcTriNormal(const float* v0, const float* v1, const float* v2, flo
 	rcSubtractVector(e0, v1, v0);
 	rcSubtractVector(e1, v2, v0);
 	rcCrossProduct(faceNormal, e0, e1);
-	rcVnormalize(faceNormal);
+	rcNormalize(faceNormal);
 }
 
 void rcMarkWalkableTriangles(rcContext* context, const float walkableSlopeAngle,
