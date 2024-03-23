@@ -336,7 +336,7 @@ static bool floodRegion(int x, int y, int i,
 				const int ai = (int)chf.cells[ax+ay*w].index + rcGetCon(cs, dir);
 				if (chf.areas[ai] != area)
 					continue;
-				if (chf.dist[ai] >= lev && srcReg[ai] == 0)
+				if (chf.distancesToBorder[ai] >= lev && srcReg[ai] == 0)
 				{
 					srcReg[ai] = r;
 					srcDist[ai] = 0;
@@ -378,7 +378,7 @@ static void expandRegions(int maxIter, unsigned short level,
 				const rcCompactCell& c = chf.cells[x+y*w];
 				for (int i = (int)c.index, ni = (int)(c.index+c.count); i < ni; ++i)
 				{
-					if (chf.dist[i] >= level && srcReg[i] == 0 && chf.areas[i] != RC_NULL_AREA)
+					if (chf.distancesToBorder[i] >= level && srcReg[i] == 0 && chf.areas[i] != RC_NULL_AREA)
 					{
 						stack.push_back(LevelStackEntry(x, y, i));
 					}
@@ -491,7 +491,7 @@ static void sortCellsByLevel(unsigned short startLevel,
 				if (chf.areas[i] == RC_NULL_AREA || srcReg[i] != 0)
 					continue;
 
-				int level = chf.dist[i] >> loglevelsPerStack;
+				int level = chf.distancesToBorder[i] >> loglevelsPerStack;
 				int sId = startLevel - level;
 				if (sId >= (int)nbStacks)
 					continue;
@@ -1251,8 +1251,8 @@ static bool mergeAndFilterLayerRegions(rcContext* ctx, int minRegionArea,
 /// compact heightfield.  This step is required before regions are built
 /// using #rcBuildRegions or #rcBuildRegionsMonotone.
 /// 
-/// After this step, the distance data is available via the rcCompactHeightfield::maxDistance
-/// and rcCompactHeightfield::dist fields.
+/// After this step, the distance data is available via the rcCompactHeightfield::maxDistanceToBorder
+/// and rcCompactHeightfield::distancesToBorder fields.
 ///
 /// @see rcCompactHeightfield, rcBuildRegions, rcBuildRegionsMonotone
 bool rcBuildDistanceField(rcContext* ctx, rcCompactHeightfield& chf)
@@ -1261,10 +1261,10 @@ bool rcBuildDistanceField(rcContext* ctx, rcCompactHeightfield& chf)
 	
 	rcScopedTimer timer(ctx, RC_TIMER_BUILD_DISTANCEFIELD);
 	
-	if (chf.dist)
+	if (chf.distancesToBorder)
 	{
-		rcFree(chf.dist);
-		chf.dist = 0;
+		rcFree(chf.distancesToBorder);
+		chf.distancesToBorder = 0;
 	}
 	
 	unsigned short* src = (unsigned short*)rcAlloc(sizeof(unsigned short)*chf.spanCount, RC_ALLOC_TEMP);
@@ -1287,7 +1287,7 @@ bool rcBuildDistanceField(rcContext* ctx, rcCompactHeightfield& chf)
 		rcScopedTimer timerDist(ctx, RC_TIMER_BUILD_DISTANCEFIELD_DIST);
 
 		calculateDistanceField(chf, src, maxDist);
-		chf.maxDistance = maxDist;
+		chf.maxDistanceToBorder = maxDist;
 	}
 
 	{
@@ -1298,7 +1298,7 @@ bool rcBuildDistanceField(rcContext* ctx, rcCompactHeightfield& chf)
 			rcSwap(src, dst);
 
 		// Store distance.
-		chf.dist = src;
+		chf.distancesToBorder = src;
 	}
 	
 	rcFree(dst);
@@ -1562,7 +1562,7 @@ bool rcBuildRegions(rcContext* ctx, rcCompactHeightfield& chf,
 	memset(srcDist, 0, sizeof(unsigned short)*chf.spanCount);
 	
 	unsigned short regionId = 1;
-	unsigned short level = (chf.maxDistance+1) & ~1;
+	unsigned short level = (chf.maxDistanceToBorder+1) & ~1;
 
 	// TODO: Figure better formula, expandIters defines how much the 
 	// watershed "overflows" and simplifies the regions. Tying it to

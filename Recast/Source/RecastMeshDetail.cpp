@@ -689,7 +689,7 @@ static bool buildPolyDetail(rcContext* ctx, const float* in, const int nin,
 	edges.clear();
 	tris.clear();
 	
-	const float cs = chf.cs;
+	const float cs = chf.cellSize;
 	const float ics = 1.0f/cs;
 	
 	// Calculate minimum extents of the polygon based on input data.
@@ -740,7 +740,7 @@ static bool buildPolyDetail(rcContext* ctx, const float* in, const int nin,
 				pos[0] = vj[0] + dx*u;
 				pos[1] = vj[1] + dy*u;
 				pos[2] = vj[2] + dz*u;
-				pos[1] = getHeight(pos[0],pos[1],pos[2], cs, ics, chf.ch, heightSearchRadius, hp)*chf.ch;
+				pos[1] = getHeight(pos[0],pos[1],pos[2], cs, ics, chf.cellHeight, heightSearchRadius, hp)*chf.cellHeight;
 			}
 			// Simplify samples.
 			int idx[MAX_VERTS_PER_EDGE] = {0,nn};
@@ -849,7 +849,7 @@ static bool buildPolyDetail(rcContext* ctx, const float* in, const int nin,
 				// Make sure the samples are not too close to the edges.
 				if (distToPoly(nin,in,pt) > -sampleDist/2) continue;
 				samples.push(x);
-				samples.push(getHeight(pt[0], pt[1], pt[2], cs, ics, chf.ch, heightSearchRadius, hp));
+				samples.push(getHeight(pt[0], pt[1], pt[2], cs, ics, chf.cellHeight, heightSearchRadius, hp));
 				samples.push(z);
 				samples.push(0); // Not added
 			}
@@ -876,7 +876,7 @@ static bool buildPolyDetail(rcContext* ctx, const float* in, const int nin,
 				// The sample location is jittered to get rid of some bad triangulations
 				// which are cause by symmetrical data from the grid structure.
 				pt[0] = s[0]*sampleDist + getJitterX(i)*cs*0.1f;
-				pt[1] = s[1]*chf.ch;
+				pt[1] = s[1]*chf.cellHeight;
 				pt[2] = s[2]*sampleDist + getJitterY(i)*cs*0.1f;
 				float d = distToTriMesh(pt, verts, nverts, &tris[0], tris.size()/4);
 				if (d < 0) continue; // did not hit the mesh.
@@ -1323,7 +1323,7 @@ bool rcBuildPolyMeshDetail(rcContext* ctx, const rcPolyMesh& mesh, const rcCompa
 		for (int j = 0; j < nverts; ++j)
 		{
 			verts[j*3+0] += orig[0];
-			verts[j*3+1] += orig[1] + chf.ch; // Is this offset necessary?
+			verts[j*3+1] += orig[1] + chf.cellHeight; // Is this offset necessary?
 			verts[j*3+2] += orig[2];
 		}
 		// Offset poly too, will be used to flag checking.

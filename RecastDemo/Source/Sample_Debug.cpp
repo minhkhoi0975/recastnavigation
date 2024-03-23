@@ -331,7 +331,7 @@ const float* Sample_Debug::getBoundsMin()
 	if (m_cset)
 		return m_cset->bmin;
 	if (m_chf)
-		return m_chf->bmin;
+		return m_chf->boundMin;
 	if (m_navMesh)
 		return m_bmin;
 	return 0;
@@ -342,7 +342,7 @@ const float* Sample_Debug::getBoundsMax()
 	if (m_cset)
 		return m_cset->bmax;
 	if (m_chf)
-		return m_chf->bmax;
+		return m_chf->boundMax;
 	if (m_navMesh)
 		return m_bmax;
 	return 0;

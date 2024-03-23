@@ -380,12 +380,12 @@ void rcMarkBoxArea(rcContext* context, const float* boxMinBounds, const float* b
 	const int zStride = xSize; // For readability
 
 	// Find the footprint of the box area in grid cell coordinates. 
-	int minX = (int)((boxMinBounds[0] - compactHeightfield.bmin[0]) / compactHeightfield.cs);
-	int minY = (int)((boxMinBounds[1] - compactHeightfield.bmin[1]) / compactHeightfield.ch);
-	int minZ = (int)((boxMinBounds[2] - compactHeightfield.bmin[2]) / compactHeightfield.cs);
-	int maxX = (int)((boxMaxBounds[0] - compactHeightfield.bmin[0]) / compactHeightfield.cs);
-	int maxY = (int)((boxMaxBounds[1] - compactHeightfield.bmin[1]) / compactHeightfield.ch);
-	int maxZ = (int)((boxMaxBounds[2] - compactHeightfield.bmin[2]) / compactHeightfield.cs);
+	int minX = (int)((boxMinBounds[0] - compactHeightfield.boundMin[0]) / compactHeightfield.cellSize);
+	int minY = (int)((boxMinBounds[1] - compactHeightfield.boundMin[1]) / compactHeightfield.cellHeight);
+	int minZ = (int)((boxMinBounds[2] - compactHeightfield.boundMin[2]) / compactHeightfield.cellSize);
+	int maxX = (int)((boxMaxBounds[0] - compactHeightfield.boundMin[0]) / compactHeightfield.cellSize);
+	int maxY = (int)((boxMaxBounds[1] - compactHeightfield.boundMin[1]) / compactHeightfield.cellHeight);
+	int maxZ = (int)((boxMaxBounds[2] - compactHeightfield.boundMin[2]) / compactHeightfield.cellSize);
 
 	// Early-out if the box is outside the bounds of the grid.
 	if (maxX < 0) { return; }
@@ -455,12 +455,12 @@ void rcMarkConvexPolyArea(rcContext* context, const float* verts, const int numV
 	bmax[1] = maxY;
 
 	// Compute the grid footprint of the polygon 
-	int minx = (int)((bmin[0] - compactHeightfield.bmin[0]) / compactHeightfield.cs);
-	int miny = (int)((bmin[1] - compactHeightfield.bmin[1]) / compactHeightfield.ch);
-	int minz = (int)((bmin[2] - compactHeightfield.bmin[2]) / compactHeightfield.cs);
-	int maxx = (int)((bmax[0] - compactHeightfield.bmin[0]) / compactHeightfield.cs);
-	int maxy = (int)((bmax[1] - compactHeightfield.bmin[1]) / compactHeightfield.ch);
-	int maxz = (int)((bmax[2] - compactHeightfield.bmin[2]) / compactHeightfield.cs);
+	int minx = (int)((bmin[0] - compactHeightfield.boundMin[0]) / compactHeightfield.cellSize);
+	int miny = (int)((bmin[1] - compactHeightfield.boundMin[1]) / compactHeightfield.cellHeight);
+	int minz = (int)((bmin[2] - compactHeightfield.boundMin[2]) / compactHeightfield.cellSize);
+	int maxx = (int)((bmax[0] - compactHeightfield.boundMin[0]) / compactHeightfield.cellSize);
+	int maxy = (int)((bmax[1] - compactHeightfield.boundMin[1]) / compactHeightfield.cellHeight);
+	int maxz = (int)((bmax[2] - compactHeightfield.boundMin[2]) / compactHeightfield.cellSize);
 
 	// Early-out if the polygon lies entirely outside the grid.
 	if (maxx < 0) { return; }
@@ -498,9 +498,9 @@ void rcMarkConvexPolyArea(rcContext* context, const float* verts, const int numV
 				}
 
 				const float point[] = {
-					compactHeightfield.bmin[0] + ((float)x + 0.5f) * compactHeightfield.cs,
+					compactHeightfield.boundMin[0] + ((float)x + 0.5f) * compactHeightfield.cellSize,
 					0,
-					compactHeightfield.bmin[2] + ((float)z + 0.5f) * compactHeightfield.cs
+					compactHeightfield.boundMin[2] + ((float)z + 0.5f) * compactHeightfield.cellSize
 				};
 				
 				if (pointInPoly(numVerts, verts, point))
@@ -656,12 +656,12 @@ void rcMarkCylinderArea(rcContext* context, const float* position, const float r
 	};
 
 	// Compute the grid footprint of the cylinder
-	int minx = (int)((cylinderBBMin[0] - compactHeightfield.bmin[0]) / compactHeightfield.cs);
-	int miny = (int)((cylinderBBMin[1] - compactHeightfield.bmin[1]) / compactHeightfield.ch);
-	int minz = (int)((cylinderBBMin[2] - compactHeightfield.bmin[2]) / compactHeightfield.cs);
-	int maxx = (int)((cylinderBBMax[0] - compactHeightfield.bmin[0]) / compactHeightfield.cs);
-	int maxy = (int)((cylinderBBMax[1] - compactHeightfield.bmin[1]) / compactHeightfield.ch);
-	int maxz = (int)((cylinderBBMax[2] - compactHeightfield.bmin[2]) / compactHeightfield.cs);
+	int minx = (int)((cylinderBBMin[0] - compactHeightfield.boundMin[0]) / compactHeightfield.cellSize);
+	int miny = (int)((cylinderBBMin[1] - compactHeightfield.boundMin[1]) / compactHeightfield.cellHeight);
+	int minz = (int)((cylinderBBMin[2] - compactHeightfield.boundMin[2]) / compactHeightfield.cellSize);
+	int maxx = (int)((cylinderBBMax[0] - compactHeightfield.boundMin[0]) / compactHeightfield.cellSize);
+	int maxy = (int)((cylinderBBMax[1] - compactHeightfield.boundMin[1]) / compactHeightfield.cellHeight);
+	int maxz = (int)((cylinderBBMax[2] - compactHeightfield.boundMin[2]) / compactHeightfield.cellSize);
 
 	// Early-out if the cylinder is completely outside the grid bounds.
     if (maxx < 0) { return; }
@@ -684,8 +684,8 @@ void rcMarkCylinderArea(rcContext* context, const float* position, const float r
 			const rcCompactCell& cell = compactHeightfield.cells[x + z * zStride];
 			const int maxSpanIndex = (int)(cell.index + cell.count);
 
-			const float cellX = compactHeightfield.bmin[0] + ((float)x + 0.5f) * compactHeightfield.cs;
-			const float cellZ = compactHeightfield.bmin[2] + ((float)z + 0.5f) * compactHeightfield.cs;
+			const float cellX = compactHeightfield.boundMin[0] + ((float)x + 0.5f) * compactHeightfield.cellSize;
+			const float cellZ = compactHeightfield.boundMin[2] + ((float)z + 0.5f) * compactHeightfield.cellSize;
 			const float deltaX = cellX - position[0];
             const float deltaZ = cellZ - position[2];
 

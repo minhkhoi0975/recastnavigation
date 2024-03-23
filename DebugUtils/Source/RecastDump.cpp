@@ -283,19 +283,19 @@ bool duDumpCompactHeightfield(struct rcCompactHeightfield& chf, duFileIO* io)
 	io->write(&chf.walkableClimb, sizeof(chf.walkableClimb));
 	io->write(&chf.borderSize, sizeof(chf.borderSize));
 
-	io->write(&chf.maxDistance, sizeof(chf.maxDistance));
+	io->write(&chf.maxDistanceToBorder, sizeof(chf.maxDistanceToBorder));
 	io->write(&chf.maxRegions, sizeof(chf.maxRegions));
 
-	io->write(chf.bmin, sizeof(chf.bmin));
-	io->write(chf.bmax, sizeof(chf.bmax));
+	io->write(chf.boundMin, sizeof(chf.boundMin));
+	io->write(chf.boundMax, sizeof(chf.boundMax));
 
-	io->write(&chf.cs, sizeof(chf.cs));
-	io->write(&chf.ch, sizeof(chf.ch));
+	io->write(&chf.cellSize, sizeof(chf.cellSize));
+	io->write(&chf.cellHeight, sizeof(chf.cellHeight));
 
 	int tmp = 0;
 	if (chf.cells) tmp |= 1;
 	if (chf.spans) tmp |= 2;
-	if (chf.dist) tmp |= 4;
+	if (chf.distancesToBorder) tmp |= 4;
 	if (chf.areas) tmp |= 8;
 
 	io->write(&tmp, sizeof(tmp));
@@ -304,8 +304,8 @@ bool duDumpCompactHeightfield(struct rcCompactHeightfield& chf, duFileIO* io)
 		io->write(chf.cells, sizeof(rcCompactCell)*chf.width*chf.height);
 	if (chf.spans)
 		io->write(chf.spans, sizeof(rcCompactSpan)*chf.spanCount);
-	if (chf.dist)
-		io->write(chf.dist, sizeof(unsigned short)*chf.spanCount);
+	if (chf.distancesToBorder)
+		io->write(chf.distancesToBorder, sizeof(unsigned short)*chf.spanCount);
 	if (chf.areas)
 		io->write(chf.areas, sizeof(unsigned char)*chf.spanCount);
 
@@ -350,14 +350,14 @@ bool duReadCompactHeightfield(struct rcCompactHeightfield& chf, duFileIO* io)
 	io->read(&chf.walkableClimb, sizeof(chf.walkableClimb));
 	io->read(&chf.borderSize, sizeof(chf.borderSize));
 
-	io->read(&chf.maxDistance, sizeof(chf.maxDistance));
+	io->read(&chf.maxDistanceToBorder, sizeof(chf.maxDistanceToBorder));
 	io->read(&chf.maxRegions, sizeof(chf.maxRegions));
 	
-	io->read(chf.bmin, sizeof(chf.bmin));
-	io->read(chf.bmax, sizeof(chf.bmax));
+	io->read(chf.boundMin, sizeof(chf.boundMin));
+	io->read(chf.boundMax, sizeof(chf.boundMax));
 	
-	io->read(&chf.cs, sizeof(chf.cs));
-	io->read(&chf.ch, sizeof(chf.ch));
+	io->read(&chf.cellSize, sizeof(chf.cellSize));
+	io->read(&chf.cellHeight, sizeof(chf.cellHeight));
 	
 	int tmp = 0;
 	io->read(&tmp, sizeof(tmp));
@@ -384,13 +384,13 @@ bool duReadCompactHeightfield(struct rcCompactHeightfield& chf, duFileIO* io)
 	}
 	if (tmp & 4)
 	{
-		chf.dist = (unsigned short*)rcAlloc(sizeof(unsigned short)*chf.spanCount, RC_ALLOC_PERM);
-		if (!chf.dist)
+		chf.distancesToBorder = (unsigned short*)rcAlloc(sizeof(unsigned short)*chf.spanCount, RC_ALLOC_PERM);
+		if (!chf.distancesToBorder)
 		{
 			printf("duReadCompactHeightfield: Could not alloc dist (%d)\n", chf.spanCount);
 			return false;
 		}
-		io->read(chf.dist, sizeof(unsigned short)*chf.spanCount);
+		io->read(chf.distancesToBorder, sizeof(unsigned short)*chf.spanCount);
 	}
 	if (tmp & 8)
 	{

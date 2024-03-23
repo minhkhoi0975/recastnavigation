@@ -212,8 +212,8 @@ void duDebugDrawCompactHeightfieldSolid(duDebugDraw* dd, const rcCompactHeightfi
 {
 	if (!dd) return;
 
-	const float cs = chf.cs;
-	const float ch = chf.ch;
+	const float cs = chf.cellSize;
+	const float ch = chf.cellHeight;
 
 	dd->begin(DU_DRAW_QUADS);
 	
@@ -221,8 +221,8 @@ void duDebugDrawCompactHeightfieldSolid(duDebugDraw* dd, const rcCompactHeightfi
 	{
 		for (int x = 0; x < chf.width; ++x)
 		{
-			const float fx = chf.bmin[0] + x*cs;
-			const float fz = chf.bmin[2] + y*cs;
+			const float fx = chf.boundMin[0] + x*cs;
+			const float fz = chf.boundMin[2] + y*cs;
 			const rcCompactCell& c = chf.cells[x+y*chf.width];
 
 			for (unsigned i = c.index, ni = c.index+c.count; i < ni; ++i)
@@ -238,7 +238,7 @@ void duDebugDrawCompactHeightfieldSolid(duDebugDraw* dd, const rcCompactHeightfi
 				else
 					color = dd->areaToCol(area);
 				
-				const float fy = chf.bmin[1] + (s.y+1)*ch;
+				const float fy = chf.boundMin[1] + (s.y+1)*ch;
 				dd->vertex(fx, fy, fz, color);
 				dd->vertex(fx, fy, fz+cs, color);
 				dd->vertex(fx+cs, fy, fz+cs, color);
@@ -253,8 +253,8 @@ void duDebugDrawCompactHeightfieldRegions(duDebugDraw* dd, const rcCompactHeight
 {
 	if (!dd) return;
 
-	const float cs = chf.cs;
-	const float ch = chf.ch;
+	const float cs = chf.cellSize;
+	const float ch = chf.cellHeight;
 
 	dd->begin(DU_DRAW_QUADS);
 
@@ -262,14 +262,14 @@ void duDebugDrawCompactHeightfieldRegions(duDebugDraw* dd, const rcCompactHeight
 	{
 		for (int x = 0; x < chf.width; ++x)
 		{
-			const float fx = chf.bmin[0] + x*cs;
-			const float fz = chf.bmin[2] + y*cs;
+			const float fx = chf.boundMin[0] + x*cs;
+			const float fz = chf.boundMin[2] + y*cs;
 			const rcCompactCell& c = chf.cells[x+y*chf.width];
 			
 			for (unsigned i = c.index, ni = c.index+c.count; i < ni; ++i)
 			{
 				const rcCompactSpan& s = chf.spans[i];
-				const float fy = chf.bmin[1] + (s.y)*ch;
+				const float fy = chf.boundMin[1] + (s.y)*ch;
 				unsigned int color;
 				if (s.regionId)
 					color = duIntToCol(s.regionId, 192);
@@ -291,12 +291,12 @@ void duDebugDrawCompactHeightfieldRegions(duDebugDraw* dd, const rcCompactHeight
 void duDebugDrawCompactHeightfieldDistance(duDebugDraw* dd, const rcCompactHeightfield& chf)
 {
 	if (!dd) return;
-	if (!chf.dist) return;
+	if (!chf.distancesToBorder) return;
 		
-	const float cs = chf.cs;
-	const float ch = chf.ch;
+	const float cs = chf.cellSize;
+	const float ch = chf.cellHeight;
 			
-	float maxd = chf.maxDistance;
+	float maxd = chf.maxDistanceToBorder;
 	if (maxd < 1.0f) maxd = 1;
 	const float dscale = 255.0f / maxd;
 	
@@ -306,15 +306,15 @@ void duDebugDrawCompactHeightfieldDistance(duDebugDraw* dd, const rcCompactHeigh
 	{
 		for (int x = 0; x < chf.width; ++x)
 		{
-			const float fx = chf.bmin[0] + x*cs;
-			const float fz = chf.bmin[2] + y*cs;
+			const float fx = chf.boundMin[0] + x*cs;
+			const float fz = chf.boundMin[2] + y*cs;
 			const rcCompactCell& c = chf.cells[x+y*chf.width];
 			
 			for (unsigned i = c.index, ni = c.index+c.count; i < ni; ++i)
 			{
 				const rcCompactSpan& s = chf.spans[i];
-				const float fy = chf.bmin[1] + (s.y+1)*ch;
-				const unsigned char cd = (unsigned char)(chf.dist[i] * dscale);
+				const float fy = chf.boundMin[1] + (s.y+1)*ch;
+				const unsigned char cd = (unsigned char)(chf.distancesToBorder[i] * dscale);
 				const unsigned int color = duRGBA(cd,cd,cd,255);
 				dd->vertex(fx, fy, fz, color);
 				dd->vertex(fx, fy, fz+cs, color);

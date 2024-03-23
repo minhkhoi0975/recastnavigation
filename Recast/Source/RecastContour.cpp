@@ -832,19 +832,19 @@ bool rcBuildContours(rcContext* ctx, const rcCompactHeightfield& chf,
 	
 	rcScopedTimer timer(ctx, RC_TIMER_BUILD_CONTOURS);
 	
-	rcCopyVector(cset.bmin, chf.bmin);
-	rcCopyVector(cset.bmax, chf.bmax);
+	rcCopyVector(cset.bmin, chf.boundMin);
+	rcCopyVector(cset.bmax, chf.boundMax);
 	if (borderSize > 0)
 	{
 		// If the heightfield was build with bordersize, remove the offset.
-		const float pad = borderSize*chf.cs;
+		const float pad = borderSize*chf.cellSize;
 		cset.bmin[0] += pad;
 		cset.bmin[2] += pad;
 		cset.bmax[0] -= pad;
 		cset.bmax[2] -= pad;
 	}
-	cset.cs = chf.cs;
-	cset.ch = chf.ch;
+	cset.cs = chf.cellSize;
+	cset.ch = chf.cellHeight;
 	cset.width = chf.width - chf.borderSize*2;
 	cset.height = chf.height - chf.borderSize*2;
 	cset.borderSize = chf.borderSize;
