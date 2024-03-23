@@ -16,8 +16,7 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //
 
-#ifndef RECASTASSERT_H
-#define RECASTASSERT_H
+#pragma once
 
 #ifdef RC_DISABLE_ASSERTS
 
@@ -49,5 +48,3 @@ rcAssertFailFunc* rcAssertFailGetCustom();
 		}
 
 #endif
-
-#endif // RECASTASSERT_H
