@@ -19,6 +19,9 @@ RecastDemo/Build
 # XCode debug symbols archive
 RecastDemo/Bin/*.dSYM
 
+# Visual Studio 2015/2017 cache/options directory
+.vs/
+
 # Ignore meshes
 RecastDemo/Bin/Meshes/*
 
