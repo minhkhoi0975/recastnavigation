@@ -142,7 +142,7 @@ TEST_CASE("rcVmad", "[recast]")
 		float v1[3] = {1, 2, 3};
 		float v2[3] = {0, 2, 4};
 		float result[3];
-		rcVmad(result, v1, v2, 2);
+		rcAddVectorScaled(result, v1, v2, 2);
 		REQUIRE(result[0] == Catch::Approx(1));
 		REQUIRE(result[1] == Catch::Approx(6));
 		REQUIRE(result[2] == Catch::Approx(11));
@@ -153,7 +153,7 @@ TEST_CASE("rcVmad", "[recast]")
 		float v1[3] = {1, 2, 3};
 		float v2[3] = {5, 6, 7};
 		float result[3];
-		rcVmad(result, v1, v2, 0);
+		rcAddVectorScaled(result, v1, v2, 0);
 		REQUIRE(result[0] == Catch::Approx(1));
 		REQUIRE(result[1] == Catch::Approx(2));
 		REQUIRE(result[2] == Catch::Approx(3));
