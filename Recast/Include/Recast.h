@@ -739,11 +739,11 @@ inline void rcAddVector(float* dest, const float* v1, const float* v2)
 /// @param[out]		dest	The result vector. [(x, y, z)]
 /// @param[in]		v1		The base vector. [(x, y, z)]
 /// @param[in]		v2		The vector to subtract from @p v1. [(x, y, z)]
-inline void rcVsub(float* dest, const float* v1, const float* v2)
+inline void rcSubtractVector(float* dest, const float* v1, const float* v2)
 {
-	dest[0] = v1[0]-v2[0];
-	dest[1] = v1[1]-v2[1];
-	dest[2] = v1[2]-v2[2];
+	dest[0] = v1[0] - v2[0];
+	dest[1] = v1[1] - v2[1];
+	dest[2] = v1[2] - v2[2];
 }
 
 /// Selects the minimum value of each element from the specified vectors.

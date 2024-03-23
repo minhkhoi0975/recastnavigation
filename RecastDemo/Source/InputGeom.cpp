@@ -36,9 +36,9 @@ static bool intersectSegmentTriangle(const float* sp, const float* sq,
 {
 	float v, w;
 	float ab[3], ac[3], qp[3], ap[3], norm[3], e[3];
-	rcVsub(ab, b, a);
-	rcVsub(ac, c, a);
-	rcVsub(qp, sp, sq);
+	rcSubtractVector(ab, b, a);
+	rcSubtractVector(ac, c, a);
+	rcSubtractVector(qp, sp, sq);
 	
 	// Compute triangle normal. Can be precalculated or cached if
 	// intersecting multiple segments against the same triangle
@@ -52,7 +52,7 @@ static bool intersectSegmentTriangle(const float* sp, const float* sq,
 	// Compute intersection t value of pq with plane of triangle. A ray
 	// intersects iff 0 <= t. Segment intersects iff 0 <= t <= 1. Delay
 	// dividing by d until intersection has been found to pierce triangle
-	rcVsub(ap, sp, a);
+	rcSubtractVector(ap, sp, a);
 	t = rcDotProduct(ap, norm);
 	if (t < 0.0f) return false;
 	if (t > d) return false; // For segment; exclude this code line for a ray test

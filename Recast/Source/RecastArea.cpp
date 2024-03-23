@@ -549,13 +549,13 @@ int rcOffsetPoly(const float* verts, const int numVerts, const float offset, flo
 
         // From A to B on the x/z plane
 		float prevSegmentDir[3];
-		rcVsub(prevSegmentDir, vertB, vertA);
+		rcSubtractVector(prevSegmentDir, vertB, vertA);
 		prevSegmentDir[1] = 0; // Squash onto x/z plane
 		rcVsafeNormalize(prevSegmentDir);
 		
         // From B to C on the x/z plane
 		float currSegmentDir[3];
-		rcVsub(currSegmentDir, vertC, vertB);
+		rcSubtractVector(currSegmentDir, vertC, vertB);
 		currSegmentDir[1] = 0; // Squash onto x/z plane
 		rcVsafeNormalize(currSegmentDir);
 

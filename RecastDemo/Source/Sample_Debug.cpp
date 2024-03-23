@@ -203,7 +203,7 @@ void Sample_Debug::handleRender()
 		duDebugDrawNavMeshPoly(&m_dd, *m_navMesh, m_ref, duRGBA(255,0,0,128));
 
 /*	float bmin[3], bmax[3];
-	rcVsub(bmin, m_center, m_halfExtents);
+	rcSubtractVector(bmin, m_center, m_halfExtents);
 	rcAddVector(bmax, m_center, m_halfExtents);
 	duDebugDrawBoxWire(&dd, bmin[0],bmin[1],bmin[2], bmax[0],bmax[1],bmax[2], duRGBA(255,255,255,128), 1.0f);
 	duDebugDrawCross(&dd, m_center[0], m_center[1], m_center[2], 1.0f, duRGBA(255,255,255,128), 2.0f);*/

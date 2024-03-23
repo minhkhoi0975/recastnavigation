@@ -327,8 +327,8 @@ bool rcCreateHeightfield(rcContext* context, rcHeightfield& heightfield, int siz
 static void calcTriNormal(const float* v0, const float* v1, const float* v2, float* faceNormal)
 {
 	float e0[3], e1[3];
-	rcVsub(e0, v1, v0);
-	rcVsub(e1, v2, v0);
+	rcSubtractVector(e0, v1, v0);
+	rcSubtractVector(e1, v2, v0);
 	rcCrossProduct(faceNormal, e0, e1);
 	rcVnormalize(faceNormal);
 }

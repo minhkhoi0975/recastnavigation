@@ -64,7 +64,7 @@ static bool isectSegAABB(const float* sp, const float* sq,
 	static const float EPS = 1e-6f;
 	
 	float d[3];
-	rcVsub(d, sq, sp);
+	rcSubtractVector(d, sq, sp);
 	tmin = 0;  // set to -FLT_MAX to get first hit on line
 	tmax = FLT_MAX;		// set to max distance ray can travel (for segment)
 	

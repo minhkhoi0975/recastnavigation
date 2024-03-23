@@ -181,7 +181,7 @@ TEST_CASE("rcVsub", "[recast]")
 		float v1[3] = {5, 4, 3};
 		float v2[3] = {1, 2, 3};
 		float result[3];
-		rcVsub(result, v1, v2);
+		rcSubtractVector(result, v1, v2);
 		REQUIRE(result[0] == Catch::Approx(4));
 		REQUIRE(result[1] == Catch::Approx(2));
 		REQUIRE(result[2] == Catch::Approx(0));

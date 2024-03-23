@@ -70,8 +70,8 @@ static bool circumCircle(const float* p1, const float* p2, const float* p3,
 	// Calculate the circle relative to p1, to avoid some precision issues.
 	const float v1[3] = {0,0,0};
 	float v2[3], v3[3];
-	rcVsub(v2, p2,p1);
-	rcVsub(v3, p3,p1);
+	rcSubtractVector(v2, p2,p1);
+	rcSubtractVector(v3, p3,p1);
 	
 	const float cp = vcross2(v1, v2, v3);
 	if (fabsf(cp) > EPS)
@@ -95,9 +95,9 @@ static bool circumCircle(const float* p1, const float* p2, const float* p3,
 static float distPtTri(const float* p, const float* a, const float* b, const float* c)
 {
 	float v0[3], v1[3], v2[3];
-	rcVsub(v0, c,a);
-	rcVsub(v1, b,a);
-	rcVsub(v2, p,a);
+	rcSubtractVector(v0, c,a);
+	rcSubtractVector(v1, b,a);
+	rcSubtractVector(v2, p,a);
 	
 	const float dot00 = vdot2(v0, v0);
 	const float dot01 = vdot2(v0, v1);
