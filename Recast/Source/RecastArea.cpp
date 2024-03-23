@@ -444,8 +444,8 @@ void rcMarkConvexPolyArea(rcContext* context, const float* verts, const int numV
 	// Compute the bounding box of the polygon
 	float bmin[3];
 	float bmax[3];
-	rcVcopy(bmin, verts);
-	rcVcopy(bmax, verts);
+	rcCopyVector(bmin, verts);
+	rcCopyVector(bmax, verts);
 	for (int i = 1; i < numVerts; ++i)
 	{
 		rcVmin(bmin, &verts[i * 3]);

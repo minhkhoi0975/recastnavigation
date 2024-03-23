@@ -260,7 +260,7 @@ TEST_CASE("rcVcopy", "[recast]")
 	{
 		float v1[3] = {5, 4, 0};
 		float result[3] = {1, 2, 9};
-		rcVcopy(result, v1);
+		rcCopyVector(result, v1);
 		REQUIRE(result[0] == Catch::Approx(5));
 		REQUIRE(result[1] == Catch::Approx(4));
 		REQUIRE(result[2] == Catch::Approx(0));

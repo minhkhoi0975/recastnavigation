@@ -287,8 +287,8 @@ rcPolyMeshDetail::rcPolyMeshDetail()
 void rcCalcBounds(const float* verts, int numVerts, float* minBounds, float* maxBounds)
 {
 	// Calculate bounding box.
-	rcVcopy(minBounds, verts);
-	rcVcopy(maxBounds, verts);
+	rcCopyVector(minBounds, verts);
+	rcCopyVector(maxBounds, verts);
 	for (int i = 1; i < numVerts; ++i)
 	{
 		const float* v = &verts[i * 3];
@@ -311,8 +311,8 @@ bool rcCreateHeightfield(rcContext* context, rcHeightfield& heightfield, int siz
 
 	heightfield.width = sizeX;
 	heightfield.height = sizeZ;
-	rcVcopy(heightfield.bmin, minBounds);
-	rcVcopy(heightfield.bmax, maxBounds);
+	rcCopyVector(heightfield.bmin, minBounds);
+	rcCopyVector(heightfield.bmax, maxBounds);
 	heightfield.cs = cellSize;
 	heightfield.ch = cellHeight;
 	heightfield.spans = (rcSpan**)rcAlloc(sizeof(rcSpan*) * heightfield.width * heightfield.height, RC_ALLOC_PERM);
@@ -418,8 +418,8 @@ bool rcBuildCompactHeightfield(rcContext* context, const int walkableHeight, con
 	compactHeightfield.walkableHeight = walkableHeight;
 	compactHeightfield.walkableClimb = walkableClimb;
 	compactHeightfield.maxRegions = 0;
-	rcVcopy(compactHeightfield.bmin, heightfield.bmin);
-	rcVcopy(compactHeightfield.bmax, heightfield.bmax);
+	rcCopyVector(compactHeightfield.bmin, heightfield.bmin);
+	rcCopyVector(compactHeightfield.bmax, heightfield.bmax);
 	compactHeightfield.bmax[1] += walkableHeight * heightfield.ch;
 	compactHeightfield.cs = heightfield.cs;
 	compactHeightfield.ch = heightfield.ch;

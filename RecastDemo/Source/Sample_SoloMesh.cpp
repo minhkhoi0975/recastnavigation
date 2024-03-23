@@ -407,8 +407,8 @@ bool Sample_SoloMesh::handleBuild()
 	// Set the area where the navigation will be build.
 	// Here the bounds of the input mesh are used, but the
 	// area could be specified by an user defined box, etc.
-	rcVcopy(m_cfg.bmin, bmin);
-	rcVcopy(m_cfg.bmax, bmax);
+	rcCopyVector(m_cfg.bmin, bmin);
+	rcCopyVector(m_cfg.bmax, bmax);
 	rcCalcGridSize(m_cfg.bmin, m_cfg.bmax, m_cfg.cs, &m_cfg.width, &m_cfg.height);
 
 	// Reset build times gathering.
@@ -700,8 +700,8 @@ bool Sample_SoloMesh::handleBuild()
 		params.walkableHeight = m_agentHeight;
 		params.walkableRadius = m_agentRadius;
 		params.walkableClimb = m_agentMaxClimb;
-		rcVcopy(params.bmin, m_pmesh->bmin);
-		rcVcopy(params.bmax, m_pmesh->bmax);
+		rcCopyVector(params.bmin, m_pmesh->bmin);
+		rcCopyVector(params.bmax, m_pmesh->bmax);
 		params.cs = m_cfg.cs;
 		params.ch = m_cfg.ch;
 		params.buildBvTree = true;

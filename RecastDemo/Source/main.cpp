@@ -241,8 +241,8 @@ int main(int argc, char** argv)
 							BuildSettings settings;
 							memset(&settings, 0, sizeof(settings));
 
-							rcVcopy(settings.navMeshBMin, inputGeometry->getNavMeshBoundsMin());
-							rcVcopy(settings.navMeshBMax, inputGeometry->getNavMeshBoundsMax());
+							rcCopyVector(settings.navMeshBMin, inputGeometry->getNavMeshBoundsMin());
+							rcCopyVector(settings.navMeshBMax, inputGeometry->getNavMeshBoundsMax());
 
 							sample->collectSettings(settings);
 

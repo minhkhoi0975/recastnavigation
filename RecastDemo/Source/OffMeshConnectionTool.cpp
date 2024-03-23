@@ -113,7 +113,7 @@ void OffMeshConnectionTool::handleClick(const float* /*s*/, const float* p, bool
 		// Create	
 		if (!m_hitPosSet)
 		{
-			rcVcopy(m_hitPos, p);
+			rcCopyVector(m_hitPos, p);
 			m_hitPosSet = true;
 		}
 		else

@@ -476,8 +476,8 @@ void InputGeom::addOffMeshConnection(const float* spos, const float* epos, const
 	m_offMeshConAreas[m_offMeshConCount] = area;
 	m_offMeshConFlags[m_offMeshConCount] = flags;
 	m_offMeshConId[m_offMeshConCount] = 1000 + m_offMeshConCount;
-	rcVcopy(&v[0], spos);
-	rcVcopy(&v[3], epos);
+	rcCopyVector(&v[0], spos);
+	rcCopyVector(&v[3], epos);
 	m_offMeshConCount++;
 }
 
@@ -486,8 +486,8 @@ void InputGeom::deleteOffMeshConnection(int i)
 	m_offMeshConCount--;
 	float* src = &m_offMeshConVerts[m_offMeshConCount*3*2];
 	float* dst = &m_offMeshConVerts[i*3*2];
-	rcVcopy(&dst[0], &src[0]);
-	rcVcopy(&dst[3], &src[3]);
+	rcCopyVector(&dst[0], &src[0]);
+	rcCopyVector(&dst[3], &src[3]);
 	m_offMeshConRads[i] = m_offMeshConRads[m_offMeshConCount];
 	m_offMeshConDirs[i] = m_offMeshConDirs[m_offMeshConCount];
 	m_offMeshConAreas[i] = m_offMeshConAreas[m_offMeshConCount];

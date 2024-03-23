@@ -249,7 +249,7 @@ static void dividePoly(const float* inVerts, int inVertsCount,
 			outVerts1[poly1Vert * 3 + 0] = inVerts[inVertB * 3 + 0] + (inVerts[inVertA * 3 + 0] - inVerts[inVertB * 3 + 0]) * s;
 			outVerts1[poly1Vert * 3 + 1] = inVerts[inVertB * 3 + 1] + (inVerts[inVertA * 3 + 1] - inVerts[inVertB * 3 + 1]) * s;
 			outVerts1[poly1Vert * 3 + 2] = inVerts[inVertB * 3 + 2] + (inVerts[inVertA * 3 + 2] - inVerts[inVertB * 3 + 2]) * s;
-			rcVcopy(&outVerts2[poly2Vert * 3], &outVerts1[poly1Vert * 3]);
+			rcCopyVector(&outVerts2[poly2Vert * 3], &outVerts1[poly1Vert * 3]);
 			poly1Vert++;
 			poly2Vert++;
 			
@@ -257,12 +257,12 @@ static void dividePoly(const float* inVerts, int inVertsCount,
 			// since these were already added above
 			if (inVertAxisDelta[inVertA] > 0)
 			{
-				rcVcopy(&outVerts1[poly1Vert * 3], &inVerts[inVertA * 3]);
+				rcCopyVector(&outVerts1[poly1Vert * 3], &inVerts[inVertA * 3]);
 				poly1Vert++;
 			}
 			else if (inVertAxisDelta[inVertA] < 0)
 			{
-				rcVcopy(&outVerts2[poly2Vert * 3], &inVerts[inVertA * 3]);
+				rcCopyVector(&outVerts2[poly2Vert * 3], &inVerts[inVertA * 3]);
 				poly2Vert++;
 			}
 		}
@@ -271,14 +271,14 @@ static void dividePoly(const float* inVerts, int inVertsCount,
 			// add the inVertA point to the right polygon. Addition is done even for points on the dividing line
 			if (inVertAxisDelta[inVertA] >= 0)
 			{
-				rcVcopy(&outVerts1[poly1Vert * 3], &inVerts[inVertA * 3]);
+				rcCopyVector(&outVerts1[poly1Vert * 3], &inVerts[inVertA * 3]);
 				poly1Vert++;
 				if (inVertAxisDelta[inVertA] != 0)
 				{
 					continue;
 				}
 			}
-			rcVcopy(&outVerts2[poly2Vert * 3], &inVerts[inVertA * 3]);
+			rcCopyVector(&outVerts2[poly2Vert * 3], &inVerts[inVertA * 3]);
 			poly2Vert++;
 		}
 	}
@@ -311,12 +311,12 @@ static bool rasterizeTri(const float* v0, const float* v1, const float* v2,
 {
 	// Calculate the bounding box of the triangle.
 	float triBBMin[3];
-	rcVcopy(triBBMin, v0);
+	rcCopyVector(triBBMin, v0);
 	rcVmin(triBBMin, v1);
 	rcVmin(triBBMin, v2);
 
 	float triBBMax[3];
-	rcVcopy(triBBMax, v0);
+	rcCopyVector(triBBMax, v0);
 	rcVmax(triBBMax, v1);
 	rcVmax(triBBMax, v2);
 
@@ -345,9 +345,9 @@ static bool rasterizeTri(const float* v0, const float* v1, const float* v2,
 	float* p1 = inRow + 7 * 3;
 	float* p2 = p1 + 7 * 3;
 
-	rcVcopy(&in[0], v0);
-	rcVcopy(&in[1 * 3], v1);
-	rcVcopy(&in[2 * 3], v2);
+	rcCopyVector(&in[0], v0);
+	rcCopyVector(&in[1 * 3], v1);
+	rcCopyVector(&in[2 * 3], v2);
 	int nvRow;
 	int nvIn = 3;
 

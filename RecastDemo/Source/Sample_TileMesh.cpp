@@ -115,7 +115,7 @@ public:
 	virtual void handleClick(const float* /*s*/, const float* p, bool shift)
 	{
 		m_hitPosSet = true;
-		rcVcopy(m_hitPos,p);
+		rcCopyVector(m_hitPos,p);
 		if (m_sample)
 		{
 			if (shift)
@@ -604,7 +604,7 @@ bool Sample_TileMesh::handleBuild()
 	}
 
 	dtNavMeshParams params;
-	rcVcopy(params.orig, m_geom->getNavMeshBoundsMin());
+	rcCopyVector(params.orig, m_geom->getNavMeshBoundsMin());
 	params.tileWidth = m_tileSize*m_cellSize;
 	params.tileHeight = m_tileSize*m_cellSize;
 	params.maxTiles = m_maxTiles;
@@ -850,8 +850,8 @@ unsigned char* Sample_TileMesh::buildTileMesh(const int tx, const int ty, const 
 	// For example if you build a navmesh for terrain, and want the navmesh tiles to match the terrain tile size
 	// you will need to pass in data from neighbour terrain tiles too! In a simple case, just pass in all the 8 neighbours,
 	// or use the bounding box below to only pass in a sliver of each of the 8 neighbours.
-	rcVcopy(m_cfg.bmin, bmin);
-	rcVcopy(m_cfg.bmax, bmax);
+	rcCopyVector(m_cfg.bmin, bmin);
+	rcCopyVector(m_cfg.bmax, bmax);
 	m_cfg.bmin[0] -= m_cfg.borderSize*m_cfg.cs;
 	m_cfg.bmin[2] -= m_cfg.borderSize*m_cfg.cs;
 	m_cfg.bmax[0] += m_cfg.borderSize*m_cfg.cs;
@@ -1145,8 +1145,8 @@ unsigned char* Sample_TileMesh::buildTileMesh(const int tx, const int ty, const 
 		params.tileX = tx;
 		params.tileY = ty;
 		params.tileLayer = 0;
-		rcVcopy(params.bmin, m_pmesh->bmin);
-		rcVcopy(params.bmax, m_pmesh->bmax);
+		rcCopyVector(params.bmin, m_pmesh->bmin);
+		rcCopyVector(params.bmax, m_pmesh->bmax);
 		params.cs = m_cfg.cs;
 		params.ch = m_cfg.ch;
 		params.buildBvTree = true;

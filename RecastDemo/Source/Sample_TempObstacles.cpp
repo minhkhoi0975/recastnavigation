@@ -726,7 +726,7 @@ public:
 	virtual void handleClick(const float* /*s*/, const float* p, bool /*shift*/)
 	{
 		m_hitPosSet = true;
-		rcVcopy(m_hitPos,p);
+		rcCopyVector(m_hitPos,p);
 	}
 
 	virtual void handleToggle() {}
@@ -1243,13 +1243,13 @@ bool Sample_TempObstacles::handleBuild()
 	cfg.height = cfg.tileSize + cfg.borderSize*2;
 	cfg.detailSampleDist = m_detailSampleDist < 0.9f ? 0 : m_cellSize * m_detailSampleDist;
 	cfg.detailSampleMaxError = m_cellHeight * m_detailSampleMaxError;
-	rcVcopy(cfg.bmin, bmin);
-	rcVcopy(cfg.bmax, bmax);
+	rcCopyVector(cfg.bmin, bmin);
+	rcCopyVector(cfg.bmax, bmax);
 	
 	// Tile cache params.
 	dtTileCacheParams tcparams;
 	memset(&tcparams, 0, sizeof(tcparams));
-	rcVcopy(tcparams.orig, bmin);
+	rcCopyVector(tcparams.orig, bmin);
 	tcparams.cs = m_cellSize;
 	tcparams.ch = m_cellHeight;
 	tcparams.width = (int)m_tileSize;
@@ -1287,7 +1287,7 @@ bool Sample_TempObstacles::handleBuild()
 
 	dtNavMeshParams params;
 	memset(&params, 0, sizeof(params));
-	rcVcopy(params.orig, bmin);
+	rcCopyVector(params.orig, bmin);
 	params.tileWidth = m_tileSize*m_cellSize;
 	params.tileHeight = m_tileSize*m_cellSize;
 	params.maxTiles = m_maxTiles;

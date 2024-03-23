@@ -748,7 +748,7 @@ inline void rcSubtractVector(float* dest, const float* v1, const float* v2)
 
 /// Selects the minimum value of each element from the specified vectors.
 /// @param[in,out]	mn	A vector.  (Will be updated with the result.) [(x, y, z)]
-/// @param[in]		v	A vector. [(x, y, z)]
+/// @param[in]		source	A vector. [(x, y, z)]
 inline void rcVmin(float* mn, const float* v)
 {
 	mn[0] = rcMin(mn[0], v[0]);
@@ -758,7 +758,7 @@ inline void rcVmin(float* mn, const float* v)
 
 /// Selects the maximum value of each element from the specified vectors.
 /// @param[in,out]	mx	A vector.  (Will be updated with the result.) [(x, y, z)]
-/// @param[in]		v	A vector. [(x, y, z)]
+/// @param[in]		source	A vector. [(x, y, z)]
 inline void rcVmax(float* mx, const float* v)
 {
 	mx[0] = rcMax(mx[0], v[0]);
@@ -768,12 +768,12 @@ inline void rcVmax(float* mx, const float* v)
 
 /// Performs a vector copy.
 /// @param[out]		dest	The result. [(x, y, z)]
-/// @param[in]		v		The vector to copy. [(x, y, z)]
-inline void rcVcopy(float* dest, const float* v)
+/// @param[in]		source		The vector to copy. [(x, y, z)]
+inline void rcCopyVector(float* dest, const float* source)
 {
-	dest[0] = v[0];
-	dest[1] = v[1];
-	dest[2] = v[2];
+	dest[0] = source[0];
+	dest[1] = source[1];
+	dest[2] = source[2];
 }
 
 /// Returns the distance between two points.
@@ -801,7 +801,7 @@ inline float rcVdistSqr(const float* v1, const float* v2)
 }
 
 /// Normalizes the vector.
-/// @param[in,out]	v	The vector to normalize. [(x, y, z)]
+/// @param[in,out]	source	The vector to normalize. [(x, y, z)]
 inline void rcVnormalize(float* v)
 {
 	float d = 1.0f / rcSqrt(rcSqr(v[0]) + rcSqr(v[1]) + rcSqr(v[2]));

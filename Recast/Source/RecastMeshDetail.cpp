@@ -87,7 +87,7 @@ static bool circumCircle(const float* p1, const float* p2, const float* p3,
 		return true;
 	}
 	
-	rcVcopy(c, p1);
+	rcCopyVector(c, p1);
 	r = 0;
 	return false;
 }
@@ -684,7 +684,7 @@ static bool buildPolyDetail(rcContext* ctx, const float* in, const int nin,
 	nverts = nin;
 	
 	for (int i = 0; i < nin; ++i)
-		rcVcopy(&verts[i*3], &in[i*3]);
+		rcCopyVector(&verts[i*3], &in[i*3]);
 	
 	edges.clear();
 	tris.clear();
@@ -784,7 +784,7 @@ static bool buildPolyDetail(rcContext* ctx, const float* in, const int nin,
 			{
 				for (int k = nidx-2; k > 0; --k)
 				{
-					rcVcopy(&verts[nverts*3], &edge[idx[k]*3]);
+					rcCopyVector(&verts[nverts*3], &edge[idx[k]*3]);
 					hull[nhull++] = nverts;
 					nverts++;
 				}
@@ -793,7 +793,7 @@ static bool buildPolyDetail(rcContext* ctx, const float* in, const int nin,
 			{
 				for (int k = 1; k < nidx-1; ++k)
 				{
-					rcVcopy(&verts[nverts*3], &edge[idx[k]*3]);
+					rcCopyVector(&verts[nverts*3], &edge[idx[k]*3]);
 					hull[nhull++] = nverts;
 					nverts++;
 				}
@@ -826,8 +826,8 @@ static bool buildPolyDetail(rcContext* ctx, const float* in, const int nin,
 	{
 		// Create sample locations in a grid.
 		float bmin[3], bmax[3];
-		rcVcopy(bmin, in);
-		rcVcopy(bmax, in);
+		rcCopyVector(bmin, in);
+		rcCopyVector(bmax, in);
 		for (int i = 1; i < nin; ++i)
 		{
 			rcVmin(bmin, &in[i*3]);
@@ -884,7 +884,7 @@ static bool buildPolyDetail(rcContext* ctx, const float* in, const int nin,
 				{
 					bestd = d;
 					besti = i;
-					rcVcopy(bestpt,pt);
+					rcCopyVector(bestpt,pt);
 				}
 			}
 			// If the max error is within accepted threshold, stop tesselating.
@@ -893,7 +893,7 @@ static bool buildPolyDetail(rcContext* ctx, const float* in, const int nin,
 			// Mark sample as added.
 			samples[besti*4+3] = 1;
 			// Add the new sample point.
-			rcVcopy(&verts[nverts*3],bestpt);
+			rcCopyVector(&verts[nverts*3],bestpt);
 			nverts++;
 			
 			// Create new triangulation.
@@ -1458,7 +1458,7 @@ bool rcMergePolyMeshDetails(rcContext* ctx, rcPolyMeshDetail** meshes, const int
 		
 		for (int k = 0; k < dm->nverts; ++k)
 		{
-			rcVcopy(&mesh.verts[mesh.nverts*3], &dm->verts[k*3]);
+			rcCopyVector(&mesh.verts[mesh.nverts*3], &dm->verts[k*3]);
 			mesh.nverts++;
 		}
 		for (int k = 0; k < dm->ntris; ++k)

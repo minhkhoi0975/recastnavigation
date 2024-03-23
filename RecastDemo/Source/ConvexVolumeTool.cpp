@@ -189,7 +189,7 @@ void ConvexVolumeTool::handleClick(const float* /*s*/, const float* p, bool shif
 				// Create shape.
 				float verts[MAX_PTS*3];
 				for (int i = 0; i < m_nhull; ++i)
-					rcVcopy(&verts[i*3], &m_pts[m_hull[i]*3]);
+					rcCopyVector(&verts[i*3], &m_pts[m_hull[i]*3]);
 					
 				float minh = FLT_MAX, maxh = 0;
 				for (int i = 0; i < m_nhull; ++i)
@@ -218,7 +218,7 @@ void ConvexVolumeTool::handleClick(const float* /*s*/, const float* p, bool shif
 			// Add new point 
 			if (m_npts < MAX_PTS)
 			{
-				rcVcopy(&m_pts[m_npts*3], p);
+				rcCopyVector(&m_pts[m_npts*3], p);
 				m_npts++;
 				// Update hull.
 				if (m_npts > 1)
