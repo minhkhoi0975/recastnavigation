@@ -426,7 +426,7 @@ bool Sample_SoloMesh::handleBuild()
 	//
 	
 	// Allocate voxel heightfield where we rasterize our input data to.
-	m_solid = rcAllocHeightfield();
+	m_solid = rcAllocateHeightfield();
 	if (!m_solid)
 	{
 		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Out of memory 'solid'.");
@@ -487,7 +487,7 @@ bool Sample_SoloMesh::handleBuild()
 	// Compact the heightfield so that it is faster to handle from now on.
 	// This will result more cache coherent data as well as the neighbours
 	// between walkable cells will be calculated.
-	m_chf = rcAllocCompactHeightfield();
+	m_chf = rcAllocateCompactHeightfield();
 	if (!m_chf)
 	{
 		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Out of memory 'chf'.");
@@ -585,7 +585,7 @@ bool Sample_SoloMesh::handleBuild()
 	//
 	
 	// Create contours.
-	m_cset = rcAllocContourSet();
+	m_cset = rcAllocateContourSet();
 	if (!m_cset)
 	{
 		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Out of memory 'cset'.");
@@ -602,7 +602,7 @@ bool Sample_SoloMesh::handleBuild()
 	//
 	
 	// Build polygon navmesh from the contours.
-	m_pmesh = rcAllocPolyMesh();
+	m_pmesh = rcAllocatePolyMesh();
 	if (!m_pmesh)
 	{
 		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Out of memory 'pmesh'.");
@@ -618,7 +618,7 @@ bool Sample_SoloMesh::handleBuild()
 	// Step 7. Create detail mesh which allows to access approximate height on each polygon.
 	//
 	
-	m_dmesh = rcAllocPolyMeshDetail();
+	m_dmesh = rcAllocatePolyMeshDetail();
 	if (!m_dmesh)
 	{
 		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Out of memory 'pmdtl'.");

@@ -56,7 +56,7 @@ Sample_Debug::Sample_Debug() :
 	resetCommonSettings();
 
 	// Test
-/*	m_chf = rcAllocCompactHeightfield();
+/*	m_chf = rcAllocateCompactHeightfield();
 	FileIO io;
 	if (!io.openForRead("test.chf"))
 	{
@@ -133,7 +133,7 @@ Sample_Debug::Sample_Debug() :
 	
 
 	{
-		m_cset = rcAllocContourSet();
+		m_cset = rcAllocateContourSet();
 		if (m_cset)
 		{
 			FileIO io;
@@ -159,7 +159,7 @@ Sample_Debug::Sample_Debug() :
 
 /*		if (m_cset)
 		{
-			m_pmesh = rcAllocPolyMesh();
+			m_pmesh = rcAllocatePolyMesh();
 			if (m_pmesh)
 			{
 				rcBuildPolyMesh(m_ctx, *m_cset, 6, *m_pmesh);
@@ -369,7 +369,7 @@ bool Sample_Debug::handleBuild()
 		m_cset = 0;
 		
 		// Create contours.
-		m_cset = rcAllocContourSet();
+		m_cset = rcAllocateContourSet();
 		if (!m_cset)
 		{
 			m_ctx->log(RC_LOG_ERROR, "buildNavigation: Out of memory 'cset'.");

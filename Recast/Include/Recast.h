@@ -509,7 +509,7 @@ private:
 /// @return A heightfield that is ready for initialization, or null on failure.
 /// @ingroup recast
 /// @see rcCreateHeightfield, rcFreeHeightField
-rcHeightfield* rcAllocHeightfield();
+rcHeightfield* rcAllocateHeightfield();
 
 /// Frees the specified heightfield object using the Recast allocator.
 /// @param[in]		heightfield	A heightfield allocated using #rcAllocHeightfield
@@ -533,7 +533,7 @@ void rcFreeCompactHeightfield(rcCompactHeightfield* compactHeightfield);
 /// @return A heightfield layer set that is ready for initialization, or null on failure.
 /// @ingroup recast
 /// @see rcBuildHeightfieldLayers, rcFreeHeightfieldLayerSet
-rcHeightfieldLayerSet* rcAllocHeightfieldLayerSet();
+rcHeightfieldLayerSet* rcAllocateHeightfieldLayerSet();
 
 /// Frees the specified heightfield layer set using the Recast allocator.
 /// @param[in]		layerSet	A heightfield layer set allocated using #rcAllocHeightfieldLayerSet
@@ -545,7 +545,7 @@ void rcFreeHeightfieldLayerSet(rcHeightfieldLayerSet* layerSet);
 /// @return A contour set that is ready for initialization, or null on failure.
 /// @ingroup recast
 /// @see rcBuildContours, rcFreeContourSet
-rcContourSet* rcAllocContourSet();
+rcContourSet* rcAllocateContourSet();
 
 /// Frees the specified contour set using the Recast allocator.
 /// @param[in]		contourSet	A contour set allocated using #rcAllocContourSet
@@ -557,7 +557,7 @@ void rcFreeContourSet(rcContourSet* contourSet);
 /// @return A polygon mesh that is ready for initialization, or null on failure.
 /// @ingroup recast
 /// @see rcBuildPolyMesh, rcFreePolyMesh
-rcPolyMesh* rcAllocPolyMesh();
+rcPolyMesh* rcAllocatePolyMesh();
 
 /// Frees the specified polygon mesh using the Recast allocator.
 /// @param[in]		polyMesh	A polygon mesh allocated using #rcAllocPolyMesh
@@ -569,7 +569,7 @@ void rcFreePolyMesh(rcPolyMesh* polyMesh);
 /// @return A detail mesh that is ready for initialization, or null on failure.
 /// @ingroup recast
 /// @see rcBuildPolyMeshDetail, rcFreePolyMeshDetail
-rcPolyMeshDetail* rcAllocPolyMeshDetail();
+rcPolyMeshDetail* rcAllocatePolyMeshDetail();
 
 /// Frees the specified detail mesh using the Recast allocator.
 /// @param[in]		detailMesh	A detail mesh allocated using #rcAllocPolyMeshDetail

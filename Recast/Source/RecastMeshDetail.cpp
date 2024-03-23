@@ -1178,7 +1178,7 @@ static void getHeightData(rcContext* ctx, const rcCompactHeightfield& chf,
 ///
 /// See the #rcConfig documentation for more information on the configuration parameters.
 ///
-/// @see rcAllocPolyMeshDetail, rcPolyMesh, rcCompactHeightfield, rcPolyMeshDetail, rcConfig
+/// @see rcAllocatePolyMeshDetail, rcPolyMesh, rcCompactHeightfield, rcPolyMeshDetail, rcConfig
 bool rcBuildPolyMeshDetail(rcContext* ctx, const rcPolyMesh& mesh, const rcCompactHeightfield& chf,
 						   const float sampleDist, const float sampleMaxError,
 						   rcPolyMeshDetail& dmesh)
@@ -1397,7 +1397,7 @@ bool rcBuildPolyMeshDetail(rcContext* ctx, const rcPolyMesh& mesh, const rcCompa
 	return true;
 }
 
-/// @see rcAllocPolyMeshDetail, rcPolyMeshDetail
+/// @see rcAllocatePolyMeshDetail, rcPolyMeshDetail
 bool rcMergePolyMeshDetails(rcContext* ctx, rcPolyMeshDetail** meshes, const int nmeshes, rcPolyMeshDetail& mesh)
 {
 	rcAssert(ctx);

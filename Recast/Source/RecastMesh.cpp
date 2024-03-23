@@ -986,7 +986,7 @@ static bool removeVertex(rcContext* ctx, rcPolyMesh& mesh, const unsigned short 
 /// @note If the mesh data is to be used to construct a Detour navigation mesh, then the upper 
 /// limit must be restricted to <= #DT_VERTS_PER_POLYGON.
 ///
-/// @see rcAllocPolyMesh, rcContourSet, rcPolyMesh, rcConfig
+/// @see rcAllocatePolyMesh, rcContourSet, rcPolyMesh, rcConfig
 bool rcBuildPolyMesh(rcContext* ctx, const rcContourSet& cset, const int nvp, rcPolyMesh& mesh)
 {
 	rcAssert(ctx);
@@ -1305,7 +1305,7 @@ bool rcBuildPolyMesh(rcContext* ctx, const rcContourSet& cset, const int nvp, rc
 	return true;
 }
 
-/// @see rcAllocPolyMesh, rcPolyMesh
+/// @see rcAllocatePolyMesh, rcPolyMesh
 bool rcMergePolyMeshes(rcContext* ctx, rcPolyMesh** meshes, const int nmeshes, rcPolyMesh& mesh)
 {
 	rcAssert(ctx);

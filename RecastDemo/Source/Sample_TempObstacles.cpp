@@ -322,7 +322,7 @@ int Sample_TempObstacles::rasterizeTileLayers(
 	tcfg.boundMax[2] += tcfg.borderSize*tcfg.cellSize;
 	
 	// Allocate voxel heightfield where we rasterize our input data to.
-	rc.solid = rcAllocHeightfield();
+	rc.solid = rcAllocateHeightfield();
 	if (!rc.solid)
 	{
 		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Out of memory 'solid'.");
@@ -381,7 +381,7 @@ int Sample_TempObstacles::rasterizeTileLayers(
 		rcFilterWalkableLowHeightSpans(m_ctx, tcfg.walkableHeight, *rc.solid);
 	
 	
-	rc.chf = rcAllocCompactHeightfield();
+	rc.chf = rcAllocateCompactHeightfield();
 	if (!rc.chf)
 	{
 		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Out of memory 'chf'.");
@@ -409,7 +409,7 @@ int Sample_TempObstacles::rasterizeTileLayers(
 							 (unsigned char)vols[i].area, *rc.chf);
 	}
 	
-	rc.lset = rcAllocHeightfieldLayerSet();
+	rc.lset = rcAllocateHeightfieldLayerSet();
 	if (!rc.lset)
 	{
 		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Out of memory 'lset'.");

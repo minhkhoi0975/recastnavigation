@@ -819,7 +819,7 @@ static void mergeRegionHoles(rcContext* ctx, rcContourRegion& region)
 ///
 /// See the #rcConfig documentation for more information on the configuration parameters.
 ///
-/// @see rcAllocContourSet, rcCompactHeightfield, rcContourSet, rcConfig
+/// @see rcAllocateContourSet, rcCompactHeightfield, rcContourSet, rcConfig
 bool rcBuildContours(rcContext* ctx, const rcCompactHeightfield& chf,
 					 const float maxError, const int maxEdgeLen,
 					 rcContourSet& cset, const int buildFlags)

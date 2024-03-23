@@ -83,7 +83,7 @@ void rcContext::doResetLog()
 	// Defined out of line to fix the weak v-tables warning
 }
 
-rcHeightfield* rcAllocHeightfield()
+rcHeightfield* rcAllocateHeightfield()
 {
 	return rcNew<rcHeightfield>(RC_ALLOC_PERM);
 }
@@ -119,7 +119,7 @@ rcHeightfield::~rcHeightfield()
 	}
 }
 
-rcCompactHeightfield* rcAllocCompactHeightfield()
+rcCompactHeightfield* rcAllocateCompactHeightfield()
 {
 	return rcNew<rcCompactHeightfield>(RC_ALLOC_PERM);
 }
@@ -157,7 +157,7 @@ rcCompactHeightfield::~rcCompactHeightfield()
 	rcFree(areaIds);
 }
 
-rcHeightfieldLayerSet* rcAllocHeightfieldLayerSet()
+rcHeightfieldLayerSet* rcAllocateHeightfieldLayerSet()
 {
 	return rcNew<rcHeightfieldLayerSet>(RC_ALLOC_PERM);
 }
@@ -185,7 +185,7 @@ rcHeightfieldLayerSet::~rcHeightfieldLayerSet()
 }
 
 
-rcContourSet* rcAllocContourSet()
+rcContourSet* rcAllocateContourSet()
 {
 	return rcNew<rcContourSet>(RC_ALLOC_PERM);
 }
@@ -219,7 +219,7 @@ rcContourSet::~rcContourSet()
 	rcFree(contours);
 }
 
-rcPolyMesh* rcAllocPolyMesh()
+rcPolyMesh* rcAllocatePolyMesh()
 {
 	return rcNew<rcPolyMesh>(RC_ALLOC_PERM);
 }
@@ -257,7 +257,7 @@ rcPolyMesh::~rcPolyMesh()
 	rcFree(areaIds);
 }
 
-rcPolyMeshDetail* rcAllocPolyMeshDetail()
+rcPolyMeshDetail* rcAllocatePolyMeshDetail()
 {
 	return rcNew<rcPolyMeshDetail>(RC_ALLOC_PERM);
 }
