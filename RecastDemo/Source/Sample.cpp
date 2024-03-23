@@ -205,7 +205,7 @@ void Sample::handleCommonSettings()
 		const float* bmin = m_geom->getNavMeshBoundsMin();
 		const float* bmax = m_geom->getNavMeshBoundsMax();
 		int gw = 0, gh = 0;
-		rcCalcGridSize(bmin, bmax, m_cellSize, &gw, &gh);
+		rcCalculateGridSize(bmin, bmax, m_cellSize, &gw, &gh);
 		char text[64];
 		snprintf(text, 64, "Voxels  %d x %d", gw, gh);
 		imguiValue(text);

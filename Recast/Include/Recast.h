@@ -491,7 +491,7 @@ struct rcPolyMeshDetail
 	float* vertices;			///< The mesh vertices. [Size: 3*#nverts] 
 	unsigned char* triangles;	///< The mesh triangles. [Size: 4*#ntris] 
 	int meshesCount;			///< The number of sub-meshes defined by #meshes.
-	int verticesCount;			///< The number of vertices in #verts.
+	int verticesCount;			///< The number of vertices in #vertices.
 	int trianglesCount;			///< The number of triangles in #tris.
 	
 private:
@@ -600,14 +600,14 @@ static constexpr unsigned short RC_MULTIPLE_REGIONS = 0;
 /// vertex will later be removed in order to match the segments and vertices 
 /// at tile boundaries.
 /// (Used during the build process.)
-/// @see rcCompactSpan::reg, #rcContour::verts, #rcContour::rverts
+/// @see rcCompactSpan::reg, #rcContour::vertices, #rcContour::rverts
 static constexpr int RC_BORDER_VERTEX = 0x10000;
 
 /// Area border flag.
 /// If a region ID has this bit set, then the associated element lies on
 /// the border of an area.
 /// (Used during the region and contour build process.)
-/// @see rcCompactSpan::reg, #rcContour::verts, #rcContour::rverts
+/// @see rcCompactSpan::reg, #rcContour::vertices, #rcContour::rverts
 static constexpr int RC_AREA_BORDER = 0x20000;
 
 /// Contour build flags.
@@ -621,7 +621,7 @@ enum rcBuildContoursFlags
 /// Applied to the region id field of contour vertices in order to extract the region id.
 /// The region id field of a vertex may have several flags applied to it.  So the
 /// fields value can't be used directly.
-/// @see rcContour::verts, rcContour::rverts
+/// @see rcContour::vertices, rcContour::rverts
 static constexpr int RC_CONTOUR_REGION_MASK = 0xffff;
 
 /// An value which indicates an invalid index within a mesh.
@@ -817,11 +817,11 @@ inline void rcNormalize(float* v)
 
 /// Calculates the bounding box of an array of vertices.
 /// @ingroup recast
-/// @param[in]		verts		An array of vertices. [(x, y, z) * @p nv]
-/// @param[in]		numVerts	The number of vertices in the @p verts array.
+/// @param[in]		vertices		An array of vertices. [(x, y, z) * @p nv]
+/// @param[in]		verticesCount	The number of vertices in the @p vertices array.
 /// @param[out]		minBounds	The minimum bounds of the AABB. [(x, y, z)] [Units: wu]
 /// @param[out]		maxBounds	The maximum bounds of the AABB. [(x, y, z)] [Units: wu]
-void rcCalcBounds(const float* verts, int numVerts, float* minBounds, float* maxBounds);
+void rcCalculateBounds(const float* vertices, int verticesCount, float* minBounds, float* maxBounds);
 
 /// Calculates the grid size based on the bounding box and grid cell size.
 /// @ingroup recast
@@ -830,7 +830,7 @@ void rcCalcBounds(const float* verts, int numVerts, float* minBounds, float* max
 /// @param[in]		cellSize	The xz-plane cell size. [Limit: > 0] [Units: wu]
 /// @param[out]		sizeX		The width along the x-axis. [Limit: >= 0] [Units: vx]
 /// @param[out]		sizeZ		The height along the z-axis. [Limit: >= 0] [Units: vx]
-void rcCalcGridSize(const float* minBounds, const float* maxBounds, float cellSize, int* sizeX, int* sizeZ);
+void rcCalculateGridSize(const float* minBounds, const float* maxBounds, float cellSize, int* sizeX, int* sizeZ);
 
 /// Initializes a new heightfield.
 /// See the #rcConfig documentation for more information on the configuration parameters.
@@ -865,8 +865,8 @@ bool rcCreateHeightfield(rcContext* context, rcHeightfield& heightfield, int siz
 /// @param[in,out]	context				The build context to use during the operation.
 /// @param[in]		walkableSlopeAngle	The maximum slope that is considered walkable.
 /// 									[Limits: 0 <= value < 90] [Units: Degrees]
-/// @param[in]		verts				The vertices. [(x, y, z) * @p nv]
-/// @param[in]		numVerts			The number of vertices.
+/// @param[in]		vertices				The vertices. [(x, y, z) * @p nv]
+/// @param[in]		verticesCount			The number of vertices.
 /// @param[in]		tris				The triangle vertex indices. [(vertA, vertB, vertC) * @p nt]
 /// @param[in]		numTris				The number of triangles.
 /// @param[out]		triAreaIDs			The triangle area ids. [Length: >= @p nt]
@@ -886,8 +886,8 @@ void rcMarkWalkableTriangles(rcContext* context, float walkableSlopeAngle, const
 /// @param[in,out]	context				The build context to use during the operation.
 /// @param[in]		walkableSlopeAngle	The maximum slope that is considered walkable.
 /// 									[Limits: 0 <= value < 90] [Units: Degrees]
-/// @param[in]		verts				The vertices. [(x, y, z) * @p nv]
-/// @param[in]		numVerts			The number of vertices.
+/// @param[in]		vertices				The vertices. [(x, y, z) * @p nv]
+/// @param[in]		verticesCount			The number of vertices.
 /// @param[in]		tris				The triangle vertex indices. [(vertA, vertB, vertC) * @p nt]
 /// @param[in]		numTris				The number of triangles.
 /// @param[out]		triAreaIDs			The triangle area ids. [Length: >= @p nt]
@@ -945,8 +945,8 @@ bool rcRasterizeTriangle(rcContext* context,
 /// @see rcHeightfield
 /// @ingroup recast
 /// @param[in,out]	context				The build context to use during the operation.
-/// @param[in]		verts				The vertices. [(x, y, z) * @p nv]
-/// @param[in]		numVerts			The number of vertices. (unused) TODO (graham): Remove in next major release
+/// @param[in]		vertices				The vertices. [(x, y, z) * @p nv]
+/// @param[in]		verticesCount			The number of vertices. (unused) TODO (graham): Remove in next major release
 /// @param[in]		tris				The triangle indices. [(vertA, vertB, vertC) * @p nt]
 /// @param[in]		triAreaIDs			The area id's of the triangles. [Limit: <= #RC_WALKABLE_AREA] [Size: @p nt]
 /// @param[in]		numTris				The number of triangles.
@@ -966,8 +966,8 @@ bool rcRasterizeTriangles(rcContext* context,
 /// @see rcHeightfield
 /// @ingroup recast
 /// @param[in,out]	context				The build context to use during the operation.
-/// @param[in]		verts				The vertices. [(x, y, z) * @p nv]
-/// @param[in]		numVerts			The number of vertices. (unused) TODO (graham): Remove in next major release
+/// @param[in]		vertices				The vertices. [(x, y, z) * @p nv]
+/// @param[in]		verticesCount			The number of vertices. (unused) TODO (graham): Remove in next major release
 /// @param[in]		tris				The triangle indices. [(vertA, vertB, vertC) * @p nt]
 /// @param[in]		triAreaIDs			The area id's of the triangles. [Limit: <= #RC_WALKABLE_AREA] [Size: @p nt]
 /// @param[in]		numTris				The number of triangles.
@@ -989,7 +989,7 @@ bool rcRasterizeTriangles(rcContext* context,
 /// @see rcHeightfield
 /// @ingroup recast
 /// @param[in,out]	context				The build context to use during the operation.
-/// @param[in]		verts				The triangle vertices. [(ax, ay, az, bx, by, bz, cx, by, cx) * @p nt]
+/// @param[in]		vertices				The triangle vertices. [(ax, ay, az, bx, by, bz, cx, by, cx) * @p nt]
 /// @param[in]		triAreaIDs			The area id's of the triangles. [Limit: <= #RC_WALKABLE_AREA] [Size: @p nt]
 /// @param[in]		numTris				The number of triangles.
 /// @param[in,out]	heightfield			An initialized heightfield.
@@ -1141,8 +1141,8 @@ void rcMarkBoxArea(rcContext* context, const float* boxMinBounds, const float* b
 /// @ingroup recast
 /// 
 /// @param[in,out]	context				The build context to use during the operation.
-/// @param[in]		verts				The vertices of the polygon [For: (x, y, z) * @p numVerts]
-/// @param[in]		numVerts			The number of vertices in the polygon.
+/// @param[in]		vertices				The vertices of the polygon [For: (x, y, z) * @p verticesCount]
+/// @param[in]		verticesCount			The number of vertices in the polygon.
 /// @param[in]		minY				The height of the base of the polygon. [Units: wu]
 /// @param[in]		maxY				The height of the top of the polygon. [Units: wu]
 /// @param[in]		areaId				The area id to apply. [Limit: <= #RC_WALKABLE_AREA]
@@ -1158,10 +1158,10 @@ void rcMarkConvexPolyArea(rcContext* context, const float* verts, int numVerts,
 ///
 /// @ingroup recast
 /// 
-/// @param[in]		verts		The vertices of the polygon [Form: (x, y, z) * @p numVerts]
-/// @param[in]		numVerts	The number of vertices in the polygon.
+/// @param[in]		vertices		The vertices of the polygon [Form: (x, y, z) * @p verticesCount]
+/// @param[in]		verticesCount	The number of vertices in the polygon.
 /// @param[in]		offset		How much to offset the polygon by. [Units: wu]
-/// @param[out]		outVerts	The offset vertices (should hold up to 2 * @p numVerts) [Form: (x, y, z) * return value]
+/// @param[out]		outVerts	The offset vertices (should hold up to 2 * @p verticesCount) [Form: (x, y, z) * return value]
 /// @param[in]		maxOutVerts	The max number of vertices that can be stored to @p outVerts.
 /// @returns Number of vertices in the offset polygon or 0 if too few vertices in @p outVerts.
 int rcOffsetPoly(const float* verts, int numVerts, float offset, float* outVerts, int maxOutVerts);

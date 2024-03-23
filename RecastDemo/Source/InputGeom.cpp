@@ -145,7 +145,7 @@ bool InputGeom::loadMesh(rcContext* ctx, const std::string& filepath)
 		return false;
 	}
 
-	rcCalcBounds(m_mesh->getVerts(), m_mesh->getVertCount(), m_meshBMin, m_meshBMax);
+	rcCalculateBounds(m_mesh->getVerts(), m_mesh->getVertCount(), m_meshBMin, m_meshBMax);
 
 	m_chunkyMesh = new rcChunkyTriMesh;
 	if (!m_chunkyMesh)

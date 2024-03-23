@@ -333,7 +333,7 @@ TEST_CASE("rcCalcBounds", "[recast]")
 		float verts[] = {1, 2, 3};
 		float bmin[3];
 		float bmax[3];
-		rcCalcBounds(verts, 1, bmin, bmax);
+		rcCalculateBounds(verts, 1, bmin, bmax);
 
 		REQUIRE(bmin[0] == Catch::Approx(verts[0]));
 		REQUIRE(bmin[1] == Catch::Approx(verts[1]));
@@ -352,7 +352,7 @@ TEST_CASE("rcCalcBounds", "[recast]")
 		};
 		float bmin[3];
 		float bmax[3];
-		rcCalcBounds(verts, 2, bmin, bmax);
+		rcCalculateBounds(verts, 2, bmin, bmax);
 
 		REQUIRE(bmin[0] == Catch::Approx(0));
 		REQUIRE(bmin[1] == Catch::Approx(2));
@@ -374,14 +374,14 @@ TEST_CASE("rcCalcGridSize", "[recast]")
 		};
 		float bmin[3];
 		float bmax[3];
-		rcCalcBounds(verts, 2, bmin, bmax);
+		rcCalculateBounds(verts, 2, bmin, bmax);
 
 		float cellSize = 1.5f;
 
 		int width;
 		int height;
 
-		rcCalcGridSize(bmin, bmax, cellSize, &width, &height);
+		rcCalculateGridSize(bmin, bmax, cellSize, &width, &height);
 
 		REQUIRE(width == 1);
 		REQUIRE(height == 2);
@@ -398,7 +398,7 @@ TEST_CASE("rcCreateHeightfield", "[recast]")
 		};
 		float bmin[3];
 		float bmax[3];
-		rcCalcBounds(verts, 2, bmin, bmax);
+		rcCalculateBounds(verts, 2, bmin, bmax);
 
 		float cellSize = 1.5f;
 		float cellHeight = 2;
@@ -406,7 +406,7 @@ TEST_CASE("rcCreateHeightfield", "[recast]")
 		int width;
 		int height;
 
-		rcCalcGridSize(bmin, bmax, cellSize, &width, &height);
+		rcCalculateGridSize(bmin, bmax, cellSize, &width, &height);
 
 		rcHeightfield heightfield;
 
@@ -521,7 +521,7 @@ TEST_CASE("rcAddSpan", "[recast]")
 	};
 	float bmin[3];
 	float bmax[3];
-	rcCalcBounds(verts, 2, bmin, bmax);
+	rcCalculateBounds(verts, 2, bmin, bmax);
 
 	float cellSize = 1.5f;
 	float cellHeight = 2;
@@ -529,7 +529,7 @@ TEST_CASE("rcAddSpan", "[recast]")
 	int width;
 	int height;
 
-	rcCalcGridSize(bmin, bmax, cellSize, &width, &height);
+	rcCalculateGridSize(bmin, bmax, cellSize, &width, &height);
 
 	rcHeightfield hf;
 	REQUIRE(rcCreateHeightfield(&ctx, hf, width, height, bmin, bmax, cellSize, cellHeight));
@@ -610,7 +610,7 @@ TEST_CASE("rcRasterizeTriangle", "[recast]")
 	};
 	float bmin[3];
 	float bmax[3];
-	rcCalcBounds(verts, 3, bmin, bmax);
+	rcCalculateBounds(verts, 3, bmin, bmax);
 
 	float cellSize = .5f;
 	float cellHeight = .5f;
@@ -618,7 +618,7 @@ TEST_CASE("rcRasterizeTriangle", "[recast]")
 	int width;
 	int height;
 
-	rcCalcGridSize(bmin, bmax, cellSize, &width, &height);
+	rcCalculateGridSize(bmin, bmax, cellSize, &width, &height);
 
 	rcHeightfield solid;
 	REQUIRE(rcCreateHeightfield(&ctx, solid, width, height, bmin, bmax, cellSize, cellHeight));
@@ -705,7 +705,7 @@ TEST_CASE("rcRasterizeTriangle smaller than half a voxel size in x", "[recast]")
 		};
 		float bmin[3];
 		float bmax[3];
-		rcCalcBounds(verts, 3, bmin, bmax);
+		rcCalculateBounds(verts, 3, bmin, bmax);
 
 		float cellSize = 1;
 		float cellHeight = 1;
@@ -713,7 +713,7 @@ TEST_CASE("rcRasterizeTriangle smaller than half a voxel size in x", "[recast]")
 		int width;
 		int height;
 
-		rcCalcGridSize(bmin, bmax, cellSize, &width, &height);
+		rcCalculateGridSize(bmin, bmax, cellSize, &width, &height);
 
 		rcHeightfield solid;
 		REQUIRE(rcCreateHeightfield(&ctx, solid, width, height, bmin, bmax, cellSize, cellHeight));
@@ -737,7 +737,7 @@ TEST_CASE("rcRasterizeTriangle smaller than half a voxel size in x", "[recast]")
 		};
 		float bmin[3];
 		float bmax[3];
-		rcCalcBounds(verts, 3, bmin, bmax);
+		rcCalculateBounds(verts, 3, bmin, bmax);
 
 		float cellSize = 1;
 		float cellHeight = 1;
@@ -745,7 +745,7 @@ TEST_CASE("rcRasterizeTriangle smaller than half a voxel size in x", "[recast]")
 		int width;
 		int height;
 
-		rcCalcGridSize(bmin, bmax, cellSize, &width, &height);
+		rcCalculateGridSize(bmin, bmax, cellSize, &width, &height);
 
 		rcHeightfield solid;
 		REQUIRE(rcCreateHeightfield(&ctx, solid, width, height, bmin, bmax, cellSize, cellHeight));
@@ -775,7 +775,7 @@ TEST_CASE("rcRasterizeTriangles", "[recast]")
 	};
 	float bmin[3];
 	float bmax[3];
-	rcCalcBounds(verts, 4, bmin, bmax);
+	rcCalculateBounds(verts, 4, bmin, bmax);
 
 	float cellSize = .5f;
 	float cellHeight = .5f;
@@ -783,7 +783,7 @@ TEST_CASE("rcRasterizeTriangles", "[recast]")
 	int width;
 	int height;
 
-	rcCalcGridSize(bmin, bmax, cellSize, &width, &height);
+	rcCalculateGridSize(bmin, bmax, cellSize, &width, &height);
 
 	rcHeightfield solid; 
 	REQUIRE(rcCreateHeightfield(&ctx, solid, width, height, bmin, bmax, cellSize, cellHeight));

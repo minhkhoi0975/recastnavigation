@@ -284,7 +284,7 @@ rcPolyMeshDetail::rcPolyMeshDetail()
 {
 }
 
-void rcCalcBounds(const float* verts, int numVerts, float* minBounds, float* maxBounds)
+void rcCalculateBounds(const float* verts, int numVerts, float* minBounds, float* maxBounds)
 {
 	// Calculate bounding box.
 	rcCopyVector(minBounds, verts);
@@ -297,7 +297,7 @@ void rcCalcBounds(const float* verts, int numVerts, float* minBounds, float* max
 	}
 }
 
-void rcCalcGridSize(const float* minBounds, const float* maxBounds, const float cellSize, int* sizeX, int* sizeZ)
+void rcCalculateGridSize(const float* minBounds, const float* maxBounds, const float cellSize, int* sizeX, int* sizeZ)
 {
 	*sizeX = (int)((maxBounds[0] - minBounds[0]) / cellSize + 0.5f);
 	*sizeZ = (int)((maxBounds[2] - minBounds[2]) / cellSize + 0.5f);

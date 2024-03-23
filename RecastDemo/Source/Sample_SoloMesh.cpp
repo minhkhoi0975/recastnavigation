@@ -409,7 +409,7 @@ bool Sample_SoloMesh::handleBuild()
 	// areaId could be specified by an user defined box, etc.
 	rcCopyVector(m_cfg.boundMin, bmin);
 	rcCopyVector(m_cfg.boundMax, bmax);
-	rcCalcGridSize(m_cfg.boundMin, m_cfg.boundMax, m_cfg.cellSize, &m_cfg.width, &m_cfg.height);
+	rcCalculateGridSize(m_cfg.boundMin, m_cfg.boundMax, m_cfg.cellSize, &m_cfg.width, &m_cfg.height);
 
 	// Reset build times gathering.
 	m_ctx->resetTimers();

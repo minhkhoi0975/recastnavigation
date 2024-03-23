@@ -880,7 +880,7 @@ void Sample_TempObstacles::handleSettings()
 		const float* bmax = m_geom->getNavMeshBoundsMax();
 		char text[64];
 		int gw = 0, gh = 0;
-		rcCalcGridSize(bmin, bmax, m_cellSize, &gw, &gh);
+		rcCalculateGridSize(bmin, bmax, m_cellSize, &gw, &gh);
 		const int ts = (int)m_tileSize;
 		const int tw = (gw + ts-1) / ts;
 		const int th = (gh + ts-1) / ts;
@@ -1073,7 +1073,7 @@ void Sample_TempObstacles::handleRender()
 	
 	// Tiling grid.
 	int gw = 0, gh = 0;
-	rcCalcGridSize(bmin, bmax, m_cellSize, &gw, &gh);
+	rcCalculateGridSize(bmin, bmax, m_cellSize, &gw, &gh);
 	const int tw = (gw + (int)m_tileSize-1) / (int)m_tileSize;
 	const int th = (gh + (int)m_tileSize-1) / (int)m_tileSize;
 	const float s = m_tileSize*m_cellSize;
@@ -1218,7 +1218,7 @@ bool Sample_TempObstacles::handleBuild()
 	const float* bmin = m_geom->getNavMeshBoundsMin();
 	const float* bmax = m_geom->getNavMeshBoundsMax();
 	int gw = 0, gh = 0;
-	rcCalcGridSize(bmin, bmax, m_cellSize, &gw, &gh);
+	rcCalculateGridSize(bmin, bmax, m_cellSize, &gw, &gh);
 	const int ts = (int)m_tileSize;
 	const int tw = (gw + ts-1) / ts;
 	const int th = (gh + ts-1) / ts;
