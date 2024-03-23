@@ -269,11 +269,11 @@ struct rcConfig
 	
 	/// The maximum number of vertices allowed for polygons generated during the 
 	/// contour to polygon conversion process. [Limit: >= 3] 
-	int maxVertsPerPoly;
+	int maxVerticesPerPoly;
 	
 	/// Sets the sampling distance to use when generating the detail mesh.
 	/// (For height detail only.) [Limits: 0 or >= 0.9] [Units: wu] 
-	float detailSampleDist;
+	float detailSampleDistance;
 	
 	/// The maximum distance the detail mesh surface should deviate from heightfield
 	/// data. (For height detail only.) [Limit: >=0] [Units: wu] 

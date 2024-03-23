@@ -1236,12 +1236,12 @@ bool Sample_TempObstacles::handleBuild()
 	cfg.maxSimplificationError = m_edgeMaxError;
 	cfg.minRegionArea = (int)rcSqr(m_regionMinSize);		// Note: area = size*size
 	cfg.mergeRegionArea = (int)rcSqr(m_regionMergeSize);	// Note: area = size*size
-	cfg.maxVertsPerPoly = (int)m_vertsPerPoly;
+	cfg.maxVerticesPerPoly = (int)m_vertsPerPoly;
 	cfg.tileSize = (int)m_tileSize;
 	cfg.borderSize = cfg.walkableRadius + 3; // Reserve enough padding.
 	cfg.width = cfg.tileSize + cfg.borderSize*2;
 	cfg.height = cfg.tileSize + cfg.borderSize*2;
-	cfg.detailSampleDist = m_detailSampleDist < 0.9f ? 0 : m_cellSize * m_detailSampleDist;
+	cfg.detailSampleDistance = m_detailSampleDist < 0.9f ? 0 : m_cellSize * m_detailSampleDist;
 	cfg.detailSampleMaxError = m_cellHeight * m_detailSampleMaxError;
 	rcCopyVector(cfg.boundMin, bmin);
 	rcCopyVector(cfg.boundMax, bmax);
