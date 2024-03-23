@@ -909,13 +909,13 @@ void rcClearUnwalkableTriangles(rcContext* context, float walkableSlopeAngle, co
 /// 									[Limits: 0 <= value < rcHeightfield::height]
 /// @param[in]		spanMin				The minimum height of the span. [Limit: < @p spanMax] [Units: vx]
 /// @param[in]		spanMax				The maximum height of the span. [Limit: <= #RC_SPAN_MAX_HEIGHT] [Units: vx]
-/// @param[in]		areaID				The area id of the span. [Limit: <= #RC_WALKABLE_AREA)
+/// @param[in]		areaId				The area id of the span. [Limit: <= #RC_WALKABLE_AREA)
 /// @param[in]		flagMergeThreshold	The merge threshold. [Limit: >= 0] [Units: vx]
 /// @returns True if the operation completed successfully.
 bool rcAddSpan(rcContext* context, rcHeightfield& heightfield,
 	           int x, int z,
                unsigned short spanMin, unsigned short spanMax,
-               unsigned char areaID, int flagMergeThreshold);
+               unsigned char areaId, int flagMergeThreshold);
 
 /// Rasterizes a single triangle into the specified heightfield.
 ///
@@ -929,7 +929,7 @@ bool rcAddSpan(rcContext* context, rcHeightfield& heightfield,
 /// @param[in]		v0					Triangle vertex 0 [(x, y, z)]
 /// @param[in]		v1					Triangle vertex 1 [(x, y, z)]
 /// @param[in]		v2					Triangle vertex 2 [(x, y, z)]
-/// @param[in]		areaID				The area id of the triangle. [Limit: <= #RC_WALKABLE_AREA]
+/// @param[in]		areaId				The area id of the triangle. [Limit: <= #RC_WALKABLE_AREA]
 /// @param[in,out]	heightfield			An initialized heightfield.
 /// @param[in]		flagMergeThreshold	The distance where the walkable flag is favored over the non-walkable flag.
 /// 									[Limit: >= 0] [Units: vx]
