@@ -780,12 +780,12 @@ inline void rcCopyVector(float* dest, const float* source)
 /// @param[in]		v1	A point. [(x, y, z)]
 /// @param[in]		v2	A point. [(x, y, z)]
 /// @return The distance between the two points.
-inline float rcVdist(const float* v1, const float* v2)
+inline float rcGetDistance(const float* v1, const float* v2)
 {
 	float dx = v2[0] - v1[0];
 	float dy = v2[1] - v1[1];
 	float dz = v2[2] - v1[2];
-	return rcSqrt(dx*dx + dy*dy + dz*dz);
+	return rcSqrt(dx * dx + dy * dy + dz * dz);
 }
 
 /// Returns the square of the distance between two points.
