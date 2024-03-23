@@ -417,16 +417,16 @@ TEST_CASE("rcCreateHeightfield", "[recast]")
 		REQUIRE(heightfield.width == width);
 		REQUIRE(heightfield.height == height);
 
-		REQUIRE(heightfield.bmin[0] == Catch::Approx(bmin[0]));
-		REQUIRE(heightfield.bmin[1] == Catch::Approx(bmin[1]));
-		REQUIRE(heightfield.bmin[2] == Catch::Approx(bmin[2]));
+		REQUIRE(heightfield.boundMin[0] == Catch::Approx(bmin[0]));
+		REQUIRE(heightfield.boundMin[1] == Catch::Approx(bmin[1]));
+		REQUIRE(heightfield.boundMin[2] == Catch::Approx(bmin[2]));
 
-		REQUIRE(heightfield.bmax[0] == Catch::Approx(bmax[0]));
-		REQUIRE(heightfield.bmax[1] == Catch::Approx(bmax[1]));
-		REQUIRE(heightfield.bmax[2] == Catch::Approx(bmax[2]));
+		REQUIRE(heightfield.boundMax[0] == Catch::Approx(bmax[0]));
+		REQUIRE(heightfield.boundMax[1] == Catch::Approx(bmax[1]));
+		REQUIRE(heightfield.boundMax[2] == Catch::Approx(bmax[2]));
 
-		REQUIRE(heightfield.cs == Catch::Approx(cellSize));
-		REQUIRE(heightfield.ch == Catch::Approx(cellHeight));
+		REQUIRE(heightfield.cellSize == Catch::Approx(cellSize));
+		REQUIRE(heightfield.cellHeight == Catch::Approx(cellHeight));
 
 		REQUIRE(heightfield.spans != 0);
 		REQUIRE(heightfield.pools == 0);

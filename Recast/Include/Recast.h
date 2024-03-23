@@ -316,10 +316,10 @@ struct rcHeightfield
 
 	int width;			///< The width of the heightfield. (Along the x-axis in cell units.)
 	int height;			///< The height of the heightfield. (Along the z-axis in cell units.)
-	float bmin[3];  	///< The minimum bounds in world space. [(x, y, z)]
-	float bmax[3];		///< The maximum bounds in world space. [(x, y, z)]
-	float cs;			///< The size of each cell. (On the xz-plane.)
-	float ch;			///< The height of each cell. (The minimum increment along the y-axis.)
+	float boundMin[3];  ///< The minimum bounds in world space. [(x, y, z)]
+	float boundMax[3];	///< The maximum bounds in world space. [(x, y, z)]
+	float cellSize;		///< The size of each cell. (On the xz-plane.)
+	float cellHeight;	///< The height of each cell. (The minimum increment along the y-axis.)
 	rcSpan** spans;		///< Heightfield of spans (width*height).
 
 	// memory pool for rcSpan instances.

@@ -463,9 +463,9 @@ bool rcRasterizeTriangle(rcContext* context,
 	rcScopedTimer timer(context, RC_TIMER_RASTERIZE_TRIANGLES);
 
 	// Rasterize the single triangle.
-	const float inverseCellSize = 1.0f / heightfield.cs;
-	const float inverseCellHeight = 1.0f / heightfield.ch;
-	if (!rasterizeTri(v0, v1, v2, areaID, heightfield, heightfield.bmin, heightfield.bmax, heightfield.cs, inverseCellSize, inverseCellHeight, flagMergeThreshold))
+	const float inverseCellSize = 1.0f / heightfield.cellSize;
+	const float inverseCellHeight = 1.0f / heightfield.cellHeight;
+	if (!rasterizeTri(v0, v1, v2, areaID, heightfield, heightfield.boundMin, heightfield.boundMax, heightfield.cellSize, inverseCellSize, inverseCellHeight, flagMergeThreshold))
 	{
 		context->log(RC_LOG_ERROR, "rcRasterizeTriangle: Out of memory.");
 		return false;
@@ -484,14 +484,14 @@ bool rcRasterizeTriangles(rcContext* context,
 	rcScopedTimer timer(context, RC_TIMER_RASTERIZE_TRIANGLES);
 	
 	// Rasterize the triangles.
-	const float inverseCellSize = 1.0f / heightfield.cs;
-	const float inverseCellHeight = 1.0f / heightfield.ch;
+	const float inverseCellSize = 1.0f / heightfield.cellSize;
+	const float inverseCellHeight = 1.0f / heightfield.cellHeight;
 	for (int triIndex = 0; triIndex < numTris; ++triIndex)
 	{
 		const float* v0 = &verts[tris[triIndex * 3 + 0] * 3];
 		const float* v1 = &verts[tris[triIndex * 3 + 1] * 3];
 		const float* v2 = &verts[tris[triIndex * 3 + 2] * 3];
-		if (!rasterizeTri(v0, v1, v2, triAreaIDs[triIndex], heightfield, heightfield.bmin, heightfield.bmax, heightfield.cs, inverseCellSize, inverseCellHeight, flagMergeThreshold))
+		if (!rasterizeTri(v0, v1, v2, triAreaIDs[triIndex], heightfield, heightfield.boundMin, heightfield.boundMax, heightfield.cellSize, inverseCellSize, inverseCellHeight, flagMergeThreshold))
 		{
 			context->log(RC_LOG_ERROR, "rcRasterizeTriangles: Out of memory.");
 			return false;
@@ -511,14 +511,14 @@ bool rcRasterizeTriangles(rcContext* context,
 	rcScopedTimer timer(context, RC_TIMER_RASTERIZE_TRIANGLES);
 
 	// Rasterize the triangles.
-	const float inverseCellSize = 1.0f / heightfield.cs;
-	const float inverseCellHeight = 1.0f / heightfield.ch;
+	const float inverseCellSize = 1.0f / heightfield.cellSize;
+	const float inverseCellHeight = 1.0f / heightfield.cellHeight;
 	for (int triIndex = 0; triIndex < numTris; ++triIndex)
 	{
 		const float* v0 = &verts[tris[triIndex * 3 + 0] * 3];
 		const float* v1 = &verts[tris[triIndex * 3 + 1] * 3];
 		const float* v2 = &verts[tris[triIndex * 3 + 2] * 3];
-		if (!rasterizeTri(v0, v1, v2, triAreaIDs[triIndex], heightfield, heightfield.bmin, heightfield.bmax, heightfield.cs, inverseCellSize, inverseCellHeight, flagMergeThreshold))
+		if (!rasterizeTri(v0, v1, v2, triAreaIDs[triIndex], heightfield, heightfield.boundMin, heightfield.boundMax, heightfield.cellSize, inverseCellSize, inverseCellHeight, flagMergeThreshold))
 		{
 			context->log(RC_LOG_ERROR, "rcRasterizeTriangles: Out of memory.");
 			return false;
@@ -537,14 +537,14 @@ bool rcRasterizeTriangles(rcContext* context,
 	rcScopedTimer timer(context, RC_TIMER_RASTERIZE_TRIANGLES);
 	
 	// Rasterize the triangles.
-	const float inverseCellSize = 1.0f / heightfield.cs;
-	const float inverseCellHeight = 1.0f / heightfield.ch;
+	const float inverseCellSize = 1.0f / heightfield.cellSize;
+	const float inverseCellHeight = 1.0f / heightfield.cellHeight;
 	for (int triIndex = 0; triIndex < numTris; ++triIndex)
 	{
 		const float* v0 = &verts[(triIndex * 3 + 0) * 3];
 		const float* v1 = &verts[(triIndex * 3 + 1) * 3];
 		const float* v2 = &verts[(triIndex * 3 + 2) * 3];
-		if (!rasterizeTri(v0, v1, v2, triAreaIDs[triIndex], heightfield, heightfield.bmin, heightfield.bmax, heightfield.cs, inverseCellSize, inverseCellHeight, flagMergeThreshold))
+		if (!rasterizeTri(v0, v1, v2, triAreaIDs[triIndex], heightfield, heightfield.boundMin, heightfield.boundMax, heightfield.cellSize, inverseCellSize, inverseCellHeight, flagMergeThreshold))
 		{
 			context->log(RC_LOG_ERROR, "rcRasterizeTriangles: Out of memory.");
 			return false;

@@ -96,10 +96,10 @@ void rcFreeHeightField(rcHeightfield* heightfield)
 rcHeightfield::rcHeightfield()
 : width()
 , height()
-, bmin()
-, bmax()
-, cs()
-, ch()
+, boundMin()
+, boundMax()
+, cellSize()
+, cellHeight()
 , spans()
 , pools()
 , freelist()
@@ -311,10 +311,10 @@ bool rcCreateHeightfield(rcContext* context, rcHeightfield& heightfield, int siz
 
 	heightfield.width = sizeX;
 	heightfield.height = sizeZ;
-	rcCopyVector(heightfield.bmin, minBounds);
-	rcCopyVector(heightfield.bmax, maxBounds);
-	heightfield.cs = cellSize;
-	heightfield.ch = cellHeight;
+	rcCopyVector(heightfield.boundMin, minBounds);
+	rcCopyVector(heightfield.boundMax, maxBounds);
+	heightfield.cellSize = cellSize;
+	heightfield.cellHeight = cellHeight;
 	heightfield.spans = (rcSpan**)rcAlloc(sizeof(rcSpan*) * heightfield.width * heightfield.height, RC_ALLOC_PERM);
 	if (!heightfield.spans)
 	{
@@ -418,11 +418,11 @@ bool rcBuildCompactHeightfield(rcContext* context, const int walkableHeight, con
 	compactHeightfield.walkableHeight = walkableHeight;
 	compactHeightfield.walkableClimb = walkableClimb;
 	compactHeightfield.maxRegions = 0;
-	rcCopyVector(compactHeightfield.bmin, heightfield.bmin);
-	rcCopyVector(compactHeightfield.bmax, heightfield.bmax);
-	compactHeightfield.bmax[1] += walkableHeight * heightfield.ch;
-	compactHeightfield.cs = heightfield.cs;
-	compactHeightfield.ch = heightfield.ch;
+	rcCopyVector(compactHeightfield.bmin, heightfield.boundMin);
+	rcCopyVector(compactHeightfield.bmax, heightfield.boundMax);
+	compactHeightfield.bmax[1] += walkableHeight * heightfield.cellHeight;
+	compactHeightfield.cs = heightfield.cellSize;
+	compactHeightfield.ch = heightfield.cellHeight;
 	compactHeightfield.cells = (rcCompactCell*)rcAlloc(sizeof(rcCompactCell) * xSize * zSize, RC_ALLOC_PERM);
 	if (!compactHeightfield.cells)
 	{
