@@ -196,12 +196,12 @@ void rcFreeContourSet(rcContourSet* contourSet)
 }
 
 rcContourSet::rcContourSet()
-: conts()
-, nconts()
-, bmin()
-, bmax()
-, cs()
-, ch()
+: contours()
+, contoursCount()
+, boundMin()
+, boundMax()
+, cellSize()
+, cellHeight()
 , width()
 , height()
 , borderSize()
@@ -211,12 +211,12 @@ rcContourSet::rcContourSet()
 
 rcContourSet::~rcContourSet()
 {
-	for (int i = 0; i < nconts; ++i)
+	for (int i = 0; i < contoursCount; ++i)
 	{
-		rcFree(conts[i].vertices);
-		rcFree(conts[i].rawVertices);
+		rcFree(contours[i].vertices);
+		rcFree(contours[i].rawVertices);
 	}
-	rcFree(conts);
+	rcFree(contours);
 }
 
 rcPolyMesh* rcAllocPolyMesh()
@@ -230,19 +230,19 @@ void rcFreePolyMesh(rcPolyMesh* polyMesh)
 }
 
 rcPolyMesh::rcPolyMesh()
-: verts()
-, polys()
-, regs()
+: vertices()
+, polygons()
+, regionIds()
 , flags()
-, areas()
-, nverts()
-, npolys()
-, maxpolys()
-, nvp()
-, bmin()
-, bmax()
-, cs()
-, ch()
+, areaIds()
+, verticesCount()
+, polygonsCount()
+, maxAllocatedPolygons()
+, maxVerticesPerPolygon()
+, boundMin()
+, boundMax()
+, cellSize()
+, cellHeight()
 , borderSize()
 , maxEdgeError()
 {
@@ -250,11 +250,11 @@ rcPolyMesh::rcPolyMesh()
 
 rcPolyMesh::~rcPolyMesh()
 {
-	rcFree(verts);
-	rcFree(polys);
-	rcFree(regs);
+	rcFree(vertices);
+	rcFree(polygons);
+	rcFree(regionIds);
 	rcFree(flags);
-	rcFree(areas);
+	rcFree(areaIds);
 }
 
 rcPolyMeshDetail* rcAllocPolyMeshDetail()

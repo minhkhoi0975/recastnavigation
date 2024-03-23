@@ -892,7 +892,7 @@ dtCollectPolysQuery::~dtCollectPolysQuery()
 /// If no polygons are found, the function will return #DT_SUCCESS with a
 /// @p polyCount of zero.
 ///
-/// If @p polys is too small to hold the entire result set, then the array will 
+/// If @p polygons is too small to hold the entire result set, then the array will 
 /// be filled to capacity. The method of choosing which polygons from the 
 /// full set are included in the partial result set is undefined.
 ///
@@ -3214,7 +3214,7 @@ dtStatus dtNavMeshQuery::findLocalNeighbourhood(dtPolyRef startRef, const float*
 			{
 				dtPolyRef pastRef = resultRef[j];
 				
-				// Connected polys do not overlap.
+				// Connected polygons do not overlap.
 				bool connected = false;
 				for (unsigned int k = curPoly->firstLink; k != DT_NULL_LINK; k = curTile->links[k].next)
 				{

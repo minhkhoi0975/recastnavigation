@@ -676,7 +676,7 @@ namespace
 
 bool dtNavMesh::getPolyHeight(const dtMeshTile* tile, const dtPoly* poly, const float* pos, float* height) const
 {
-	// Off-mesh connections do not have detail polys and getting height
+	// Off-mesh connections do not have detail polygons and getting height
 	// over them does not make sense.
 	if (poly->getType() == DT_POLYTYPE_OFFMESH_CONNECTION)
 		return false;
@@ -1347,7 +1347,7 @@ dtTileRef dtNavMesh::getTileRef(const dtMeshTile* tile) const
 /// const dtPolyRef base = navmesh->getPolyRefBase(tile);
 /// for (int i = 0; i < tile->header->polyCount; ++i)
 /// {
-///     const dtPoly* p = &tile->polys[i];
+///     const dtPoly* p = &tile->polygons[i];
 ///     const dtPolyRef ref = base | (dtPolyRef)i;
 ///     
 ///     // Use the reference to access the polygon data.

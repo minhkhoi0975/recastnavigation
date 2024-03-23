@@ -173,7 +173,7 @@ static void drawMeshTile(duDebugDraw* dd, const dtNavMesh& mesh, const dtNavMesh
 		for (int i = 0; i < tile->header->polyCount; ++i)
 		{
 			const dtPoly* p = &tile->polys[i];
-			if (p->getType() != DT_POLYTYPE_OFFMESH_CONNECTION)	// Skip regular polys.
+			if (p->getType() != DT_POLYTYPE_OFFMESH_CONNECTION)	// Skip regular polygons.
 				continue;
 			
 			unsigned int col, col2;
@@ -641,8 +641,8 @@ void duDebugDrawTileCacheLayerRegions(struct duDebugDraw* dd, const dtTileCacheL
 
 struct dtTileCacheContourSet
 {
-	int nconts;
-	dtTileCacheContour* conts;
+	int contoursCount;
+	dtTileCacheContour* contours;
 };*/
 
 void duDebugDrawTileCacheContours(duDebugDraw* dd, const struct dtTileCacheContourSet& lcset,

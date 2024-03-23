@@ -832,29 +832,29 @@ bool rcBuildContours(rcContext* ctx, const rcCompactHeightfield& chf,
 	
 	rcScopedTimer timer(ctx, RC_TIMER_BUILD_CONTOURS);
 	
-	rcCopyVector(cset.bmin, chf.boundMin);
-	rcCopyVector(cset.bmax, chf.boundMax);
+	rcCopyVector(cset.boundMin, chf.boundMin);
+	rcCopyVector(cset.boundMax, chf.boundMax);
 	if (borderSize > 0)
 	{
 		// If the heightfield was build with bordersize, remove the offset.
 		const float pad = borderSize*chf.cellSize;
-		cset.bmin[0] += pad;
-		cset.bmin[2] += pad;
-		cset.bmax[0] -= pad;
-		cset.bmax[2] -= pad;
+		cset.boundMin[0] += pad;
+		cset.boundMin[2] += pad;
+		cset.boundMax[0] -= pad;
+		cset.boundMax[2] -= pad;
 	}
-	cset.cs = chf.cellSize;
-	cset.ch = chf.cellHeight;
+	cset.cellSize = chf.cellSize;
+	cset.cellHeight = chf.cellHeight;
 	cset.width = chf.width - chf.borderSize*2;
 	cset.height = chf.height - chf.borderSize*2;
 	cset.borderSize = chf.borderSize;
 	cset.maxError = maxError;
 	
 	int maxContours = rcMax((int)chf.maxRegions, 8);
-	cset.conts = (rcContour*)rcAlloc(sizeof(rcContour)*maxContours, RC_ALLOC_PERM);
-	if (!cset.conts)
+	cset.contours = (rcContour*)rcAlloc(sizeof(rcContour)*maxContours, RC_ALLOC_PERM);
+	if (!cset.contours)
 		return false;
-	cset.nconts = 0;
+	cset.contoursCount = 0;
 	
 	rcScopedDelete<unsigned char> flags((unsigned char*)rcAlloc(sizeof(unsigned char)*chf.spanCount, RC_ALLOC_TEMP));
 	if (!flags)
@@ -937,27 +937,27 @@ bool rcBuildContours(rcContext* ctx, const rcCompactHeightfield& chf,
 				// Create contour.
 				if (simplified.size()/4 >= 3)
 				{
-					if (cset.nconts >= maxContours)
+					if (cset.contoursCount >= maxContours)
 					{
 						// Allocate more contours.
 						// This happens when a region has holes.
 						const int oldMax = maxContours;
 						maxContours *= 2;
 						rcContour* newConts = (rcContour*)rcAlloc(sizeof(rcContour)*maxContours, RC_ALLOC_PERM);
-						for (int j = 0; j < cset.nconts; ++j)
+						for (int j = 0; j < cset.contoursCount; ++j)
 						{
-							newConts[j] = cset.conts[j];
+							newConts[j] = cset.contours[j];
 							// Reset source pointers to prevent data deletion.
-							cset.conts[j].vertices = 0;
-							cset.conts[j].rawVertices = 0;
+							cset.contours[j].vertices = 0;
+							cset.contours[j].rawVertices = 0;
 						}
-						rcFree(cset.conts);
-						cset.conts = newConts;
+						rcFree(cset.contours);
+						cset.contours = newConts;
 						
 						ctx->log(RC_LOG_WARNING, "rcBuildContours: Expanding max contours from %d to %d.", oldMax, maxContours);
 					}
 					
-					rcContour* cont = &cset.conts[cset.nconts++];
+					rcContour* cont = &cset.contours[cset.contoursCount++];
 					
 					cont->verticesCount = simplified.size()/4;
 					cont->vertices = (int*)rcAlloc(sizeof(int)*cont->verticesCount*4, RC_ALLOC_PERM);
@@ -1005,19 +1005,19 @@ bool rcBuildContours(rcContext* ctx, const rcCompactHeightfield& chf,
 	}
 	
 	// Merge holes if needed.
-	if (cset.nconts > 0)
+	if (cset.contoursCount > 0)
 	{
 		// Calculate winding of all polygons.
-		rcScopedDelete<signed char> winding((signed char*)rcAlloc(sizeof(signed char)*cset.nconts, RC_ALLOC_TEMP));
+		rcScopedDelete<signed char> winding((signed char*)rcAlloc(sizeof(signed char)*cset.contoursCount, RC_ALLOC_TEMP));
 		if (!winding)
 		{
-			ctx->log(RC_LOG_ERROR, "rcBuildContours: Out of memory 'hole' (%d).", cset.nconts);
+			ctx->log(RC_LOG_ERROR, "rcBuildContours: Out of memory 'hole' (%d).", cset.contoursCount);
 			return false;
 		}
 		int nholes = 0;
-		for (int i = 0; i < cset.nconts; ++i)
+		for (int i = 0; i < cset.contoursCount; ++i)
 		{
-			rcContour& cont = cset.conts[i];
+			rcContour& cont = cset.contours[i];
 			// If the contour is wound backwards, it is a hole.
 			winding[i] = calcAreaOfPolygon2D(cont.vertices, cont.verticesCount) < 0 ? -1 : 1;
 			if (winding[i] < 0)
@@ -1037,17 +1037,17 @@ bool rcBuildContours(rcContext* ctx, const rcCompactHeightfield& chf,
 			}
 			memset(regions, 0, sizeof(rcContourRegion)*nregions);
 			
-			rcScopedDelete<rcContourHole> holes((rcContourHole*)rcAlloc(sizeof(rcContourHole)*cset.nconts, RC_ALLOC_TEMP));
+			rcScopedDelete<rcContourHole> holes((rcContourHole*)rcAlloc(sizeof(rcContourHole)*cset.contoursCount, RC_ALLOC_TEMP));
 			if (!holes)
 			{
-				ctx->log(RC_LOG_ERROR, "rcBuildContours: Out of memory 'holes' (%d).", cset.nconts);
+				ctx->log(RC_LOG_ERROR, "rcBuildContours: Out of memory 'holes' (%d).", cset.contoursCount);
 				return false;
 			}
-			memset(holes, 0, sizeof(rcContourHole)*cset.nconts);
+			memset(holes, 0, sizeof(rcContourHole)*cset.contoursCount);
 			
-			for (int i = 0; i < cset.nconts; ++i)
+			for (int i = 0; i < cset.contoursCount; ++i)
 			{
-				rcContour& cont = cset.conts[i];
+				rcContour& cont = cset.contours[i];
 				// Positively would contours are outlines, negative holes.
 				if (winding[i] > 0)
 				{
@@ -1070,9 +1070,9 @@ bool rcBuildContours(rcContext* ctx, const rcCompactHeightfield& chf,
 					regions[i].nholes = 0;
 				}
 			}
-			for (int i = 0; i < cset.nconts; ++i)
+			for (int i = 0; i < cset.contoursCount; ++i)
 			{
-				rcContour& cont = cset.conts[i];
+				rcContour& cont = cset.contours[i];
 				rcContourRegion& reg = regions[cont.regionId];
 				if (winding[i] < 0)
 					reg.holes[reg.nholes++].contour = &cont;

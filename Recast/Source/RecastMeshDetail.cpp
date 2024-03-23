@@ -1072,9 +1072,9 @@ static void getHeightData(rcContext* ctx, const rcCompactHeightfield& chf,
 
 	bool empty = true;
 	
-	// We cannot sample from this poly if it was created from polys
+	// We cannot sample from this poly if it was created from polygons
 	// of different regions. If it was then it could potentially be overlapping
-	// with polys of that region and the heights sampled here could be wrong.
+	// with polygons of that region and the heights sampled here could be wrong.
 	if (region != RC_MULTIPLE_REGS)
 	{
 		// Copy the height from the same region, and mark region borders
@@ -1187,13 +1187,13 @@ bool rcBuildPolyMeshDetail(rcContext* ctx, const rcPolyMesh& mesh, const rcCompa
 	
 	rcScopedTimer timer(ctx, RC_TIMER_BUILD_POLYMESHDETAIL);
 	
-	if (mesh.nverts == 0 || mesh.npolys == 0)
+	if (mesh.verticesCount == 0 || mesh.polygonsCount == 0)
 		return true;
 	
-	const int nvp = mesh.nvp;
-	const float cs = mesh.cs;
-	const float ch = mesh.ch;
-	const float* orig = mesh.bmin;
+	const int nvp = mesh.maxVerticesPerPolygon;
+	const float cs = mesh.cellSize;
+	const float ch = mesh.cellHeight;
+	const float* orig = mesh.boundMin;
 	const int borderSize = mesh.borderSize;
 	const int heightSearchRadius = rcMax(1, (int)ceilf(mesh.maxEdgeError));
 	
@@ -1206,10 +1206,10 @@ bool rcBuildPolyMeshDetail(rcContext* ctx, const rcPolyMesh& mesh, const rcCompa
 	int nPolyVerts = 0;
 	int maxhw = 0, maxhh = 0;
 	
-	rcScopedDelete<int> bounds((int*)rcAlloc(sizeof(int)*mesh.npolys*4, RC_ALLOC_TEMP));
+	rcScopedDelete<int> bounds((int*)rcAlloc(sizeof(int)*mesh.polygonsCount*4, RC_ALLOC_TEMP));
 	if (!bounds)
 	{
-		ctx->log(RC_LOG_ERROR, "rcBuildPolyMeshDetail: Out of memory 'bounds' (%d).", mesh.npolys*4);
+		ctx->log(RC_LOG_ERROR, "rcBuildPolyMeshDetail: Out of memory 'bounds' (%d).", mesh.polygonsCount*4);
 		return false;
 	}
 	rcScopedDelete<float> poly((float*)rcAlloc(sizeof(float)*nvp*3, RC_ALLOC_TEMP));
@@ -1220,9 +1220,9 @@ bool rcBuildPolyMeshDetail(rcContext* ctx, const rcPolyMesh& mesh, const rcCompa
 	}
 	
 	// Find max size for a polygon areaId.
-	for (int i = 0; i < mesh.npolys; ++i)
+	for (int i = 0; i < mesh.polygonsCount; ++i)
 	{
-		const unsigned short* p = &mesh.polys[i*nvp*2];
+		const unsigned short* p = &mesh.polygons[i*nvp*2];
 		int& xmin = bounds[i*4+0];
 		int& xmax = bounds[i*4+1];
 		int& ymin = bounds[i*4+2];
@@ -1234,7 +1234,7 @@ bool rcBuildPolyMeshDetail(rcContext* ctx, const rcPolyMesh& mesh, const rcCompa
 		for (int j = 0; j < nvp; ++j)
 		{
 			if(p[j] == RC_MESH_NULL_IDX) break;
-			const unsigned short* v = &mesh.verts[p[j]*3];
+			const unsigned short* v = &mesh.vertices[p[j]*3];
 			xmin = rcMin(xmin, (int)v[0]);
 			xmax = rcMax(xmax, (int)v[0]);
 			ymin = rcMin(ymin, (int)v[2]);
@@ -1257,7 +1257,7 @@ bool rcBuildPolyMeshDetail(rcContext* ctx, const rcPolyMesh& mesh, const rcCompa
 		return false;
 	}
 	
-	dmesh.nmeshes = mesh.npolys;
+	dmesh.nmeshes = mesh.polygonsCount;
 	dmesh.nverts = 0;
 	dmesh.ntris = 0;
 	dmesh.meshes = (unsigned int*)rcAlloc(sizeof(unsigned int)*dmesh.nmeshes*4, RC_ALLOC_PERM);
@@ -1285,16 +1285,16 @@ bool rcBuildPolyMeshDetail(rcContext* ctx, const rcPolyMesh& mesh, const rcCompa
 		return false;
 	}
 	
-	for (int i = 0; i < mesh.npolys; ++i)
+	for (int i = 0; i < mesh.polygonsCount; ++i)
 	{
-		const unsigned short* p = &mesh.polys[i*nvp*2];
+		const unsigned short* p = &mesh.polygons[i*nvp*2];
 		
 		// Store polygon vertices for processing.
 		int npoly = 0;
 		for (int j = 0; j < nvp; ++j)
 		{
 			if(p[j] == RC_MESH_NULL_IDX) break;
-			const unsigned short* v = &mesh.verts[p[j]*3];
+			const unsigned short* v = &mesh.vertices[p[j]*3];
 			poly[j*3+0] = v[0]*cs;
 			poly[j*3+1] = v[1]*ch;
 			poly[j*3+2] = v[2]*cs;
@@ -1306,7 +1306,7 @@ bool rcBuildPolyMeshDetail(rcContext* ctx, const rcPolyMesh& mesh, const rcCompa
 		hp.ymin = bounds[i*4+2];
 		hp.width = bounds[i*4+1]-bounds[i*4+0];
 		hp.height = bounds[i*4+3]-bounds[i*4+2];
-		getHeightData(ctx, chf, p, npoly, mesh.verts, borderSize, hp, arr, mesh.regs[i]);
+		getHeightData(ctx, chf, p, npoly, mesh.vertices, borderSize, hp, arr, mesh.regionIds[i]);
 		
 		// Build detail mesh.
 		int nverts = 0;

@@ -421,7 +421,7 @@ bool rcBuildHeightfieldLayers(rcContext* ctx, const rcCompactHeightfield& chf,
 					if (regs[k].layerId != rj.layerId)
 						continue;
 					// Check if region 'k' is overlapping region 'ri'
-					// Index to 'regs' is the same as region id.
+					// Index to 'regionIds' is the same as region id.
 					if (contains(ri.layers,ri.nlayers, (unsigned char)k))
 					{
 						overlap = true;

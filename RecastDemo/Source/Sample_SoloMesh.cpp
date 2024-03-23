@@ -654,22 +654,22 @@ bool Sample_SoloMesh::handleBuild()
 		int navDataSize = 0;
 
 		// Update poly flags from areaIds.
-		for (int i = 0; i < m_pmesh->npolys; ++i)
+		for (int i = 0; i < m_pmesh->polygonsCount; ++i)
 		{
-			if (m_pmesh->areas[i] == RC_WALKABLE_AREA)
-				m_pmesh->areas[i] = SAMPLE_POLYAREA_GROUND;
+			if (m_pmesh->areaIds[i] == RC_WALKABLE_AREA)
+				m_pmesh->areaIds[i] = SAMPLE_POLYAREA_GROUND;
 				
-			if (m_pmesh->areas[i] == SAMPLE_POLYAREA_GROUND ||
-				m_pmesh->areas[i] == SAMPLE_POLYAREA_GRASS ||
-				m_pmesh->areas[i] == SAMPLE_POLYAREA_ROAD)
+			if (m_pmesh->areaIds[i] == SAMPLE_POLYAREA_GROUND ||
+				m_pmesh->areaIds[i] == SAMPLE_POLYAREA_GRASS ||
+				m_pmesh->areaIds[i] == SAMPLE_POLYAREA_ROAD)
 			{
 				m_pmesh->flags[i] = SAMPLE_POLYFLAGS_WALK;
 			}
-			else if (m_pmesh->areas[i] == SAMPLE_POLYAREA_WATER)
+			else if (m_pmesh->areaIds[i] == SAMPLE_POLYAREA_WATER)
 			{
 				m_pmesh->flags[i] = SAMPLE_POLYFLAGS_SWIM;
 			}
-			else if (m_pmesh->areas[i] == SAMPLE_POLYAREA_DOOR)
+			else if (m_pmesh->areaIds[i] == SAMPLE_POLYAREA_DOOR)
 			{
 				m_pmesh->flags[i] = SAMPLE_POLYFLAGS_WALK | SAMPLE_POLYFLAGS_DOOR;
 			}
@@ -678,13 +678,13 @@ bool Sample_SoloMesh::handleBuild()
 
 		dtNavMeshCreateParams params;
 		memset(&params, 0, sizeof(params));
-		params.verts = m_pmesh->verts;
-		params.vertCount = m_pmesh->nverts;
-		params.polys = m_pmesh->polys;
-		params.polyAreas = m_pmesh->areas;
+		params.verts = m_pmesh->vertices;
+		params.vertCount = m_pmesh->verticesCount;
+		params.polys = m_pmesh->polygons;
+		params.polyAreas = m_pmesh->areaIds;
 		params.polyFlags = m_pmesh->flags;
-		params.polyCount = m_pmesh->npolys;
-		params.nvp = m_pmesh->nvp;
+		params.polyCount = m_pmesh->polygonsCount;
+		params.nvp = m_pmesh->maxVerticesPerPolygon;
 		params.detailMeshes = m_dmesh->meshes;
 		params.detailVerts = m_dmesh->verts;
 		params.detailVertsCount = m_dmesh->nverts;
@@ -700,8 +700,8 @@ bool Sample_SoloMesh::handleBuild()
 		params.walkableHeight = m_agentHeight;
 		params.walkableRadius = m_agentRadius;
 		params.walkableClimb = m_agentMaxClimb;
-		rcCopyVector(params.bmin, m_pmesh->bmin);
-		rcCopyVector(params.bmax, m_pmesh->bmax);
+		rcCopyVector(params.bmin, m_pmesh->boundMin);
+		rcCopyVector(params.bmax, m_pmesh->boundMax);
 		params.cs = m_cfg.cellSize;
 		params.ch = m_cfg.cellHeight;
 		params.buildBvTree = true;
@@ -742,7 +742,7 @@ bool Sample_SoloMesh::handleBuild()
 
 	// Show performance stats.
 	duLogBuildTimes(*m_ctx, m_ctx->getAccumulatedTime(RC_TIMER_TOTAL));
-	m_ctx->log(RC_LOG_PROGRESS, ">> Polymesh: %d vertices  %d polygons", m_pmesh->nverts, m_pmesh->npolys);
+	m_ctx->log(RC_LOG_PROGRESS, ">> Polymesh: %d vertices  %d polygons", m_pmesh->verticesCount, m_pmesh->polygonsCount);
 	
 	m_totalBuildTimeMs = m_ctx->getAccumulatedTime(RC_TIMER_TOTAL)/1000.0f;
 	

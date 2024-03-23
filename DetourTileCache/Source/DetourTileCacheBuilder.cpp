@@ -1433,7 +1433,7 @@ static bool canRemoveVertex(dtTileCachePolyMesh& mesh, const unsigned short rem)
 	
 	// There would be too few edges remaining to create a polygon.
 	// This can happen for example when a tip of a triangle is marked
-	// as deletion, but there are no other polys that share the vertex.
+	// as deletion, but there are no other polygons that share the vertex.
 	// In this case, the vertex should not be removed.
 	if (numRemainingEdges <= 2)
 		return false;

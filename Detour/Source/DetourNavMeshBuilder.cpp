@@ -407,7 +407,7 @@ bool dtCreateNavMeshData(dtNavMeshCreateParams* params, unsigned char** outData,
 	}
 	else
 	{
-		// No input detail mesh, build detail mesh from nav polys.
+		// No input detail mesh, build detail mesh from nav polygons.
 		uniqueDetailVertCount = 0; // No extra detail vertices.
 		detailTriCount = 0;
 		for (int i = 0; i < params->polyCount; ++i)
@@ -511,7 +511,7 @@ bool dtCreateNavMeshData(dtNavMeshCreateParams* params, unsigned char** outData,
 	}
 	
 	// Store polygons
-	// Mesh polys
+	// Mesh polygons
 	const unsigned short* src = params->polys;
 	for (int i = 0; i < params->polyCount; ++i)
 	{
@@ -595,7 +595,7 @@ bool dtCreateNavMeshData(dtNavMeshCreateParams* params, unsigned char** outData,
 	}
 	else
 	{
-		// Create dummy detail mesh by triangulating polys.
+		// Create dummy detail mesh by triangulating polygons.
 		int tbase = 0;
 		for (int i = 0; i < params->polyCount; ++i)
 		{

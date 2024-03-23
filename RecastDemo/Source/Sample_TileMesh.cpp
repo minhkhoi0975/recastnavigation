@@ -249,7 +249,7 @@ void Sample_TileMesh::handleSettings()
 		snprintf(text, 64, "Tiles  %d x %d", tw, th);
 		imguiValue(text);
 
-		// Max tiles and max polys affect how the tile IDs are caculated.
+		// Max tiles and max polygons affect how the tile IDs are caculated.
 		// There are 22 bits available for identifying a tile and a polygon.
 		int tileBits = rcMin((int)ilog2(nextPow2(tw*th)), 14);
 		if (tileBits > 14) tileBits = 14;
@@ -1043,7 +1043,7 @@ unsigned char* Sample_TileMesh::buildTileMesh(const int tx, const int ty, const 
 		return 0;
 	}
 	
-	if (m_cset->nconts == 0)
+	if (m_cset->contoursCount == 0)
 	{
 		return 0;
 	}
@@ -1089,30 +1089,30 @@ unsigned char* Sample_TileMesh::buildTileMesh(const int tx, const int ty, const 
 	int navDataSize = 0;
 	if (m_cfg.maxVerticesPerPoly <= DT_VERTS_PER_POLYGON)
 	{
-		if (m_pmesh->nverts >= 0xffff)
+		if (m_pmesh->verticesCount >= 0xffff)
 		{
 			// The vertex indices are ushorts, and cannot point to more than 0xffff vertices.
-			m_ctx->log(RC_LOG_ERROR, "Too many vertices per tile %d (max: %d).", m_pmesh->nverts, 0xffff);
+			m_ctx->log(RC_LOG_ERROR, "Too many vertices per tile %d (max: %d).", m_pmesh->verticesCount, 0xffff);
 			return 0;
 		}
 		
 		// Update poly flags from areaIds.
-		for (int i = 0; i < m_pmesh->npolys; ++i)
+		for (int i = 0; i < m_pmesh->polygonsCount; ++i)
 		{
-			if (m_pmesh->areas[i] == RC_WALKABLE_AREA)
-				m_pmesh->areas[i] = SAMPLE_POLYAREA_GROUND;
+			if (m_pmesh->areaIds[i] == RC_WALKABLE_AREA)
+				m_pmesh->areaIds[i] = SAMPLE_POLYAREA_GROUND;
 			
-			if (m_pmesh->areas[i] == SAMPLE_POLYAREA_GROUND ||
-				m_pmesh->areas[i] == SAMPLE_POLYAREA_GRASS ||
-				m_pmesh->areas[i] == SAMPLE_POLYAREA_ROAD)
+			if (m_pmesh->areaIds[i] == SAMPLE_POLYAREA_GROUND ||
+				m_pmesh->areaIds[i] == SAMPLE_POLYAREA_GRASS ||
+				m_pmesh->areaIds[i] == SAMPLE_POLYAREA_ROAD)
 			{
 				m_pmesh->flags[i] = SAMPLE_POLYFLAGS_WALK;
 			}
-			else if (m_pmesh->areas[i] == SAMPLE_POLYAREA_WATER)
+			else if (m_pmesh->areaIds[i] == SAMPLE_POLYAREA_WATER)
 			{
 				m_pmesh->flags[i] = SAMPLE_POLYFLAGS_SWIM;
 			}
-			else if (m_pmesh->areas[i] == SAMPLE_POLYAREA_DOOR)
+			else if (m_pmesh->areaIds[i] == SAMPLE_POLYAREA_DOOR)
 			{
 				m_pmesh->flags[i] = SAMPLE_POLYFLAGS_WALK | SAMPLE_POLYFLAGS_DOOR;
 			}
@@ -1120,13 +1120,13 @@ unsigned char* Sample_TileMesh::buildTileMesh(const int tx, const int ty, const 
 		
 		dtNavMeshCreateParams params;
 		memset(&params, 0, sizeof(params));
-		params.verts = m_pmesh->verts;
-		params.vertCount = m_pmesh->nverts;
-		params.polys = m_pmesh->polys;
-		params.polyAreas = m_pmesh->areas;
+		params.verts = m_pmesh->vertices;
+		params.vertCount = m_pmesh->verticesCount;
+		params.polys = m_pmesh->polygons;
+		params.polyAreas = m_pmesh->areaIds;
 		params.polyFlags = m_pmesh->flags;
-		params.polyCount = m_pmesh->npolys;
-		params.nvp = m_pmesh->nvp;
+		params.polyCount = m_pmesh->polygonsCount;
+		params.nvp = m_pmesh->maxVerticesPerPolygon;
 		params.detailMeshes = m_dmesh->meshes;
 		params.detailVerts = m_dmesh->verts;
 		params.detailVertsCount = m_dmesh->nverts;
@@ -1145,8 +1145,8 @@ unsigned char* Sample_TileMesh::buildTileMesh(const int tx, const int ty, const 
 		params.tileX = tx;
 		params.tileY = ty;
 		params.tileLayer = 0;
-		rcCopyVector(params.bmin, m_pmesh->bmin);
-		rcCopyVector(params.bmax, m_pmesh->bmax);
+		rcCopyVector(params.bmin, m_pmesh->boundMin);
+		rcCopyVector(params.bmax, m_pmesh->boundMax);
 		params.cs = m_cfg.cellSize;
 		params.ch = m_cfg.cellHeight;
 		params.buildBvTree = true;
@@ -1163,7 +1163,7 @@ unsigned char* Sample_TileMesh::buildTileMesh(const int tx, const int ty, const 
 	
 	// Show performance stats.
 	duLogBuildTimes(*m_ctx, m_ctx->getAccumulatedTime(RC_TIMER_TOTAL));
-	m_ctx->log(RC_LOG_PROGRESS, ">> Polymesh: %d vertices  %d polygons", m_pmesh->nverts, m_pmesh->npolys);
+	m_ctx->log(RC_LOG_PROGRESS, ">> Polymesh: %d vertices  %d polygons", m_pmesh->verticesCount, m_pmesh->polygonsCount);
 	
 	m_tileBuildTime = m_ctx->getAccumulatedTime(RC_TIMER_TOTAL)/1000.0f;
 

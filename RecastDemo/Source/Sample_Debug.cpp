@@ -142,9 +142,9 @@ Sample_Debug::Sample_Debug() :
 				duReadContourSet(*m_cset, &io);
 				
 				printf("bmin=(%f,%f,%f) bmax=(%f,%f,%f)\n",
-					   m_cset->bmin[0], m_cset->bmin[1], m_cset->bmin[2],
-					   m_cset->bmax[0], m_cset->bmax[1], m_cset->bmax[2]);
-				printf("cs=%f ch=%f\n", m_cset->cs, m_cset->ch);
+					   m_cset->boundMin[0], m_cset->boundMin[1], m_cset->boundMin[2],
+					   m_cset->boundMax[0], m_cset->boundMax[1], m_cset->boundMax[2]);
+				printf("cs=%f ch=%f\n", m_cset->cellSize, m_cset->cellHeight);
 			}
 			else
 			{
@@ -329,7 +329,7 @@ void Sample_Debug::handleMeshChanged(InputGeom* geom)
 const float* Sample_Debug::getBoundsMin()
 {
 	if (m_cset)
-		return m_cset->bmin;
+		return m_cset->boundMin;
 	if (m_chf)
 		return m_chf->boundMin;
 	if (m_navMesh)
@@ -340,7 +340,7 @@ const float* Sample_Debug::getBoundsMin()
 const float* Sample_Debug::getBoundsMax()
 {
 	if (m_cset)
-		return m_cset->bmax;
+		return m_cset->boundMax;
 	if (m_chf)
 		return m_chf->boundMax;
 	if (m_navMesh)

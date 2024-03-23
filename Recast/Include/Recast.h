@@ -434,16 +434,16 @@ struct rcContourSet
 	rcContourSet();
 	~rcContourSet();
 	
-	rcContour* conts;	///< An array of the contours in the set. [Size: #nconts]
-	int nconts;			///< The number of contours in the set.
-	float bmin[3];  	///< The minimum bounds in world space. [(x, y, z)]
-	float bmax[3];		///< The maximum bounds in world space. [(x, y, z)]
-	float cs;			///< The size of each cell. (On the xz-plane.)
-	float ch;			///< The height of each cell. (The minimum increment along the y-axis.)
-	int width;			///< The width of the set. (Along the x-axis in cell units.) 
-	int height;			///< The height of the set. (Along the z-axis in cell units.) 
-	int borderSize;		///< The AABB border size used to generate the source data from which the contours were derived.
-	float maxError;		///< The max edge error that this contour set was simplified with.
+	rcContour* contours;	///< An array of the contours in the set. [Size: #nconts]
+	int contoursCount;		///< The number of contours in the set.
+	float boundMin[3];  	///< The minimum bounds in world space. [(x, y, z)]
+	float boundMax[3];		///< The maximum bounds in world space. [(x, y, z)]
+	float cellSize;			///< The size of each cell. (On the xz-plane.)
+	float cellHeight;		///< The height of each cell. (The minimum increment along the y-axis.)
+	int width;				///< The width of the set. (Along the x-axis in cell units.) 
+	int height;				///< The height of the set. (Along the z-axis in cell units.) 
+	int borderSize;			///< The AABB border size used to generate the source data from which the contours were derived.
+	float maxError;			///< The max edge error that this contour set was simplified with.
 	
 private:
 	// Explicitly-disabled copy constructor and copy assignment operator.
@@ -458,21 +458,21 @@ struct rcPolyMesh
 	rcPolyMesh();
 	~rcPolyMesh();
 	
-	unsigned short* verts;	///< The mesh vertices. [Form: (x, y, z) * #nverts]
-	unsigned short* polys;	///< Polygon and neighbor data. [Length: #maxpolys * 2 * #nvp]
-	unsigned short* regs;	///< The region id assigned to each polygon. [Length: #maxpolys]
-	unsigned short* flags;	///< The user defined flags for each polygon. [Length: #maxpolys]
-	unsigned char* areas;	///< The area id assigned to each polygon. [Length: #maxpolys]
-	int nverts;				///< The number of vertices.
-	int npolys;				///< The number of polygons.
-	int maxpolys;			///< The number of allocated polygons.
-	int nvp;				///< The maximum number of vertices per polygon.
-	float bmin[3];			///< The minimum bounds in world space. [(x, y, z)]
-	float bmax[3];			///< The maximum bounds in world space. [(x, y, z)]
-	float cs;				///< The size of each cell. (On the xz-plane.)
-	float ch;				///< The height of each cell. (The minimum increment along the y-axis.)
-	int borderSize;			///< The AABB border size used to generate the source data from which the mesh was derived.
-	float maxEdgeError;		///< The max error of the polygon edges in the mesh.
+	unsigned short* vertices;	///< The mesh vertices. [Form: (x, y, z) * #nverts]
+	unsigned short* polygons;	///< Polygon and neighbor data. [Length: #maxpolys * 2 * #nvp]
+	unsigned short* regionIds;	///< The region id assigned to each polygon. [Length: #maxpolys]
+	unsigned short* flags;		///< The user defined flags for each polygon. [Length: #maxpolys]
+	unsigned char* areaIds;		///< The area id assigned to each polygon. [Length: #maxpolys]
+	int verticesCount;			///< The number of vertices.
+	int polygonsCount;			///< The number of polygons.
+	int maxAllocatedPolygons;	///< The number of allocated polygons.
+	int maxVerticesPerPolygon;	///< The maximum number of vertices per polygon.
+	float boundMin[3];			///< The minimum bounds in world space. [(x, y, z)]
+	float boundMax[3];			///< The maximum bounds in world space. [(x, y, z)]
+	float cellSize;				///< The size of each cell. (On the xz-plane.)
+	float cellHeight;			///< The height of each cell. (The minimum increment along the y-axis.)
+	int borderSize;				///< The AABB border size used to generate the source data from which the mesh was derived.
+	float maxEdgeError;			///< The max error of the polygon edges in the mesh.
 	
 private:
 	// Explicitly-disabled copy constructor and copy assignment operator.

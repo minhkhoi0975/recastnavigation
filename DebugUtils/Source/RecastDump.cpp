@@ -53,19 +53,19 @@ bool duDumpPolyMeshToObj(rcPolyMesh& pmesh, duFileIO* io)
 		return false;
 	}
 	
-	const int nvp = pmesh.nvp;
-	const float cs = pmesh.cs;
-	const float ch = pmesh.ch;
-	const float* orig = pmesh.bmin;
+	const int nvp = pmesh.maxVerticesPerPolygon;
+	const float cs = pmesh.cellSize;
+	const float ch = pmesh.cellHeight;
+	const float* orig = pmesh.boundMin;
 	
 	ioprintf(io, "# Recast Navmesh\n");
 	ioprintf(io, "o NavMesh\n");
 
 	ioprintf(io, "\n");
 	
-	for (int i = 0; i < pmesh.nverts; ++i)
+	for (int i = 0; i < pmesh.verticesCount; ++i)
 	{
-		const unsigned short* v = &pmesh.verts[i*3];
+		const unsigned short* v = &pmesh.vertices[i*3];
 		const float x = orig[0] + v[0]*cs;
 		const float y = orig[1] + (v[1]+1)*ch + 0.1f;
 		const float z = orig[2] + v[2]*cs;
@@ -74,9 +74,9 @@ bool duDumpPolyMeshToObj(rcPolyMesh& pmesh, duFileIO* io)
 
 	ioprintf(io, "\n");
 
-	for (int i = 0; i < pmesh.npolys; ++i)
+	for (int i = 0; i < pmesh.polygonsCount; ++i)
 	{
-		const unsigned short* p = &pmesh.polys[i*nvp*2];
+		const unsigned short* p = &pmesh.polygons[i*nvp*2];
 		for (int j = 2; j < nvp; ++j)
 		{
 			if (p[j] == RC_MESH_NULL_IDX) break;
@@ -151,21 +151,21 @@ bool duDumpContourSet(struct rcContourSet& cset, duFileIO* io)
 	io->write(&CSET_MAGIC, sizeof(CSET_MAGIC));
 	io->write(&CSET_VERSION, sizeof(CSET_VERSION));
 
-	io->write(&cset.nconts, sizeof(cset.nconts));
+	io->write(&cset.contoursCount, sizeof(cset.contoursCount));
 	
-	io->write(cset.bmin, sizeof(cset.bmin));
-	io->write(cset.bmax, sizeof(cset.bmax));
+	io->write(cset.boundMin, sizeof(cset.boundMin));
+	io->write(cset.boundMax, sizeof(cset.boundMax));
 	
-	io->write(&cset.cs, sizeof(cset.cs));
-	io->write(&cset.ch, sizeof(cset.ch));
+	io->write(&cset.cellSize, sizeof(cset.cellSize));
+	io->write(&cset.cellHeight, sizeof(cset.cellHeight));
 
 	io->write(&cset.width, sizeof(cset.width));
 	io->write(&cset.height, sizeof(cset.height));
 	io->write(&cset.borderSize, sizeof(cset.borderSize));
 
-	for (int i = 0; i < cset.nconts; ++i)
+	for (int i = 0; i < cset.contoursCount; ++i)
 	{
-		const rcContour& cont = cset.conts[i];
+		const rcContour& cont = cset.contours[i];
 		io->write(&cont.verticesCount, sizeof(cont.verticesCount));
 		io->write(&cont.rawVerticesCount, sizeof(cont.rawVerticesCount));
 		io->write(&cont.regionId, sizeof(cont.regionId));
@@ -207,29 +207,29 @@ bool duReadContourSet(struct rcContourSet& cset, duFileIO* io)
 		return false;
 	}
 	
-	io->read(&cset.nconts, sizeof(cset.nconts));
+	io->read(&cset.contoursCount, sizeof(cset.contoursCount));
 
-	cset.conts = (rcContour*)rcAlloc(sizeof(rcContour)*cset.nconts, RC_ALLOC_PERM);
-	if (!cset.conts)
+	cset.contours = (rcContour*)rcAlloc(sizeof(rcContour)*cset.contoursCount, RC_ALLOC_PERM);
+	if (!cset.contours)
 	{
-		printf("duReadContourSet: Could not alloc contours (%d)\n", cset.nconts);
+		printf("duReadContourSet: Could not alloc contours (%d)\n", cset.contoursCount);
 		return false;
 	}
-	memset(cset.conts, 0, sizeof(rcContour)*cset.nconts);
+	memset(cset.contours, 0, sizeof(rcContour)*cset.contoursCount);
 	
-	io->read(cset.bmin, sizeof(cset.bmin));
-	io->read(cset.bmax, sizeof(cset.bmax));
+	io->read(cset.boundMin, sizeof(cset.boundMin));
+	io->read(cset.boundMax, sizeof(cset.boundMax));
 	
-	io->read(&cset.cs, sizeof(cset.cs));
-	io->read(&cset.ch, sizeof(cset.ch));
+	io->read(&cset.cellSize, sizeof(cset.cellSize));
+	io->read(&cset.cellHeight, sizeof(cset.cellHeight));
 	
 	io->read(&cset.width, sizeof(cset.width));
 	io->read(&cset.height, sizeof(cset.height));
 	io->read(&cset.borderSize, sizeof(cset.borderSize));
 	
-	for (int i = 0; i < cset.nconts; ++i)
+	for (int i = 0; i < cset.contoursCount; ++i)
 	{
-		rcContour& cont = cset.conts[i];
+		rcContour& cont = cset.contours[i];
 		io->read(&cont.verticesCount, sizeof(cont.verticesCount));
 		io->read(&cont.rawVerticesCount, sizeof(cont.rawVerticesCount));
 		io->read(&cont.regionId, sizeof(cont.regionId));
