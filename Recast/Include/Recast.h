@@ -16,8 +16,7 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //
  
-#ifndef RECAST_H
-#define RECAST_H
+#pragma once
 
 /// The value of PI used by Recast.
 static constexpr float RC_PI = 3.14159265f;
@@ -1361,8 +1360,6 @@ bool rcCopyPolyMesh(rcContext* context, const rcPolyMesh& sourcePolyMesh, rcPoly
 bool rcMergePolyMeshDetails(rcContext* context, rcPolyMeshDetail** meshes, const int meshesCount, rcPolyMeshDetail& mesh);
 
 /// @}
-
-#endif // RECAST_H
 
 ///////////////////////////////////////////////////////////////////////////
 
