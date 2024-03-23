@@ -83,7 +83,7 @@ static bool circumCircle(const float* p1, const float* p2, const float* p3,
 		c[1] = 0;
 		c[2] = (v1Sq*(v3[0]-v2[0]) + v2Sq*(v1[0]-v3[0]) + v3Sq*(v2[0]-v1[0])) / (2*cp);
 		r = vdist2(c, v1);
-		rcVadd(c, c, p1);
+		rcAddVector(c, c, p1);
 		return true;
 	}
 	

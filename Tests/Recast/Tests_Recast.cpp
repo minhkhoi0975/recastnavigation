@@ -167,7 +167,7 @@ TEST_CASE("rcVadd", "[recast]")
 		float v1[3] = {1, 2, 3};
 		float v2[3] = {5, 6, 7};
 		float result[3];
-		rcVadd(result, v1, v2);
+		rcAddVector(result, v1, v2);
 		REQUIRE(result[0] == Catch::Approx(6));
 		REQUIRE(result[1] == Catch::Approx(8));
 		REQUIRE(result[2] == Catch::Approx(10));

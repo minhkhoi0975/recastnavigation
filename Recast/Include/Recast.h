@@ -728,11 +728,11 @@ inline void rcVmad(float* dest, const float* v1, const float* v2, const float s)
 /// @param[out]		dest	The result vector. [(x, y, z)]
 /// @param[in]		v1		The base vector. [(x, y, z)]
 /// @param[in]		v2		The vector to add to @p v1. [(x, y, z)]
-inline void rcVadd(float* dest, const float* v1, const float* v2)
+inline void rcAddVector(float* dest, const float* v1, const float* v2)
 {
-	dest[0] = v1[0]+v2[0];
-	dest[1] = v1[1]+v2[1];
-	dest[2] = v1[2]+v2[2];
+	dest[0] = v1[0] + v2[0];
+	dest[1] = v1[1] + v2[1];
+	dest[2] = v1[2] + v2[2];
 }
 
 /// Performs a vector subtraction. (@p v1 - @p v2)
